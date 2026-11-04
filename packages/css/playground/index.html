@@ -106,6 +106,61 @@
             </table>
           </div>
         </div>
+        <p class="sw-type-label sw-text-secondary">06 / Forms</p>
+        <div class="sw-stack" data-gap="6" style="max-inline-size: 28rem">
+          <div class="sw-field">
+            <label class="sw-field-label" for="pg-email">Email</label>
+            <input class="sw-input" id="pg-email" placeholder="name@company.com" aria-describedby="pg-email-d" />
+            <span class="sw-field-description" id="pg-email-d">We never share it.</span>
+          </div>
+          <div class="sw-field">
+            <label class="sw-field-label" for="pg-name">Name</label>
+            <input class="sw-input" id="pg-name" aria-invalid="true" aria-describedby="pg-name-e" />
+            <span class="sw-field-error" id="pg-name-e">Enter your name.</span>
+          </div>
+          <div class="sw-field">
+            <label class="sw-field-label" for="pg-msg">Message</label>
+            <textarea class="sw-input sw-textarea" id="pg-msg"></textarea>
+          </div>
+          <label class="sw-checkbox" data-selected>
+            <span class="sw-checkbox-box" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 6 9 17l-5-5" /></svg></span>
+            Remember me
+          </label>
+          <label class="sw-checkbox">
+            <span class="sw-checkbox-box" aria-hidden="true"></span>
+            Send updates
+          </label>
+          <label class="sw-switch" data-selected>
+            <span class="sw-switch-track" aria-hidden="true"><span class="sw-switch-thumb"></span></span>
+            Notifications
+          </label>
+          <label class="sw-switch">
+            <span class="sw-switch-track" aria-hidden="true"><span class="sw-switch-thumb"></span></span>
+            Autosave
+          </label>
+          <div class="sw-field sw-radio-group" role="radiogroup" aria-labelledby="pg-theme">
+            <span class="sw-field-label" id="pg-theme">Theme</span>
+            <div class="sw-radio-list">
+              <label class="sw-radio" data-selected><span class="sw-radio-dot" aria-hidden="true"></span>Alpine</label>
+              <label class="sw-radio"><span class="sw-radio-dot" aria-hidden="true"></span>Zürich</label>
+            </div>
+          </div>
+          <div class="sw-field">
+            <span class="sw-field-label">Density</span>
+            <button type="button" class="sw-input sw-select-trigger">
+              <span class="sw-select-value">Comfortable</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+            </button>
+            <div class="sw-popover" style="--trigger-width: 100%">
+              <div class="sw-listbox" role="listbox" aria-label="Density">
+                <div class="sw-listbox-item" role="option" aria-selected="false">Compact</div>
+                <div class="sw-listbox-item" role="option" aria-selected="true" data-selected data-focused>Comfortable
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
 
