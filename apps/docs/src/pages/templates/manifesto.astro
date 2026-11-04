@@ -1,0 +1,337 @@
+---
+import Graphic from "../../components/manifesto/Graphic.astro";
+import Base from "../../layouts/Base.astro";
+
+// Text: "Raster: Why We Are Redrawing the Grid", as of 2026-11-04. Later edits to the doc do not flow here.
+const SWITCH = [
+  { key: "theme", label: "Theme", options: [["alpine", "Alpine"], ["zurich", "Zürich"]] },
+  { key: "mode", label: "Mode", options: [["light", "Light"], ["dark", "Dark"]] },
+] as const;
+
+const PAPER_SCREEN = [
+  ["Format", "Fixed, chosen by the designer", "Unknown: 320px phone to 2560px monitor, resized at will"],
+  ["Who decides how it looks", "The designer, once", "The reader too: zoom, font size, dark mode, reduced motion, high contrast"],
+  ["Colour", "Ink on white, seen in daylight", "Light and dark surfaces, varied screens, readers with low vision"],
+  ["Reading", "By eye, in order", "By eye, keyboard, screen reader, voice, translation tool"],
+  ["Time", "Static", "Interactive: states, focus, feedback, movement"],
+  ["Language", "Usually one, set by hand", "Many, including right-to-left scripts, set by the browser"],
+  ["The medium", "Lead, film, paper", "Code: HTML and CSS, rebuilt by many hands"],
+];
+
+const PRINCIPLES = [
+  ["The grid orders the page", "A fluid grid of 4, 8 or 12 columns, chosen by the width of the container, not the window", "The format is unknown, so the grid must be a rule that recomputes, not a drawing"],
+  ["Few sizes, clear hierarchy", "A modular type scale that grows from ratio 1.2 to 1.25 with the screen; headings lighter and smaller than the tradition's", "Huge, heavy headlines shout on a small screen; calm hierarchy reads better and longer"],
+  ["Flush left, ragged right", "Kept, with a 66-character measure and automatic hyphenation by language", "It remains the most readable setting, and the browser can now hyphenate correctly for each language"],
+  ["Objectivity", "Every colour pairing measured and enforced; states never shown by colour alone", "Objectivity today means the information reaches readers whose eyes and tools differ"],
+  ["White space is active", "Flat surfaces separated by hairlines and space; one shadow, for overlays only", "Depth effects add noise; space and rule do the separating, as they did on paper"],
+  ["Form follows content", "Components and templates derived from real tasks: forms, tables, articles, dashboards", "A system earns its rules from the work it must carry, not from a mood board"],
+];
+
+const DECISIONS = [
+  ["Grid", "Columns by container width; gutter 16–32px and margin 16–96px scale smoothly; content stops at 1440px", "A component placed in a sidebar or a full page must find its own order"],
+  ["Layout patterns", "Hanging layout (labels in columns 1–3, content in 4–12), 5/7 and 1/3 + 2/3 splits, full bleed", "These are the classic Swiss compositions; asymmetry gives tension without decoration"],
+  ["Visible grid", "Optional hairline column rules, and an overlay showing columns and the 4px baseline", "The grid is the identity, so it may be shown, and designers must be able to check it"],
+  ["Rhythm", "4px base unit; spacing steps 4 to 96px; line heights rounded to 4px", "A shared unit keeps text and components on one vertical rhythm"],
+  ["Typeface", "Geist for text, Geist Mono for labels, annotations and figures", "A contemporary grotesk drawn for screens, with a mono partner for data; Helvetica would be quotation, not design"],
+  ["Weights", "300, 400 and 500 only; never bold 700", "Hierarchy comes from size, position and space, as the Swiss taught, not from weight"],
+  ["Case and setting", "Sentence case; flush left; never justified; uppercase only in mono labels", "Calm and readable; justified text breaks badly at narrow widths"],
+  ["Colour", "White pages; one accent; red reserved for errors in Alpine; every pairing checked at build time", "Colour is a signal, not the identity. When everything is red, nothing is urgent"],
+  ["Two themes", "Alpine (cool, 4px radius, default) and Zürich (warm paper tones, square corners, a single red signal mark)", "One system, two temperaments, proves identity lives in the structure, not the palette"],
+  ["Light and dark", "Every theme in both modes, applied to any part of a page", "Readers choose their environment; the system must hold in both"],
+  ["Motion", "Short durations (120–480ms), one easing, movement only along x or y; no bounce, spin or pop; off when the reader asks", "Movement should explain change, never perform"],
+  ["Components", "31 components; HTML and CSS first, React behaviour on top; built on React Aria", "Proven keyboard and screen-reader behaviour should not be reinvented; plain HTML users are not second class"],
+  ["Proof", "Contrast enforced at build; every docs page tested with axe, at 320px, and in all four theme and mode combinations; 456 screenshot baselines", "A promise about access is only real if a machine checks it on every change"],
+];
+
+const REFUSALS = [
+  ["Quote the past.", "No Helvetica, no red-and-black default, no imitation posters. Homage is not method."],
+  ["Decorate.", "No gradients, no ornamental shadows, no motion for its own sake."],
+  ["Let colour carry meaning alone.", "Every state also has a border, an icon or a word, so it survives high-contrast mode and colour blindness."],
+  ["Trade access for appearance.", "No pairing below 4.5:1 for text or 3:1 for control borders, whatever the mood board says."],
+  ["Fix the page.", "No fixed-width layouts, no breakpoints keyed to particular devices."],
+  ["Grow without need.", "Components arrive when real work demands them. Date pickers, data grids and charts wait for version 2."],
+  ["Hide the rules in a tool.", "The grid, tokens and class contract are plain, readable code, not settings buried in a design file."],
+];
+---
+<Base title="Why we are redrawing the grid" description="Template: a manifesto set as a long editorial page, with graphics drawn from the theme.">
+  <article class="sw-stack" data-gap="8">
+    <div class="sw-grid" data-layout="hanging" data-page-grid>
+      <p class="sw-type-label sw-text-secondary">Raster · Manifesto</p>
+      <header class="mf-masthead">
+        <h1 class="sw-type-display">Why we are redrawing the grid</h1>
+        <p class="docs-lead sw-measure sw-text-secondary">
+          Raster is not a revival of Swiss style. It is an attempt to do what the Swiss designers did, for
+          the medium we now work in: the screen.
+        </p>
+        <p class="sw-type-caption sw-text-secondary">November 2026 · Ten sections · 9 minute read</p>
+      </header>
+
+      <p class="sw-type-label sw-text-secondary">View in</p>
+      <div class="mf-switch">
+        {
+          SWITCH.map((group) => (
+            <div class="docs-setting" role="group" aria-labelledby={`mf-switch-${group.key}`}>
+              <span id={`mf-switch-${group.key}`} class="sw-type-label sw-text-secondary">
+                {group.label}
+              </span>
+              <div class="docs-segment">
+                {group.options.map(([value, label]) => (
+                  <button
+                    type="button"
+                    class="sw-button docs-toggle"
+                    data-variant="secondary"
+                    data-setting={group.key}
+                    data-value={value}
+                    aria-pressed="false"
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <figure class="sw-figure">
+      <Graphic kind="composition-1" label="Blocks of accent, ink and a single signal bar placed on a twelve-column field" />
+      <figcaption class="sw-type-caption sw-text-secondary">Figure 1 — Composition I. Every edge falls on a column.</figcaption>
+    </figure>
+
+    <div class="sw-grid" data-layout="hanging" data-page-grid>
+      <p class="mf-section-label sw-type-label sw-text-secondary">01<span>Statement</span></p>
+      <section class="mf-section sw-measure" aria-labelledby="mf-01">
+        <h2 id="mf-01" class="sw-type-h3">A statement before we go further</h2>
+        <p>
+          The posters of Müller-Brockmann and Hofmann are admired, copied and reduced to a look. A grid of
+          red, black and Helvetica is a costume. What those designers left us is not a look. It is a
+          method: start from the content, find its order, build a structure strong enough to carry it,
+          and remove everything that does not serve the reader.
+        </p>
+        <p>
+          This document sets out why that method still matters, why it has to be rebuilt rather than
+          copied, and what Raster commits to. It should be read before any new plan is written. Every
+          later decision should be tested against it.
+        </p>
+      </section>
+
+      <p class="mf-section-label sw-type-label sw-text-secondary">02<span>Origins</span></p>
+      <section class="mf-section" aria-labelledby="mf-02">
+        <h2 id="mf-02" class="sw-type-h3">What the Swiss school actually stood for</h2>
+        <div class="docs-prose sw-measure">
+          <p>
+            The International Typographic Style was a discipline for communicating clearly to people the
+            designer would never meet. It grew in Zurich and Basel in the 1950s and was argued in the
+            journal <cite>Neue Grafik</cite> (1958–1965). Its roots lie in
+            Tschichold's <cite>Die neue Typographie</cite> (1928) and the Bauhaus.
+          </p>
+          <p>Its working parts were few, and each had a reason:</p>
+          <ul class="docs-plain-list sw-stack" data-gap="3">
+            <li>
+              <strong>The grid.</strong> A fixed set of columns, margins and intervals, derived from the
+              content and the format. It made a page orderly, and a series of pages coherent.
+              Müller-Brockmann's <cite>Grid Systems in Graphic Design</cite> (1981) is its handbook.
+            </li>
+            <li>
+              <strong>Objective typography.</strong> Grotesk faces such as Akzidenz-Grotesk, then Univers
+              and Helvetica (both 1957). Few sizes, few weights, flush left and ragged right. The type was
+              meant to carry the message, not decorate it.
+            </li>
+            <li>
+              <strong>Asymmetry.</strong> Composition by tension and balance rather than by a central axis.
+              White space was treated as an active part of the layout, not as leftover.
+            </li>
+            <li>
+              <strong>Photography and plain fact over illustration.</strong> The image showed the thing
+              itself. The text said what was meant.
+            </li>
+            <li>
+              <strong>Hierarchy by position, size and space.</strong> Emphasis came from where something
+              sat, not from how loud it was.
+            </li>
+          </ul>
+        </div>
+        <figure class="sw-figure">
+          <Graphic kind="modular-page" label="Two portrait pages sharing one four-by-six module grid, each arranged differently" />
+          <figcaption class="sw-type-caption sw-text-secondary">Figure 2 — One module grid, two pages. The format is known, so the grid can be drawn.</figcaption>
+        </figure>
+        <div class="docs-prose sw-measure">
+          <p>
+            Behind the parts was an ethic. After the war, these designers distrusted persuasion that worked
+            on emotion alone. They held that a designer serves the public: information should be legible,
+            honest and equally available to everyone. Hofmann taught it in Basel as a slow discipline of
+            form; Müller-Brockmann described it as responsibility to society.
+          </p>
+          <p>That ethic is the part worth inheriting.</p>
+        </div>
+      </section>
+
+      <p class="mf-section-label sw-type-label sw-text-secondary">03<span>Decline</span></p>
+      <section class="mf-section sw-measure" aria-labelledby="mf-03">
+        <h2 id="mf-03" class="sw-type-h3">Why it endured, and how it was hollowed out</h2>
+        <p>
+          The style endured because its method works. A grid scales from a ticket to a signage system.
+          Clear type and honest hierarchy serve anyone, in any language. Corporate identity, wayfinding and
+          most good interface design still stand on it.
+        </p>
+        <p>But success turned it into a style, and a style can be worn without being understood. Four things went wrong:</p>
+        <ol class="sw-stack" data-gap="3">
+          <li><strong>The look replaced the reasoning.</strong> Red, black, Helvetica and a big number became shorthand for “Swiss”. The grid was drawn first and the content forced into it.</li>
+          <li><strong>Neutrality became coldness.</strong> Objectivity was mistaken for absence of warmth. Pages grew severe, shouting in heavy weights and huge headlines.</li>
+          <li><strong>The grid was frozen.</strong> A print grid assumes a known page. Copied onto the web, it became fixed-width boxes that break on a phone.</li>
+          <li><strong>The public was narrowed.</strong> The original ethic said “everyone”. Its imitations rarely considered low vision, a keyboard, a screen reader, a second language or a slow device.</li>
+        </ol>
+        <p>
+          Raster's starting point is that these are failures of translation, not of the method. The method
+          has to be applied again, from first principles, to new conditions.
+        </p>
+      </section>
+
+      <p class="mf-section-label sw-type-label sw-text-secondary">04<span>Conditions</span></p>
+      <section class="mf-section" aria-labelledby="mf-04">
+        <h2 id="mf-04" class="sw-type-h3">The page is no longer a page</h2>
+        <p class="sw-measure">
+          The Swiss designer knew the format before drawing a line. We never do. Every assumption the print
+          grid relied on has changed:
+        </p>
+        <div class="sw-table-wrap" role="region" aria-labelledby="mf-t1" tabindex="0">
+          <table class="sw-table mf-table" role="table">
+            <caption id="mf-t1">Paper and screen</caption>
+            <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Condition</th><th scope="col" role="columnheader">On paper</th><th scope="col" role="columnheader">On screen</th></tr></thead>
+            <tbody role="rowgroup">{PAPER_SCREEN.map(([a, b, c]) => <tr role="row"><th scope="row" role="rowheader">{a}</th><td role="cell" data-label="On paper">{b}</td><td role="cell" data-label="On screen">{c}</td></tr>)}</tbody>
+          </table>
+        </div>
+        <figure class="sw-figure">
+          <Graphic kind="formats" label="A single fixed sheet beside three screen frames with four, eight and twelve columns" />
+          <figcaption class="sw-type-caption sw-text-secondary">Figure 3 — One sheet, many screens. The grid must recompute for each.</figcaption>
+        </figure>
+        <p class="sw-measure">
+          The last row matters most. A print designer handed a finished artwork to a printer. A system
+          designer hands rules to engineers, who apply them to pages the designer will never see. The rules
+          must therefore be precise enough to be code, and the code must keep them honest.
+        </p>
+      </section>
+
+      <p class="mf-section-label sw-type-label sw-text-secondary">05<span>Aims</span></p>
+      <section class="mf-section sw-measure" aria-labelledby="mf-05">
+        <h2 id="mf-05" class="sw-type-h3">What Raster sets out to achieve</h2>
+        <p>
+          Raster aims to give teams a system in which the Swiss method is the easiest way to work, and where
+          clarity and access are enforced rather than hoped for. <i lang="de">Raster</i> is German for grid;
+          the name states the priority.
+        </p>
+        <p>It commits to four outcomes:</p>
+        <ol class="sw-stack" data-gap="3">
+          <li><strong>Identity from structure, not decoration.</strong> A Raster page is recognisable by its grid, its proportions and its type. It is not recognisable by a colour or a logo treatment.</li>
+          <li><strong>Clarity that holds at every size.</strong> The order of a page survives from a 320px phone to a wide monitor, at 200% zoom and in either reading direction.</li>
+          <li><strong>Access as a constraint, not an aspiration.</strong> Every colour pairing meets WCAG 2.2 AA, and the build fails if one does not. Every page passes automated accessibility checks.</li>
+          <li><strong>One contract, used by anyone.</strong> Plain HTML and CSS work on their own; React is an optional layer of behaviour. A team without React gets the same result.</li>
+        </ol>
+        <blockquote class="docs-quote">
+          <p>The goal is not a prettier Swiss look. It is the Swiss outcome, legible, honest and orderly communication, delivered reliably by people who may never have heard of Müller-Brockmann.</p>
+        </blockquote>
+      </section>
+
+      <p class="mf-section-label sw-type-label sw-text-secondary">06<span>Principles</span></p>
+      <section class="mf-section" aria-labelledby="mf-06">
+        <h2 id="mf-06" class="sw-type-h3">Six principles, carried from paper to screen</h2>
+        <p class="sw-measure">Each principle keeps the Swiss intention and changes the means, because the conditions changed.</p>
+        <div class="sw-table-wrap" role="region" aria-labelledby="mf-t2" tabindex="0">
+          <table class="sw-table mf-table" role="table">
+            <caption id="mf-t2">Principles</caption>
+            <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Swiss principle</th><th scope="col" role="columnheader">Raster translation</th><th scope="col" role="columnheader">Why</th></tr></thead>
+            <tbody role="rowgroup">{PRINCIPLES.map(([a, b, c]) => <tr role="row"><th scope="row" role="rowheader">{a}</th><td role="cell" data-label="Raster translation">{b}</td><td role="cell" data-label="Why">{c}</td></tr>)}</tbody>
+          </table>
+        </div>
+        <figure class="sw-figure">
+          <Graphic kind="type-scale" label="Eight horizontal bars, from the display size down to the label size" />
+          <figcaption class="sw-type-caption sw-text-secondary">Figure 4 — The type scale, display to label, at its largest sizes.</figcaption>
+        </figure>
+        <p class="sw-measure">
+          Two additions have no print ancestor. <strong>Motion</strong> is allowed only along the grid axes,
+          calm by default, and switched off when the reader asks. <strong>Access</strong> is treated as part
+          of form, not as a later check.
+        </p>
+      </section>
+
+      <p class="mf-section-label sw-type-label sw-text-secondary">07<span>Decisions</span></p>
+      <section class="mf-section" aria-labelledby="mf-07">
+        <h2 id="mf-07" class="sw-type-h3">The decisions, and the reasons behind them</h2>
+        <p class="sw-measure">Every visible choice in Raster can be defended in one sentence. If it cannot, it does not belong.</p>
+        <figure class="sw-figure">
+          <Graphic kind="baseline" label="Lines of text sitting on a field of evenly spaced horizontal baselines" />
+          <figcaption class="sw-type-caption sw-text-secondary">Figure 5 — The 4px baseline. Headings and body share one vertical rhythm.</figcaption>
+        </figure>
+        <div class="sw-table-wrap" role="region" aria-labelledby="mf-t3" tabindex="0">
+          <table class="sw-table mf-table" role="table">
+            <caption id="mf-t3">Decisions</caption>
+            <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Area</th><th scope="col" role="columnheader">Decision</th><th scope="col" role="columnheader">Reason</th></tr></thead>
+            <tbody role="rowgroup">{DECISIONS.map(([a, b, c]) => <tr role="row"><th scope="row" role="rowheader">{a}</th><td role="cell" data-label="Decision">{b}</td><td role="cell" data-label="Reason">{c}</td></tr>)}</tbody>
+          </table>
+        </div>
+      </section>
+
+      <p class="mf-section-label sw-type-label sw-text-secondary">08<span>Refusals</span></p>
+      <section class="mf-section sw-measure" aria-labelledby="mf-08">
+        <h2 id="mf-08" class="sw-type-h3">What we refuse to do</h2>
+        <p>A system is defined as much by what it leaves out. Raster will not:</p>
+        <ul class="mf-refusals">
+          {
+            REFUSALS.map(([claim, reason]) => (
+              <li>
+                <span class="sw-type-h3">{claim}</span>
+                <span class="sw-text-secondary">{reason}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <p class="mf-section-label sw-type-label sw-text-secondary">09<span>Measures</span></p>
+      <section class="mf-section sw-measure" aria-labelledby="mf-09">
+        <h2 id="mf-09" class="sw-type-h3">How we will know it works</h2>
+        <p>The test of the method is whether others can practise it without us. Raster succeeds when:</p>
+        <ol class="sw-stack" data-gap="3">
+          <li><strong>The two routes match.</strong> A page built only with HTML and CSS looks and behaves the same as one built with React.</li>
+          <li><strong>No pairing fails.</strong> Every text and background combination, in every theme and mode, meets WCAG AA, and the build stops if one does not.</li>
+          <li><strong>Theming costs nothing.</strong> Changing theme or mode re-themes any part of a page with no component code changed.</li>
+          <li><strong>The docs prove it.</strong> The documentation site, built only with Raster, passes axe on every page with zero violations.</li>
+          <li><strong>Strangers get it right.</strong> A team new to Raster can build an article, a dashboard and a landing page that read as one family, without a designer correcting them.</li>
+        </ol>
+        <p>
+          The first four are measured today by automated tests. The fifth is the real one; it can only be
+          measured once other teams use the system.
+        </p>
+      </section>
+    </div>
+
+    <figure class="sw-figure">
+      <Graphic kind="composition-2" label="Column rules with an accent block, an ink band, three stepped blocks, a tinted circle and a signal bar" />
+      <figcaption class="sw-type-caption sw-text-secondary">Figure 6 — Composition II. The same twelve columns, a different order.</figcaption>
+    </figure>
+
+    <div class="sw-grid" data-layout="hanging" data-page-grid>
+      <p class="mf-section-label sw-type-label sw-text-secondary">10<span>Next</span></p>
+      <section class="mf-section sw-measure" aria-labelledby="mf-10">
+        <h2 id="mf-10" class="sw-type-h3">Where we stand, and what comes next</h2>
+        <p>
+          Version 1 is built: tokens, CSS, 31 React components, and a documentation site with three
+          templates. It has not yet been used by a team outside this project, published, or deployed.
+        </p>
+        <p>Before more is built, the next step should test the method rather than extend it:</p>
+        <ul class="docs-plain-list sw-stack" data-gap="3">
+          <li><strong>Put it in front of others.</strong> Deploy the documentation site and have one outside team build a real page with it. Their mistakes will show where the rules are unclear.</li>
+          <li><strong>Fix the narrow screen.</strong> The five-link header scrolls sideways on phones. A compact navigation is the most visible gap in the grid's promise.</li>
+          <li><strong>Make the proof run everywhere.</strong> Continuous integration, with screenshot baselines for Linux, so every change is checked automatically.</li>
+          <li><strong>Only then, grow.</strong> Version 2 components, publishing to npm, and a Figma library should follow evidence of use, not precede it.</li>
+        </ul>
+        <hr class="sw-rule" data-variant="signal" />
+        <p>
+          If a future request cannot be explained in the terms of this document, the document should change
+          first, or the request should not be built.
+        </p>
+      </section>
+    </div>
+  </article>
+</Base>
