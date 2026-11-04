@@ -1,0 +1,116 @@
+/* Shared: the whole label is the hit target. */
+.sw-checkbox,
+.sw-radio,
+.sw-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--target-min);
+  color: var(--text-primary);
+  font-size: var(--text-body-size);
+  line-height: 1.25;
+  cursor: pointer;
+}
+
+.sw-checkbox[data-disabled],
+.sw-radio[data-disabled],
+.sw-switch[data-disabled] {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+/* Checkbox */
+.sw-checkbox-box {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background-color: var(--surface-raised);
+  color: var(--on-accent);
+  transition: background-color var(--dur-fast) var(--ease-standard);
+}
+
+.sw-checkbox-box svg {
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
+  stroke-width: 2.5;
+}
+
+.sw-checkbox[data-selected] .sw-checkbox-box,
+.sw-checkbox[data-indeterminate] .sw-checkbox-box {
+  border-color: var(--accent);
+  background-color: var(--accent);
+}
+
+.sw-checkbox[data-invalid] .sw-checkbox-box {
+  border-color: var(--danger);
+  border-width: 2px;
+}
+
+.sw-checkbox[data-disabled] .sw-checkbox-box {
+  border-color: var(--border);
+  background-color: var(--surface-subtle);
+}
+
+.sw-checkbox[data-focus-visible] .sw-checkbox-box {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+/* Switch */
+.sw-switch-track {
+  display: flex;
+  flex: none;
+  align-items: center;
+  inline-size: 2.25rem;
+  block-size: 1.25rem;
+  padding: 2px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-full);
+  background-color: var(--surface-subtle);
+  transition: background-color var(--dur-fast) var(--ease-standard);
+}
+
+.sw-switch-thumb {
+  inline-size: calc(1.25rem - 6px);
+  block-size: calc(1.25rem - 6px);
+  border-radius: var(--radius-full);
+  background-color: var(--text-secondary);
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+
+.sw-switch[data-selected] .sw-switch-track {
+  border-color: var(--accent);
+  background-color: var(--accent);
+}
+
+.sw-switch[data-selected] .sw-switch-thumb {
+  background-color: var(--on-accent);
+  transform: translateX(1rem);
+}
+
+.sw-switch[data-selected]:dir(rtl) .sw-switch-thumb {
+  transform: translateX(-1rem);
+}
+
+.sw-switch[data-disabled] .sw-switch-track {
+  border-color: var(--border);
+}
+
+.sw-switch[data-focus-visible] .sw-switch-track {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sw-switch-thumb {
+    transition: none;
+  }
+}
+
+[data-motion="reduce"] .sw-switch-thumb {
+  transition: none;
+}

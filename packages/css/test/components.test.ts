@@ -195,3 +195,36 @@ describe("field", () => {
     expect(rule(".sw-textarea")).toMatch(/resize:\s*vertical/);
   });
 });
+
+describe("checkbox", () => {
+  it("gives the whole label a 44px target", () => {
+    expect(css).toMatch(/\.sw-checkbox[^{]*\{[^}]*min-block-size:\s*var\(--target-min\)/);
+  });
+
+  it("fills the box with the accent when selected or indeterminate", () => {
+    expect(css).toMatch(
+      /\.sw-checkbox\[data-selected\] \.sw-checkbox-box,\s*\.sw-checkbox\[data-indeterminate\] \.sw-checkbox-box\s*\{[^}]*background-color:\s*var\(--accent\)/,
+    );
+  });
+
+  it("draws the focus ring on the box", () => {
+    expect(css).toMatch(/\.sw-checkbox\[data-focus-visible\] \.sw-checkbox-box[^{]*\{[^}]*outline:\s*var\(--focus-width\) solid var\(--accent\)/);
+  });
+});
+
+describe("switch", () => {
+  it("uses a pill track and moves the thumb when selected", () => {
+    expect(rule(".sw-switch-track")).toMatch(/border-radius:\s*var\(--radius-full\)/);
+    expect(rule(".sw-switch[data-selected] .sw-switch-track")).toMatch(/background-color:\s*var\(--accent\)/);
+    expect(rule(".sw-switch[data-selected] .sw-switch-thumb")).toMatch(/translateX\(1rem\)/);
+  });
+
+  it("mirrors the thumb in right-to-left text", () => {
+    expect(css).toMatch(/\.sw-switch\[data-selected\]:dir\(rtl\) \.sw-switch-thumb\s*\{[^}]*translateX\(-1rem\)/);
+  });
+
+  it("does not animate the thumb when reduced motion is requested", () => {
+    expect(css).toMatch(/prefers-reduced-motion: reduce[^{]*\{[^@]*\.sw-switch-thumb\s*\{[^}]*transition:\s*none/);
+    expect(css).toMatch(/\[data-motion="?reduce"?\] \.sw-switch-thumb\s*\{[^}]*transition:\s*none/);
+  });
+});

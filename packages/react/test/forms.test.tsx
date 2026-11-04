@@ -1,6 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
+import { Checkbox } from "../src/forms/Checkbox";
+import { Switch } from "../src/forms/Switch";
 import { TextArea, TextField } from "../src/forms/TextField";
 import { expectAccessible } from "./axe";
 
@@ -54,6 +56,55 @@ describe("text field accessibility", () => {
         <TextField label="Name" isInvalid errorMessage="Required" />
         <TextArea label="Message" />
       </form>,
+    );
+    await expectAccessible(container);
+  });
+});
+
+describe("Checkbox", () => {
+  it("is a labelled checkbox that toggles", async () => {
+    const user = userEvent.setup();
+    render(<Checkbox>Remember me</Checkbox>);
+    const box = screen.getByRole("checkbox", { name: "Remember me" });
+    expect(box).not.toBeChecked();
+    await user.click(screen.getByText("Remember me"));
+    expect(box).toBeChecked();
+    expect(box.closest(".sw-checkbox")).toHaveAttribute("data-selected");
+  });
+
+  it("shows a check when selected and a dash when indeterminate", () => {
+    const { container, rerender } = render(<Checkbox defaultSelected>All</Checkbox>);
+    expect(container.querySelector(".sw-checkbox-box svg")).not.toBeNull();
+    rerender(<Checkbox isIndeterminate>All</Checkbox>);
+    expect(container.querySelector(".sw-checkbox")).toHaveAttribute("data-indeterminate");
+    expect(container.querySelector(".sw-checkbox-box svg")).not.toBeNull();
+  });
+
+  it("hides the visual box from assistive tech", () => {
+    const { container } = render(<Checkbox>Terms</Checkbox>);
+    expect(container.querySelector(".sw-checkbox-box")).toHaveAttribute("aria-hidden", "true");
+  });
+});
+
+describe("Switch", () => {
+  it("is a labelled switch that toggles", async () => {
+    const user = userEvent.setup();
+    render(<Switch>Dark mode</Switch>);
+    const sw = screen.getByRole("switch", { name: "Dark mode" });
+    expect(sw).not.toBeChecked();
+    await user.click(screen.getByText("Dark mode"));
+    expect(sw).toBeChecked();
+    expect(sw.closest(".sw-switch")).toHaveAttribute("data-selected");
+  });
+});
+
+describe("checkbox and switch accessibility", () => {
+  it("has no structural violations", async () => {
+    const { container } = render(
+      <div>
+        <Checkbox>Remember me</Checkbox>
+        <Switch defaultSelected>Notifications</Switch>
+      </div>,
     );
     await expectAccessible(container);
   });
