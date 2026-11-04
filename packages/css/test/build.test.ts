@@ -89,6 +89,14 @@ describe("layout: container and grid", () => {
       expect(rtl?.[0]).toContain("to left");
     }
   });
+
+  it("draws a 4px baseline under the debug columns, in both directions", () => {
+    const base = css.match(/\.sw-grid\[data-grid-debug\]\s*\{[^}]*\}/)?.[0];
+    expect(base).toMatch(/--_baseline:\s*repeating-linear-gradient\([^;]*1px[^;]*4px/);
+    expect(base).toMatch(/background-image:[^;]*var\(--_baseline\)/);
+    const rtl = css.match(/\.sw-grid\[data-grid-debug\]:dir\(rtl\)\s*\{[^}]*\}/)?.[0];
+    expect(rtl).toMatch(/background-image:[^;]*var\(--_baseline\)/);
+  });
 });
 
 describe("base: nested themes and weights", () => {
