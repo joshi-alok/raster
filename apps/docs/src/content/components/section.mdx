@@ -1,0 +1,24 @@
+---
+title: Section
+group: Layout
+order: 2
+summary: Adds the large vertical rhythm between page regions and acts as a size container.
+props:
+  - name: as
+    type: ElementType
+    default: '"section"'
+    description: Element to render.
+  - name: className
+    type: string
+    description: Extra classes, added after sw-section.
+a11y:
+  - A section element becomes a region landmark only when it has an accessible name; label it with aria-labelledby pointing at its heading.
+  - Use as="div" when the section is purely visual spacing.
+---
+import Example from "../../components/Example.astro";
+import Basic from "../../demos/section/Basic";
+import basicSource from "../../demos/section/Basic.tsx?raw";
+
+<Example title="Labelled section" source={basicSource} of={Basic}>
+  <Basic />
+</Example>

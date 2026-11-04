@@ -1,0 +1,23 @@
+---
+title: Rule
+group: Layout
+order: 6
+summary: A hairline thematic break, in default, strong or signal weight.
+props:
+  - name: variant
+    type: '"default" | "strong" | "signal"'
+    default: '"default"'
+    description: Line weight and colour. Signal uses the brand colour and is for one break per page at most.
+  - name: className
+    type: string
+    description: Extra classes, added after sw-rule.
+a11y:
+  - Renders an hr, which screen readers announce as a separator. For purely decorative lines, use a CSS border instead.
+---
+import Example from "../../components/Example.astro";
+import Variants from "../../demos/rule/Variants";
+import variantsSource from "../../demos/rule/Variants.tsx?raw";
+
+<Example title="Variants" source={variantsSource} of={Variants}>
+  <Variants />
+</Example>

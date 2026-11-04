@@ -1,0 +1,24 @@
+---
+title: Container
+group: Layout
+order: 1
+summary: Centres content at the maximum width with fluid page margins, and is the size container a grid measures.
+props:
+  - name: as
+    type: ElementType
+    default: '"div"'
+    description: Element to render, for example "main" when the container is the page's main region.
+  - name: className
+    type: string
+    description: Extra classes, added after sw-container.
+a11y:
+  - Renders a plain div unless you pass as; use a landmark element (main, header, footer) where the container is a page region.
+  - Content reflows down to 320px wide without horizontal scrolling (WCAG 1.4.10).
+---
+import Example from "../../components/Example.astro";
+import Basic from "../../demos/container/Basic";
+import basicSource from "../../demos/container/Basic.tsx?raw";
+
+<Example title="Basic" source={basicSource} of={Basic}>
+  <Basic />
+</Example>
