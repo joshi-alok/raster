@@ -1,0 +1,140 @@
+/* Floating surfaces shared by Select, Menu and other popovers. */
+.sw-popover {
+  min-inline-size: var(--trigger-width);
+  max-block-size: 20rem;
+  padding: var(--space-1);
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-overlay);
+}
+
+.sw-listbox,
+.sw-menu {
+  display: grid;
+  outline: none;
+}
+
+.sw-listbox-item,
+.sw-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-block-size: var(--control-height);
+  padding-inline: var(--space-3);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-size: var(--text-body-size);
+  line-height: 1.25;
+  cursor: pointer;
+  outline: none;
+}
+
+.sw-listbox-item[data-focused],
+.sw-menu-item[data-focused] {
+  background-color: var(--surface-subtle);
+}
+
+.sw-listbox-item[data-focus-visible],
+.sw-menu-item[data-focus-visible] {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: calc(-1 * var(--focus-width));
+}
+
+/* Selected: weight plus a check icon, never colour alone. */
+.sw-listbox-item[data-selected] {
+  font-weight: 500;
+}
+
+.sw-listbox-item svg,
+.sw-menu-item svg {
+  flex: none;
+  inline-size: 1rem;
+  block-size: 1rem;
+  stroke-width: 1.5;
+}
+
+.sw-listbox-item[data-disabled],
+.sw-menu-item[data-disabled] {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.sw-menu-item[data-variant="danger"] {
+  color: var(--danger);
+}
+
+.sw-menu-separator {
+  block-size: 0;
+  margin-block: var(--space-1);
+  border-block-start: 1px solid var(--border);
+}
+
+@media (forced-colors: active) {
+  .sw-listbox-item[data-focused],
+  .sw-menu-item[data-focused] {
+    outline: 1px solid Highlight;
+  }
+}
+
+/* Core motion tier: fade plus a short slide away from the trigger. */
+@keyframes sw-overlay-in {
+  from {
+    opacity: 0;
+    transform: var(--_overlay-from);
+  }
+}
+
+@keyframes sw-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes sw-overlay-out {
+  to {
+    opacity: 0;
+  }
+}
+
+.sw-popover,
+.sw-tooltip {
+  --_overlay-from: translateY(-4px);
+}
+
+.sw-modal {
+  --_overlay-from: translateY(8px);
+}
+
+:is(.sw-popover, .sw-tooltip)[data-placement="top"] {
+  --_overlay-from: translateY(4px);
+}
+
+:is(.sw-popover, .sw-tooltip)[data-placement="left"] {
+  --_overlay-from: translateX(4px);
+}
+
+:is(.sw-popover, .sw-tooltip)[data-placement="right"] {
+  --_overlay-from: translateX(-4px);
+}
+
+:is(.sw-popover, .sw-tooltip, .sw-modal)[data-entering] {
+  animation: sw-overlay-in var(--dur-base) var(--ease-standard);
+}
+
+:is(.sw-popover, .sw-tooltip, .sw-modal)[data-exiting] {
+  animation: sw-overlay-out var(--dur-fast) var(--ease-linear);
+}
+
+/* Reduced motion: keep the fade, drop the slide (durations are already capped by base.css). */
+@media (prefers-reduced-motion: reduce) {
+  :is(.sw-popover, .sw-tooltip, .sw-modal)[data-entering] {
+    animation-name: sw-fade-in;
+  }
+}
+
+[data-motion="reduce"] :is(.sw-popover, .sw-tooltip, .sw-modal)[data-entering] {
+  animation-name: sw-fade-in;
+}

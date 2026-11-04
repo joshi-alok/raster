@@ -67,6 +67,10 @@ export function foundationTokens(): Record<string, string> {
     "radius-full": "9999px",
     "shadow-overlay":
       "0 8px 24px light-dark(rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.48)), 0 2px 6px light-dark(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.32))",
+    "z-sticky": "10",
+    "z-modal": "100",
+    "z-toast": "200",
+    scrim: "light-dark(rgb(0 0 0 / 0.4), rgb(0 0 0 / 0.6))",
     "dur-fast": "120ms",
     "dur-base": "200ms",
     "dur-slow": "320ms",

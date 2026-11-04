@@ -1,0 +1,43 @@
+.sw-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: var(--page-margin);
+  background-color: var(--scrim);
+}
+
+.sw-modal-overlay[data-entering] {
+  animation: sw-fade-in var(--dur-base) var(--ease-linear);
+}
+
+.sw-modal-overlay[data-exiting] {
+  animation: sw-overlay-out var(--dur-fast) var(--ease-linear);
+}
+
+.sw-modal {
+  inline-size: min(100%, 32rem);
+  max-block-size: calc(100dvh - 2 * var(--page-margin));
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-overlay);
+  color: var(--text-primary);
+}
+
+.sw-dialog {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  outline: none;
+}
+
+.sw-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-block-start: var(--space-2);
+}

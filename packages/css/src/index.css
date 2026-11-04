@@ -17,4 +17,9 @@
 @import "./components/table.css" layer(raster.components);
 @import "./components/field.css" layer(raster.components);
 @import "./components/choice.css" layer(raster.components);
+@import "./components/overlay.css" layer(raster.components);
 @import "./components/select.css" layer(raster.components);
+@import "./components/theme-region.css" layer(raster.components);
+@import "./components/modal.css" layer(raster.components);
+@import "./components/tooltip.css" layer(raster.components);
+@import "./components/toast.css" layer(raster.components);

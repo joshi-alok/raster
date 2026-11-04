@@ -317,7 +317,103 @@ describe("select", () => {
   });
 
   it("highlights focused options on the subtle surface", () => {
-    expect(rule(".sw-listbox-item[data-focused]")).toMatch(/background-color:\s*var\(--surface-subtle\)/);
-    expect(rule(".sw-listbox-item")).toMatch(/min-block-size:\s*var\(--control-height\)/);
+    expect(css).toMatch(/\.sw-listbox-item\[data-focused\][^{]*\{[^}]*background-color:\s*var\(--surface-subtle\)/);
+    expect(css).toMatch(/\.sw-listbox-item[^{]*\{[^}]*min-block-size:\s*var\(--control-height\)/);
+  });
+});
+
+describe("overlay stylesheet", () => {
+  it("keeps popover and listbox styles, now shared", () => {
+    expect(rule(".sw-popover")).toMatch(/box-shadow:\s*var\(--shadow-overlay\)/);
+    expect(css).toMatch(/\.sw-listbox-item,\s*\.sw-menu-item\s*\{[^}]*min-block-size:\s*var\(--control-height\)/);
+    expect(css).toMatch(/\.sw-listbox-item\[data-focused\],\s*\.sw-menu-item\[data-focused\]\s*\{[^}]*var\(--surface-subtle\)/);
+  });
+
+  it("animates overlays in with a fade and short slide, and out with a fade", () => {
+    expect(css).toMatch(/@keyframes sw-overlay-in\s*\{[^}]*from\s*\{[^}]*opacity:\s*0/);
+    expect(css).toMatch(/:is\(\.sw-popover, \.sw-tooltip, \.sw-modal\)\[data-entering\]\s*\{[^}]*animation:\s*sw-overlay-in var\(--dur-base\) var\(--ease-standard\)/);
+    expect(css).toMatch(/:is\(\.sw-popover, \.sw-tooltip, \.sw-modal\)\[data-exiting\]\s*\{[^}]*animation:\s*sw-overlay-out var\(--dur-fast\)/);
+  });
+
+  it("slides from the trigger side for each placement", () => {
+    expect(css).toMatch(/\[data-placement="?top"?\]\s*\{\s*--_overlay-from:\s*translateY\(4px\)/);
+    expect(css).toMatch(/\[data-placement="?left"?\]\s*\{\s*--_overlay-from:\s*translateX\(4px\)/);
+  });
+
+  it("falls back to a plain fade under reduced motion", () => {
+    expect(css).toMatch(/prefers-reduced-motion: reduce[^{]*\{[^@]*\[data-entering\]\s*\{\s*animation-name:\s*sw-fade-in/);
+    expect(css).toMatch(/\[data-motion="?reduce"?\] :is\(\.sw-popover, \.sw-tooltip, \.sw-modal\)\[data-entering\]\s*\{\s*animation-name:\s*sw-fade-in/);
+  });
+});
+
+describe("modal dialog", () => {
+  it("covers the viewport with the scrim and centres the modal", () => {
+    const r = rule(".sw-modal-overlay");
+    expect(r).toMatch(/position:\s*fixed/);
+    expect(r).toMatch(/background-color:\s*var\(--scrim\)/);
+    expect(r).toMatch(/place-items:\s*center/);
+    expect(r).toMatch(/z-index:\s*var\(--z-modal\)/);
+  });
+
+  it("is a raised surface with the overlay shadow that scrolls when tall", () => {
+    // overlay.css already has an earlier `.sw-modal` rule (motion custom property), so rule() would
+    // return that one; match the modal.css rule by its declarations instead.
+    const r = css.match(/(?:^|[}\s])\.sw-modal\s*\{([^}]*box-shadow[^}]*)\}/)?.[1] ?? "";
+    expect(r).toMatch(/box-shadow:\s*var\(--shadow-overlay\)/);
+    expect(r).toMatch(/background-color:\s*var\(--surface-raised\)/);
+    expect(r).toMatch(/overflow:\s*auto/);
+  });
+
+  it("fades the scrim in and out", () => {
+    expect(rule(".sw-modal-overlay[data-entering]")).toMatch(/animation:\s*sw-fade-in/);
+    expect(rule(".sw-modal-overlay[data-exiting]")).toMatch(/animation:\s*sw-overlay-out/);
+  });
+});
+
+describe("tooltip", () => {
+  it("inverts the page colours for a compact, high-contrast label", () => {
+    // overlay.css already has a grouped `.sw-popover, .sw-tooltip` rule, so rule() would return that
+    // one; match the tooltip.css rule by a declaration unique to it.
+    const r = css.match(/(?:^|[}\s])\.sw-tooltip\s*\{([^}]*max-inline-size[^}]*)\}/)?.[1] ?? "";
+    expect(r).toMatch(/background-color:\s*var\(--text-primary\)/);
+    expect(r).toMatch(/color:\s*var\(--surface-page\)/);
+    expect(r).toMatch(/font-size:\s*var\(--text-caption-size\)/);
+    expect(r).toMatch(/max-inline-size:\s*16rem/);
+  });
+});
+
+describe("toast", () => {
+  it("pins the region to the inline-end bottom corner", () => {
+    const r = rule(".sw-toast-region");
+    expect(r).toMatch(/position:\s*fixed/);
+    expect(r).toMatch(/inset-inline-end:\s*var\(--space-5\)/);
+    expect(r).toMatch(/inset-block-end:\s*var\(--space-5\)/);
+    expect(r).toMatch(/z-index:\s*var\(--z-toast\)/);
+  });
+
+  it("is a raised surface with icon, content and close button in a row", () => {
+    const r = rule(".sw-toast");
+    expect(r).toMatch(/grid-template-columns:\s*auto minmax\(0,\s*1fr\) auto/);
+    expect(r).toMatch(/box-shadow:\s*var\(--shadow-overlay\)/);
+  });
+
+  it("colours the tone icon from role tokens", () => {
+    expect(rule('.sw-toast[data-tone="danger"] .sw-toast-icon')).toMatch(/color:\s*var\(--danger\)/);
+    expect(rule('.sw-toast[data-tone="success"] .sw-toast-icon')).toMatch(/color:\s*var\(--success\)/);
+  });
+});
+
+describe("overlay review fixes", () => {
+  it("draws the menu separator as a zero-height border", () => {
+    const r = rule(".sw-menu-separator");
+    expect(r).toMatch(/block-size:\s*0/);
+    expect(r).toMatch(/border-block-start:\s*1px solid var\(--border\)/);
+    expect(r).not.toMatch(/background-color/);
+  });
+
+  it("outlines focused listbox and menu items in forced-colors mode", () => {
+    expect(css).toMatch(
+      /@media \(forced-colors:\s*active\)\s*\{\s*\.sw-listbox-item\[data-focused\],\s*\.sw-menu-item\[data-focused\]\s*\{[^}]*outline:\s*1px solid highlight/i,
+    );
   });
 });
