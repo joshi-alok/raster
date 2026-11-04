@@ -64,6 +64,16 @@ describe("layout: container and grid", () => {
     expect(css).toContain(".sw-grid[data-grid-rules]");
     expect(css).toContain(".sw-grid[data-grid-debug]");
   });
+
+  it("aligns overlays to the content box and mirrors them in RTL", () => {
+    for (const attr of ["data-grid-rules", "data-grid-debug"]) {
+      const base = css.match(new RegExp(`\\.sw-grid\\[${attr}\\]\\s*\\{[^}]*\\}`));
+      expect(base?.[0]).toMatch(/background-origin:\s*content-box/);
+      expect(base?.[0]).toMatch(/background-clip:\s*content-box/);
+      const rtl = css.match(new RegExp(`\\.sw-grid\\[${attr}\\]:dir\\(rtl\\)\\s*\\{[^}]*\\}`));
+      expect(rtl?.[0]).toContain("to left");
+    }
+  });
 });
 
 describe("layout: stack and rule", () => {

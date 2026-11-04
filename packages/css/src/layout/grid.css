@@ -1,3 +1,11 @@
+/*
+ * Usage contract: .sw-grid must be a child of a size container (.sw-container,
+ * .sw-section, .sw-col or body) and must not share an element with one. The
+ * column count queries the ancestor container, while child spans would query
+ * the element itself. Presets (data-layout) own child placement and ignore
+ * --span-*. data-grid-debug replaces data-grid-rules if both are set.
+ */
+
 .sw-grid {
   --_cols: 4;
   --_colw: calc((100% - (var(--_cols) - 1) * var(--grid-gutter)) / var(--_cols));
@@ -90,6 +98,8 @@
 
 /* Visible grid: a hairline at every column start. */
 .sw-grid[data-grid-rules] {
+  background-origin: content-box;
+  background-clip: content-box;
   background-image: repeating-linear-gradient(
     to right,
     var(--border) 0 1px,
@@ -97,10 +107,28 @@
   );
 }
 
+.sw-grid[data-grid-rules]:dir(rtl) {
+  background-image: repeating-linear-gradient(
+    to left,
+    var(--border) 0 1px,
+    transparent 1px calc(var(--_colw) + var(--grid-gutter))
+  );
+}
+
 /* Debug overlay: tinted columns. */
 .sw-grid[data-grid-debug] {
+  background-origin: content-box;
+  background-clip: content-box;
   background-image: repeating-linear-gradient(
     to right,
+    color-mix(in srgb, var(--accent) 10%, transparent) 0 var(--_colw),
+    transparent var(--_colw) calc(var(--_colw) + var(--grid-gutter))
+  );
+}
+
+.sw-grid[data-grid-debug]:dir(rtl) {
+  background-image: repeating-linear-gradient(
+    to left,
     color-mix(in srgb, var(--accent) 10%, transparent) 0 var(--_colw),
     transparent var(--_colw) calc(var(--_colw) + var(--grid-gutter))
   );
