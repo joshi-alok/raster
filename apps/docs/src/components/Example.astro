@@ -1,0 +1,33 @@
+---
+import type { ComponentType } from "react";
+import { htmlSnippet } from "../lib/html-snippet";
+import CodeBlock from "./CodeBlock.astro";
+
+interface Props {
+  /** Caption, unique on the page; it also names the code regions. */
+  title: string;
+  /** The demo file's source, imported with ?raw. Shown as the React snippet. */
+  source: string;
+  /** The demo component. When given, its rendered HTML is shown as the HTML snippet. Omit for interactive demos. */
+  of?: ComponentType;
+}
+
+const { title, source, of } = Astro.props;
+const html = of ? await htmlSnippet(of) : undefined;
+---
+<figure class="docs-example">
+  <figcaption class="docs-example-title sw-type-label sw-text-secondary">{title}</figcaption>
+  <div class="docs-example-demo"><slot /></div>
+  <div class="docs-example-code">
+    <p class="sw-type-label sw-text-secondary">React</p>
+    <CodeBlock code={source} label={`React code: ${title}`} />
+    {
+      html && (
+        <>
+          <p class="sw-type-label sw-text-secondary">HTML</p>
+          <CodeBlock code={html} label={`HTML code: ${title}`} />
+        </>
+      )
+    }
+  </div>
+</figure>
