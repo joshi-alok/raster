@@ -87,3 +87,23 @@ test.describe("motion", () => {
     await expect.poll(animation).toBe("none");
   });
 });
+
+test.describe("colour scales", () => {
+  test("shows one scale table per theme with five hues each", async ({ page }) => {
+    await page.goto("/foundations/colour/");
+    const tables = page.getByRole("table", { name: /scales$/ });
+    await expect(tables).toHaveCount(2);
+    await expect(page.getByRole("table", { name: "Alpine scales" }).locator("tbody tr")).toHaveCount(5);
+    await expect(page.getByRole("table", { name: "Zürich scales" }).locator("tbody tr")).toHaveCount(5);
+    await expect(page.getByRole("table", { name: "Alpine scales" })).toContainText("#2F5F8A");
+  });
+});
+
+test("the grid overlay draws a baseline", async ({ page }) => {
+  await page.goto("/foundations/grid/");
+  await page.getByRole("button", { name: "Grid", exact: true }).click();
+  const image = await page
+    .locator("[data-page-grid]")
+    .evaluate((el) => getComputedStyle(el).backgroundImage);
+  expect(image.match(/repeating-linear-gradient/g)?.length).toBe(2);
+});
