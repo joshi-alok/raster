@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { Link } from "../src/actions/Link";
+import { Reveal } from "../src/motion/Reveal";
 import { Breadcrumb, Breadcrumbs } from "../src/navigation/Breadcrumbs";
 import { Header } from "../src/navigation/Header";
 import { Tab, TabList, TabPanel, Tabs } from "../src/navigation/Tabs";
@@ -171,5 +172,23 @@ describe("Header", () => {
   it("has no structural violations", async () => {
     const { container } = render(<Page />);
     await expectAccessible(container);
+  });
+});
+
+describe("Reveal", () => {
+  it("wraps content in the reveal class, staggering children when asked", () => {
+    render(
+      <>
+        <Reveal data-testid="a">One block</Reveal>
+        <Reveal as="ul" stagger data-testid="b">
+          <li>1</li>
+          <li>2</li>
+        </Reveal>
+      </>,
+    );
+    expect(screen.getByTestId("a")).toHaveClass("sw-reveal");
+    expect(screen.getByTestId("a")).not.toHaveAttribute("data-stagger");
+    expect(screen.getByTestId("b").tagName).toBe("UL");
+    expect(screen.getByTestId("b")).toHaveAttribute("data-stagger");
   });
 });
