@@ -1,8 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { Button } from "../src/actions/Button";
 import { Dialog, DialogTrigger } from "../src/overlays/Dialog";
+import { Menu, MenuItem, MenuSeparator, MenuTrigger } from "../src/overlays/Menu";
 import { expectAccessible } from "./axe";
 import { Select, SelectItem } from "../src/forms/Select";
 import { ThemeRegion } from "../src/overlays/ThemeRegion";
@@ -119,5 +120,52 @@ describe("Dialog", () => {
     render(<Example />);
     await user.click(screen.getByRole("button", { name: "Delete file" }));
     await expectAccessible((await screen.findByRole("dialog")).closest(".sw-modal-overlay")!);
+  });
+});
+
+describe("Menu", () => {
+  function Example({ onAction }: { onAction?: (key: unknown) => void }) {
+    return (
+      <MenuTrigger>
+        <Button>Actions</Button>
+        <Menu onAction={onAction}>
+          <MenuItem id="edit">Edit</MenuItem>
+          <MenuItem id="duplicate">Duplicate</MenuItem>
+          <MenuSeparator />
+          <MenuItem id="delete" variant="danger">
+            Delete
+          </MenuItem>
+        </Menu>
+      </MenuTrigger>
+    );
+  }
+
+  it("opens a menu of items from its trigger", async () => {
+    const user = userEvent.setup();
+    render(<Example />);
+    await user.click(screen.getByRole("button", { name: "Actions" }));
+    const menu = await screen.findByRole("menu");
+    expect(menu).toHaveClass("sw-menu");
+    expect(menu.closest(".sw-popover")).not.toBeNull();
+    expect(screen.getAllByRole("menuitem")).toHaveLength(3);
+    expect(screen.getByRole("separator")).toHaveClass("sw-menu-separator");
+  });
+
+  it("reports the chosen item and closes", async () => {
+    const user = userEvent.setup();
+    const onAction = vi.fn();
+    render(<Example onAction={onAction} />);
+    await user.click(screen.getByRole("button", { name: "Actions" }));
+    await user.click(await screen.findByRole("menuitem", { name: "Duplicate" }));
+    // RAC 1.22.1 calls onAction(key, undefined), so assert on the key argument.
+    expect(onAction).toHaveBeenCalledTimes(1);
+    expect(onAction.mock.calls[0][0]).toBe("duplicate");
+  });
+
+  it("marks destructive items", async () => {
+    const user = userEvent.setup();
+    render(<Example />);
+    await user.click(screen.getByRole("button", { name: "Actions" }));
+    expect(await screen.findByRole("menuitem", { name: "Delete" })).toHaveAttribute("data-variant", "danger");
   });
 });
