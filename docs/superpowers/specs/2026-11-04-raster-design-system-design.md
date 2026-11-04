@@ -353,7 +353,12 @@ Built entirely with Raster. Astro + MDX, React islands only where interactive.
 - **Publishable ESM (before any npm release).** `tsc` emits extensionless relative imports, which work through bundlers only. Publishing needs `.js` import specifiers with `moduleResolution: "NodeNext"`, or a bundling build step.
 - **Shared overlay styles and theme-aware portal (done in Plan 3a).** `overlay.css` holds the popover, listbox, menu and overlay motion rules. `ThemeRegion` portals overlays into a host at the end of `<body>` that carries the region's effective theme and mode, so overlays escape transformed, clipped or stacked ancestors. Stacking uses the `--z-sticky`, `--z-modal` and `--z-toast` tokens.
 - **Overlay follow-ups (later).** Menu does not yet expose popover `offset` / `shouldFlip` or `SubmenuTrigger`. The shared `toastQueue` is created at import time, which is fine for static builds but is shared across server-rendered requests. `react-aria` and `react-aria-components` must stay pinned in lockstep, or `ThemeRegion` silently stops working.
-- **Link and React Aria (Plan 3).** `Link` is a native `<a>`. Breadcrumbs and in-menu links need a decision on wrapping React Aria's `Link`.
+- **Link and React Aria (done in Plan 3b).** `Link` wraps React Aria's `Link` (`onPress`, `isDisabled`, `aria-current`). Without an `href` it renders a focusable `span` with `role="link"`, which only makes sense with `onPress`.
+- **Docs site notes (Plan 4).**
+  - **Hydration:** React Aria components need client hydration in Astro, for example Tabs, Select, Dialog, Menu and Tooltip, so give them a `client:*` directive. Header, Link and Breadcrumbs work as server-rendered HTML.
+  - **Stylesheet order:** load `raster.css` before `motion.css`. Both declare the full layer order, so loading them out of order is safe.
+  - **Page transitions:** loading `motion.css` opts the whole site into cross-document page transitions (`@view-transition`). The `[data-motion="reduce"]` switch cannot turn these off; only the OS reduced-motion setting can.
+  - **Sticky header assumption:** `:root:has(.sw-header[data-sticky])` sets `scroll-padding` assuming the header is never taller than `--header-height`.
 - **Checkbox and Switch errors (later).** A standalone required `Checkbox` shows only a red border. React Aria's `CheckboxField` / `SwitchField` would add description and error slots.
 
 ## 12. Out of scope for version 1
