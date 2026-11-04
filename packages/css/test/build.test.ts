@@ -65,3 +65,37 @@ describe("layout: container and grid", () => {
     expect(css).toContain(".sw-grid[data-grid-debug]");
   });
 });
+
+describe("layout: stack and rule", () => {
+  it("stacks with a token gap that data-gap can change", () => {
+    expect(css).toMatch(/\.sw-stack\s*\{[^}]*gap:\s*var\(--stack-gap,\s*var\(--space-4\)\)/);
+    expect(css).toMatch(/\.sw-stack\[data-gap="?9"?\]\s*\{\s*--stack-gap:\s*var\(--space-9\)/);
+  });
+
+  it("draws hairline rules with strong and signal variants", () => {
+    expect(css).toMatch(/\.sw-rule\s*\{[^}]*border-block-start:\s*1px solid var\(--border\)/);
+    expect(css).toMatch(/\.sw-rule\[data-variant="?signal"?\][^{]*\{[^}]*var\(--brand-signal\)/);
+  });
+});
+
+describe("utilities", () => {
+  it("lives in the last layer", () => {
+    expect(css).toMatch(/@layer raster\.utilities\s*\{[\s\S]*\.sw-type-h1/);
+  });
+
+  it("offers every type step as a class", () => {
+    for (const step of ["display", "h1", "h2", "h3", "h4", "body", "caption", "label"]) {
+      expect(css).toContain(`.sw-type-${step}`);
+    }
+  });
+
+  it("caps the reading measure and offers screen-reader-only text", () => {
+    expect(css).toMatch(/\.sw-measure\s*\{[^}]*max-inline-size:\s*66ch/);
+    expect(css).toContain(".sw-sr-only");
+  });
+
+  it("offers block margin utilities for all nine spacing steps", () => {
+    expect(css).toMatch(/\.sw-mbs-1\s*\{\s*margin-block-start:\s*var\(--space-1\)/);
+    expect(css).toMatch(/\.sw-mbe-9\s*\{\s*margin-block-end:\s*var\(--space-9\)/);
+  });
+});
