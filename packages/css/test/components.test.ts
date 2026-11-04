@@ -417,3 +417,15 @@ describe("overlay review fixes", () => {
     );
   });
 });
+
+describe("link states", () => {
+  it("marks the current page with weight and a thick underline", () => {
+    const r = rule('.sw-link[aria-current="page"]');
+    expect(r).toMatch(/font-weight:\s*500/);
+    expect(r).toMatch(/text-decoration-thickness:\s*2px/);
+  });
+
+  it("mutes disabled links", () => {
+    expect(rule(".sw-link[data-disabled]")).toMatch(/color:\s*var\(--text-muted\)/);
+  });
+});

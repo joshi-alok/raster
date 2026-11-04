@@ -111,6 +111,24 @@ describe("Link", () => {
     );
     await expectAccessible(container);
   });
+
+  it("supports onPress and reports disabled links", async () => {
+    const user = userEvent.setup();
+    const onPress = vi.fn();
+    render(
+      <>
+        <Link href="/a" onPress={onPress}>
+          Pressable
+        </Link>
+        <Link href="/b" isDisabled>
+          Disabled
+        </Link>
+      </>,
+    );
+    await user.click(screen.getByText("Pressable"));
+    expect(onPress).toHaveBeenCalledTimes(1);
+    expect(screen.getByText("Disabled").closest(".sw-link")).toHaveAttribute("data-disabled");
+  });
 });
 
 describe("Link rel merging", () => {
