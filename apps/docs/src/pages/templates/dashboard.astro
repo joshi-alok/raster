@@ -1,0 +1,63 @@
+---
+import DataTable from "../../components/DataTable.astro";
+import DashboardActivity from "../../demos/templates/DashboardActivity";
+import Base from "../../layouts/Base.astro";
+
+const STATS = [
+  { label: "Active projects", value: "12", note: "2 more than last week" },
+  { label: "Proofs waiting", value: "3", note: "Oldest is 2 days old" },
+  { label: "Hours logged", value: "164", note: "Of 180 planned" },
+  { label: "Invoices due", value: "4", note: "1 overdue" },
+];
+
+const PROJECTS = [
+  { name: "Museum wayfinding", lead: "A. Keller", due: "12 Nov", tone: "success", status: "On track" },
+  { name: "Annual report", lead: "M. Rossi", due: "28 Nov", tone: "accent", status: "In review" },
+  { name: "Type specimen", lead: "L. Weber", due: "5 Dec", tone: "warning", status: "At risk" },
+  { name: "Signage refresh", lead: "J. Frei", due: "19 Dec", tone: "danger", status: "Blocked" },
+];
+---
+<Base title="Studio dashboard" description="Template: a dashboard with figures, a project table and tabbed activity.">
+  <div class="sw-grid" data-layout="hanging" data-page-grid>
+    <p class="sw-type-label sw-text-secondary">Template · Dashboard</p>
+    <div class="docs-content">
+      <h1>Studio dashboard</h1>
+      <p class="sw-text-secondary">Week 45 · Updated at 09:40</p>
+    </div>
+
+    <h2 class="sw-type-label sw-text-secondary">01 / Figures</h2>
+    <ul class="docs-stats">
+      {
+        STATS.map((s) => (
+          <li class="sw-card">
+            <span class="sw-type-label sw-text-secondary">{s.label}</span>
+            <span class="sw-type-h2">{s.value}</span>
+            <span class="sw-type-caption sw-text-secondary">{s.note}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <h2 class="sw-type-label sw-text-secondary">02 / Projects</h2>
+    <DataTable id="projects-caption" caption="Projects" columns={["Project", "Lead", "Due", "Status"]}>
+      {
+        PROJECTS.map((p) => (
+          <tr>
+            <td>{p.name}</td>
+            <td>{p.lead}</td>
+            <td>{p.due}</td>
+            <td>
+              <span class="sw-tag" data-tone={p.tone}>
+                {p.status}
+              </span>
+            </td>
+          </tr>
+        ))
+      }
+    </DataTable>
+
+    <h2 class="sw-type-label sw-text-secondary">03 / Activity</h2>
+    <!-- Astro islands are display: contents, so the wrapper is the grid item the hanging layout places. -->
+    <div><DashboardActivity client:load /></div>
+  </div>
+</Base>
