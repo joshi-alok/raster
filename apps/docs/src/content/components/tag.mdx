@@ -1,0 +1,24 @@
+---
+title: Tag
+group: Display
+order: 3
+summary: A short status or category label on a tinted, fully rounded background.
+props:
+  - name: tone
+    type: '"neutral" | "accent" | "success" | "warning" | "danger"'
+    default: '"neutral"'
+    description: Tint and text colour. Every tone's text passes 4.5:1 on its tint.
+  - name: className
+    type: string
+    description: Extra classes, added after sw-tag.
+a11y:
+  - The tag's words carry the meaning; the tone only reinforces it, so "Blocked" must say blocked.
+  - Tags are not interactive; use a Button or Link for actions.
+---
+import Example from "../../components/Example.astro";
+import Tones from "../../demos/tag/Tones";
+import tonesSource from "../../demos/tag/Tones.tsx?raw";
+
+<Example title="Tones" source={tonesSource} of={Tones}>
+  <Tones />
+</Example>
