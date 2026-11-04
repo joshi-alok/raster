@@ -19,6 +19,11 @@ describe("ariaCurrent", () => {
     expect(ariaCurrent("/components/", item("Principles"))).toBeUndefined();
   });
 
+  it("has a Templates section", () => {
+    expect(ariaCurrent("/templates/", item("Templates"))).toBe("page");
+    expect(ariaCurrent("/templates/article/", item("Templates"))).toBe("true");
+  });
+
   it("tolerates a missing trailing slash", () => {
     expect(ariaCurrent("/foundations/type", FOUNDATIONS[1])).toBe("page");
   });
