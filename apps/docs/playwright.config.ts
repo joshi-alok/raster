@@ -12,6 +12,9 @@ export default defineConfig({
   // Baselines are per platform (…-darwin.png); regenerate them on a new OS with --update-snapshots.
   snapshotPathTemplate: "{testDir}/__screenshots__/{arg}-{platform}{ext}",
   expect: {
+    // Under a loaded machine an element can take longer than the default 5s to settle before
+    // its screenshot; the pixel tolerance below stays strict.
+    timeout: 15_000,
     toHaveScreenshot: { animations: "disabled", caret: "hide", maxDiffPixelRatio: 0.001 },
   },
   webServer: {

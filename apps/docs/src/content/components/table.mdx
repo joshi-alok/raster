@@ -2,7 +2,7 @@
 title: Table
 group: Display
 order: 2
-summary: A data table with a required caption, set in tabular figures, that scrolls inside its own region on small screens.
+summary: A data table with a required caption that scrolls inside its own region on small screens; numeric cells use tabular figures.
 props:
   - name: caption
     type: ReactNode
@@ -21,6 +21,7 @@ a11y:
   - The caption names both the table and the scrollable region around it.
   - The region is focusable, so keyboard users can scroll wide tables; the page itself never scrolls sideways.
   - Give header cells scope="col" or scope="row".
+  - Mark number cells with data-numeric to align them at the end in tabular mono figures.
 ---
 import Example from "../../components/Example.astro";
 import Projects from "../../demos/table/Projects";

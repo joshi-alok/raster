@@ -12,8 +12,8 @@ props:
     type: Key
     description: Controlled or initial selected item id.
   - name: onChange
-    type: "(key: Key) => void"
-    description: Called with the new selection.
+    type: "(key: Key | null) => void"
+    description: Called with the new selection (null when it is cleared).
   - name: description / errorMessage
     type: ReactNode
     description: As on TextField.

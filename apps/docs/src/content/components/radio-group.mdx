@@ -20,13 +20,13 @@ props:
   - name: orientation
     type: '"vertical" | "horizontal"'
     default: '"vertical"'
-    description: Direction of the arrow-key navigation.
+    description: Lays the options out in a column or a wrapping row; all arrow keys move between options either way.
   - name: Radio value
     type: string
     description: Required on each Radio.
 a11y:
   - The group is one tab stop; arrow keys move between options and select them.
-  - The selected option shows a filled dot, not only a colour change.
+  - The selected option shows a thick ring, not only a colour change, and it survives forced-colours mode.
   - Use a Select instead when there are more than about five options.
 ---
 import Example from "../../components/Example.astro";

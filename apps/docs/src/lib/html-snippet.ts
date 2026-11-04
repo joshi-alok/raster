@@ -8,7 +8,12 @@ const GENERATED_ID = /(?:react-aria-)?«[^»]*»/g;
 const isGenerated = (id: string) => /^(?:react-aria-)?«[^»]*»$/.test(id);
 /** React Aria's VisuallyHidden inline style. */
 const VISUALLY_HIDDEN = /style="border:0;clip:rect\(0 0 0 0\);clip-path:inset\(50%\);[^"]*"/g;
-const REFERENCES = / (aria-labelledby|aria-describedby|aria-controls|for)="([^"]*)"/g;
+/** Attributes whose value is a list of ids. */
+const REFERENCES =
+  / (aria-labelledby|aria-describedby|aria-controls|aria-errormessage|aria-owns|aria-details|aria-activedescendant|for)="([^"]*)"/g;
+/** Every attribute that can hold a generated id: renaming happens only inside these, never in text. */
+const ID_ATTRIBUTES =
+  / (id|name|aria-labelledby|aria-describedby|aria-controls|aria-errormessage|aria-owns|aria-details|aria-activedescendant|for)="([^"]*)"/g;
 
 /**
  * Reduces server-rendered React markup to the @raster/css class contract:
@@ -40,10 +45,11 @@ export function cleanMarkup(raw: string): string {
   html = html.replace(/ id="([^"]*)"/g, (whole, id: string) => (isGenerated(id) && !referenced.has(id) ? "" : whole));
 
   const names = new Map<string, string>();
-  return html.replace(GENERATED_ID, (token) => {
+  const rename = (token: string) => {
     if (!names.has(token)) names.set(token, `id-${names.size + 1}`);
     return names.get(token)!;
-  });
+  };
+  return html.replace(ID_ATTRIBUTES, (_whole, name: string, value: string) => ` ${name}="${value.replace(GENERATED_ID, rename)}"`);
 }
 
 /** The HTML a static demo renders, cleaned (see cleanMarkup) and formatted as a snippet. */

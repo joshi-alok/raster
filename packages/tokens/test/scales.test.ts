@@ -30,8 +30,16 @@ describe.each([alpine, zurich])("$name scales", (theme) => {
       expect(light(`${status}-subtle`)).toBe(h["100"]);
       expect(light(`on-${status}-subtle`)).toBe(h["900"]);
       expect(dark(`${status}-subtle`)).toBe(h["900"]);
+      // In dark mode, text on a tint is the role colour itself (spec §5, "-subtle mapping").
+      expect(dark(`on-${status}-subtle`)).toBe(dark(status));
     },
   );
+
+  it("takes the light-mode brand signal from the 500 stop of its hue", () => {
+    // Alpine signals in glacier (its accent hue); Zürich in signal red (its danger hue).
+    const hue = theme.name === "alpine" ? hues.accent : hues.danger;
+    expect(light("brand-signal")).toBe(scales[hue]["500"]);
+  });
 
   it("stores only known stops as six-digit hex", () => {
     for (const stops of Object.values(scales)) {

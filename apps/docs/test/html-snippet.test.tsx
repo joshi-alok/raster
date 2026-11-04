@@ -90,6 +90,17 @@ describe("cleanMarkup", () => {
     expect(cleanMarkup('<div tabindex="0" role="region" aria-label="Code">x</div>')).toContain('tabindex="0"');
   });
 
+  it("never rewrites guillemets in text or other attributes", () => {
+    const html = cleanMarkup('<p title="«Titel»">«Weniger, aber besser»</p><p id="«R1»" aria-describedby="«R1»">x</p>');
+    expect(html).toContain('<p title="«Titel»">«Weniger, aber besser»</p>');
+    expect(html).toContain('<p id="id-1" aria-describedby="id-1">');
+  });
+
+  it("keeps targets of every id-reference attribute", () => {
+    const html = cleanMarkup('<input aria-errormessage="react-aria-«R3»" /><span id="react-aria-«R3»">Error</span>');
+    expect(html).toBe('<input aria-errormessage="id-1" /><span id="id-1">Error</span>');
+  });
+
   it("keeps author ids and renames only generated ones", () => {
     const html = cleanMarkup(
       '<h3 id="title">T</h3><section aria-labelledby="title"></section><p id="react-aria-«R1»">x</p><table aria-labelledby="«R2»"><caption id="«R2»">c</caption></table>',

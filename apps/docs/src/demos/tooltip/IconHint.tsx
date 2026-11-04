@@ -7,7 +7,7 @@ export default function IconHint() {
       <IconButton label="Duplicate">
         <Copy aria-hidden="true" strokeWidth={1.5} />
       </IconButton>
-      <Tooltip>Duplicate (D)</Tooltip>
+      <Tooltip>Duplicate the selected project</Tooltip>
     </TooltipTrigger>
   );
 }

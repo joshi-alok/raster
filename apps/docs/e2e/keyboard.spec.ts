@@ -53,22 +53,34 @@ test("tooltip: appears on keyboard focus and hides on Escape", async ({ page }) 
   await waitForIslands(page);
   await tabTo(page, page.getByRole("button", { name: "Duplicate" }));
   const tip = page.getByRole("tooltip");
-  await expect(tip).toHaveText("Duplicate (D)");
+  await expect(tip).toHaveText("Duplicate the selected project");
   await page.keyboard.press("Escape");
   await expect(tip).toHaveCount(0);
 });
 
-test("toast: an action announces a toast that can be dismissed", async ({ page }) => {
+test("toast: announced with its tone, reached with F6 and dismissed from the keyboard", async ({ page }) => {
   await page.goto("/components/toast/");
   await waitForIslands(page);
-  await tabTo(page, page.getByRole("button", { name: "Save changes" }));
+  // The error toast has no timeout, so it cannot expire mid-test.
+  const trigger = page.getByRole("button", { name: "Simulate an error" });
+  await tabTo(page, trigger);
   await page.keyboard.press("Enter");
   const toast = page.locator(".sw-toast");
   await expect(toast).toHaveCount(1);
-  await expect(toast).toContainText("Saved");
+  await expect(toast).toContainText("Error: Connection lost");
   await expectNoViolations(page, ".sw-toast-region");
-  await toast.getByRole("button", { name: "Dismiss" }).click();
+
+  await page.keyboard.press("F6");
+  const region = page.locator(".sw-toast-region");
+  await expect.poll(() => region.evaluate((r) => r.contains(document.activeElement))).toBe(true);
+  const dismiss = toast.getByRole("button", { name: "Dismiss" });
+  for (let i = 0; i < 4 && !(await dismiss.evaluate((el) => el === document.activeElement)); i++) {
+    await page.keyboard.press("Tab");
+  }
+  await expect(dismiss).toBeFocused();
+  await page.keyboard.press("Enter");
   await expect(toast).toHaveCount(0);
+  await expect(trigger).toBeFocused();
 });
 
 test("tabs: one tab stop, arrows select, disabled tabs are skipped", async ({ page }) => {
@@ -80,8 +92,13 @@ test("tabs: one tab stop, arrows select, disabled tabs are skipped", async ({ pa
   await expect(list.getByRole("tab", { name: "Type" })).toHaveAttribute("aria-selected", "true");
   await expect(page.getByRole("tabpanel", { name: "Type" })).toContainText("Geist");
   await page.keyboard.press("ArrowRight");
+  await expect(list.getByRole("tab", { name: "Colour" })).toBeFocused();
+  // The next tab, Motion, is disabled: focus must skip it.
   await page.keyboard.press("ArrowRight");
-  await expect(list.getByRole("tab", { name: "Motion" })).not.toHaveAttribute("aria-selected", "true");
+  await expect(list.getByRole("tab", { name: "Motion" })).not.toBeFocused();
+  await expect(list.getByRole("tab", { name: "Grid" })).toBeFocused();
+  await expect(list.getByRole("tab", { name: "Grid" })).toHaveAttribute("aria-selected", "true");
+  // Tab leaves the list for the selected panel.
   await page.keyboard.press("Tab");
-  expect(await list.evaluate((l) => l.contains(document.activeElement))).toBe(false);
+  await expect(page.getByRole("tabpanel", { name: "Grid" })).toBeFocused();
 });

@@ -25,6 +25,7 @@ props:
 a11y:
   - A native checkbox input carries the state, visually hidden behind the drawn box, so the whole label is clickable.
   - Checked and indeterminate states show a tick or a dash, not just a fill colour.
+  - The mixed state lives only on the input's indeterminate property, which HTML has no attribute for; without @raster/react, set it from script.
   - Space toggles it; a standalone required checkbox shows only a danger border when invalid, so explain the requirement in nearby text.
 ---
 import Example from "../../components/Example.astro";
