@@ -483,9 +483,9 @@ describe("header", () => {
     );
   });
 
-  it("hides the skip link off-screen until it is focused", () => {
-    expect(rule(".sw-skip-link")).toMatch(/transform:\s*translateY\(/);
-    expect(rule(".sw-skip-link:focus")).toMatch(/transform:\s*none/);
+  it("clips the skip link to nothing until it is focused, wherever the header sits", () => {
+    expect(rule(".sw-skip-link:not(:focus)")).toMatch(/clip-path:\s*inset\(50%\)/);
+    expect(rule(".sw-skip-link")).not.toMatch(/transform/);
   });
 
   it("marks the current nav item with weight and underline", () => {
