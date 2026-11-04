@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { waitForIslands } from "./islands";
 
 const columnCount = (page: import("@playwright/test").Page, selector: string) =>
   page.locator(selector).evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(" ").length);
@@ -53,5 +54,27 @@ test.describe("colour", () => {
     const before = await accent.evaluate((el) => getComputedStyle(el).backgroundColor);
     await page.getByRole("group", { name: "Theme" }).getByRole("button", { name: "Zürich" }).click();
     await expect.poll(() => accent.evaluate((el) => getComputedStyle(el).backgroundColor)).not.toBe(before);
+  });
+});
+
+test.describe("motion", () => {
+  test("the overlay demo can be replayed", async ({ page }) => {
+    await page.goto("/foundations/motion/");
+    await waitForIslands(page);
+    for (let i = 0; i < 2; i++) {
+      await page.getByRole("button", { name: "Open dialog" }).click();
+      await expect(page.getByRole("dialog", { name: "Overlay motion" })).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(page.getByRole("dialog")).toHaveCount(0);
+    }
+  });
+
+  test("reveals run by default and stop when motion is reduced", async ({ page }) => {
+    await page.goto("/foundations/motion/");
+    const card = page.locator(".sw-reveal[data-stagger] > *").first();
+    const animation = () => card.evaluate((el) => getComputedStyle(el).animationName);
+    await expect.poll(animation).toBe("sw-reveal-in");
+    await page.getByRole("group", { name: "Motion" }).getByRole("button", { name: "Reduced" }).click();
+    await expect.poll(animation).toBe("none");
   });
 });

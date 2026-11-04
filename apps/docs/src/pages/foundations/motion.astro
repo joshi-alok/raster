@@ -1,0 +1,84 @@
+---
+import { foundationTokens } from "@raster/tokens";
+import CodeBlock from "../../components/CodeBlock.astro";
+import DataTable from "../../components/DataTable.astro";
+import FoundationsNav from "../../components/FoundationsNav.astro";
+import OverlayMotion from "../../demos/motion/OverlayMotion";
+import DocPage from "../../layouts/DocPage.astro";
+
+const tokens = Object.entries(foundationTokens()).filter(([name]) => /^(dur|ease)-/.test(name));
+const USES: Record<string, string> = {
+  "dur-fast": "Hover and press",
+  "dur-base": "Overlays",
+  "dur-slow": "Panels",
+  "dur-layout": "Layout changes",
+  "ease-standard": "Everything that moves",
+  "ease-linear": "Opacity",
+};
+
+const REVEAL_HTML = `<link rel="stylesheet" href="@raster/css/motion.css" />
+
+<div class="sw-reveal" data-stagger>
+  <div class="sw-card">One</div>
+  <div class="sw-card">Two</div>
+  <div class="sw-card">Three</div>
+</div>`;
+---
+<DocPage
+  title="Motion"
+  eyebrow="Foundations"
+  description="Calm by default, expressive on request. Movement runs only along the grid's axes, never bounces, and switches off for people who ask for less."
+>
+  <FoundationsNav slot="aside" />
+
+  <h2>Tokens</h2>
+  <DataTable id="motion-caption" caption="Motion tokens" columns={["Token", "Value", "Use"]}>
+    {
+      tokens.map(([name, value]) => (
+        <tr>
+          <td><code>--{name}</code></td>
+          <td><code>{value}</code></td>
+          <td>{USES[name] ?? ""}</td>
+        </tr>
+      ))
+    }
+  </DataTable>
+
+  <h2>Core: overlays</h2>
+  <p class="sw-measure">
+    Shipped in <code>raster.css</code>: overlays fade and travel at most 8px from their placement.
+    Open the dialog or the tooltip again to replay it.
+  </p>
+  <div class="docs-example">
+    <div class="docs-example-demo"><OverlayMotion client:load /></div>
+  </div>
+
+  <h2>Expressive: scroll reveals</h2>
+  <p class="sw-measure">
+    Opt in with <code>motion.css</code>. Children of a staggered reveal fade and rise one after
+    another as they scroll into view, driven by CSS scroll timelines with no JavaScript. Browsers
+    without scroll-driven animations show the content at once.
+  </p>
+  <div class="sw-reveal docs-reveal-demo" data-stagger>
+    {["One", "Two", "Three", "Four", "Five", "Six"].map((n) => <div class="sw-card"><p>{n}</p></div>)}
+  </div>
+  <CodeBlock code={REVEAL_HTML} label="Reveal markup" />
+
+  <h2>Expressive: weight shift and page transitions</h2>
+  <p class="sw-measure">
+    <code>.sw-weight-shift</code> eases Geist's variable weight on hover and focus. With
+    <code>motion.css</code> loaded, moving between pages of this site cross-fades using the View
+    Transitions API.
+  </p>
+  <div>
+    <button type="button" class="sw-button sw-weight-shift" data-variant="ghost">Hover or focus me</button>
+  </div>
+
+  <h2>Reduced motion</h2>
+  <p class="sw-measure">
+    With <code>prefers-reduced-motion: reduce</code>, or <code>data-motion="reduce"</code> on an
+    ancestor, transforms are removed, fades are capped at 120ms and the expressive tier is off. Page
+    transitions follow only the operating-system setting. Try <strong>Motion: Reduced</strong> in the
+    display settings below.
+  </p>
+</DocPage>
