@@ -1,11 +1,14 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { X } from "lucide-react";
 import { Button } from "../src/actions/Button";
+import { IconButton } from "../src/actions/IconButton";
 import { Dialog, DialogTrigger } from "../src/overlays/Dialog";
 import { Menu, MenuItem, MenuSeparator, MenuTrigger } from "../src/overlays/Menu";
 import { expectAccessible } from "./axe";
 import { Select, SelectItem } from "../src/forms/Select";
+import { Tooltip, TooltipTrigger } from "../src/overlays/Tooltip";
 import { ThemeRegion } from "../src/overlays/ThemeRegion";
 
 describe("ThemeRegion", () => {
@@ -167,5 +170,40 @@ describe("Menu", () => {
     render(<Example />);
     await user.click(screen.getByRole("button", { name: "Actions" }));
     expect(await screen.findByRole("menuitem", { name: "Delete" })).toHaveAttribute("data-variant", "danger");
+  });
+});
+
+describe("Tooltip", () => {
+  it("appears on keyboard focus and describes its trigger", async () => {
+    const user = userEvent.setup();
+    render(
+      <TooltipTrigger>
+        <IconButton label="Close">
+          <X />
+        </IconButton>
+        <Tooltip>Close panel (Esc)</Tooltip>
+      </TooltipTrigger>,
+    );
+    await user.tab();
+    const tip = await screen.findByRole("tooltip");
+    expect(tip).toHaveClass("sw-tooltip");
+    expect(tip).toHaveTextContent("Close panel (Esc)");
+    expect(screen.getByRole("button", { name: "Close" })).toHaveAccessibleDescription("Close panel (Esc)");
+  });
+
+  it("hides on Escape", async () => {
+    const user = userEvent.setup();
+    render(
+      <TooltipTrigger>
+        <IconButton label="Close">
+          <X />
+        </IconButton>
+        <Tooltip>Close panel</Tooltip>
+      </TooltipTrigger>,
+    );
+    await user.tab();
+    await screen.findByRole("tooltip");
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("tooltip")).toBeNull();
   });
 });

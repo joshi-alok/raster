@@ -21,3 +21,4 @@
 @import "./components/select.css" layer(raster.components);
 @import "./components/theme-region.css" layer(raster.components);
 @import "./components/modal.css" layer(raster.components);
+@import "./components/tooltip.css" layer(raster.components);

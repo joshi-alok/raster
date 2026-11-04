@@ -368,3 +368,15 @@ describe("modal dialog", () => {
     expect(rule(".sw-modal-overlay[data-exiting]")).toMatch(/animation:\s*sw-overlay-out/);
   });
 });
+
+describe("tooltip", () => {
+  it("inverts the page colours for a compact, high-contrast label", () => {
+    // overlay.css already has a grouped `.sw-popover, .sw-tooltip` rule, so rule() would return that
+    // one; match the tooltip.css rule by a declaration unique to it.
+    const r = css.match(/(?:^|[}\s])\.sw-tooltip\s*\{([^}]*max-inline-size[^}]*)\}/)?.[1] ?? "";
+    expect(r).toMatch(/background-color:\s*var\(--text-primary\)/);
+    expect(r).toMatch(/color:\s*var\(--surface-page\)/);
+    expect(r).toMatch(/font-size:\s*var\(--text-caption-size\)/);
+    expect(r).toMatch(/max-inline-size:\s*16rem/);
+  });
+});

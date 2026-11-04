@@ -1,0 +1,13 @@
+/* Inverted colours: text-primary on surface-page contrast is already verified by the token build. */
+.sw-tooltip {
+  max-inline-size: 16rem;
+  padding-block: var(--space-1);
+  padding-inline: var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background-color: var(--text-primary);
+  color: var(--surface-page);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-leading);
+  box-shadow: var(--shadow-overlay);
+}
