@@ -36,3 +36,22 @@ test.describe("type", () => {
     await expect.poll(async () => Math.round(await fontSize())).toBe(33);
   });
 });
+
+test.describe("colour", () => {
+  test("shows four contrast tables of 32 pairings, all passing", async ({ page }) => {
+    await page.goto("/foundations/colour/");
+    const tables = page.getByRole("table", { name: /contrast$/ });
+    await expect(tables).toHaveCount(4);
+    // 7 text roles × 3 surfaces + border-strong × 3 surfaces + 4 statuses × (fill + tint).
+    for (let i = 0; i < 4; i++) await expect(tables.nth(i).locator("tbody tr")).toHaveCount(32);
+    await expect(page.locator("td", { hasText: "Fails" })).toHaveCount(0);
+  });
+
+  test("swatches follow the current theme", async ({ page }) => {
+    await page.goto("/foundations/colour/");
+    const accent = page.locator('[data-role="accent"] .docs-swatch');
+    const before = await accent.evaluate((el) => getComputedStyle(el).backgroundColor);
+    await page.getByRole("group", { name: "Theme" }).getByRole("button", { name: "Zürich" }).click();
+    await expect.poll(() => accent.evaluate((el) => getComputedStyle(el).backgroundColor)).not.toBe(before);
+  });
+});
