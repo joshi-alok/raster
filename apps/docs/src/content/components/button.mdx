@@ -1,0 +1,44 @@
+---
+title: Button
+group: Actions
+order: 1
+summary: Triggers an action. Secondary is the default; use at most one primary per view.
+interactive: true
+props:
+  - name: variant
+    type: '"primary" | "secondary" | "ghost" | "danger"'
+    default: '"secondary"'
+    description: Visual weight. Danger is for destructive actions only.
+  - name: onPress
+    type: "(event: PressEvent) => void"
+    description: Called on mouse, touch, keyboard and screen reader activation. Use it instead of onClick.
+  - name: isDisabled
+    type: boolean
+    default: "false"
+    description: Disables the button and removes it from the tab order.
+  - name: type
+    type: '"button" | "submit" | "reset"'
+    default: '"button"'
+    description: Form behaviour, as on a native button.
+  - name: className
+    type: string
+    description: Extra classes, added after sw-button.
+a11y:
+  - Renders a native button, so Enter and Space activate it and it is announced as a button.
+  - Variants differ in fill, border and weight, not only in colour, and stay distinct in forced-colours mode.
+  - The control is 40px tall and its hit area is padded to at least 44px (WCAG 2.5.8).
+  - Disabled buttons cannot be focused. If people need to learn why an action is unavailable, keep the button enabled and explain on press.
+---
+import Example from "../../components/Example.astro";
+import Variants from "../../demos/button/Variants";
+import variantsSource from "../../demos/button/Variants.tsx?raw";
+import Disabled from "../../demos/button/Disabled";
+import disabledSource from "../../demos/button/Disabled.tsx?raw";
+
+<Example title="Variants" source={variantsSource} of={Variants}>
+  <Variants />
+</Example>
+
+<Example title="Disabled" source={disabledSource} of={Disabled}>
+  <Disabled />
+</Example>

@@ -1,0 +1,21 @@
+---
+import DataTable from "./DataTable.astro";
+
+interface Props {
+  title: string;
+  props: { name: string; type: string; default?: string; description: string }[];
+}
+const { title, props } = Astro.props;
+---
+<DataTable id="props-caption" caption={`${title} props`} columns={["Prop", "Type", "Default", "Description"]}>
+  {
+    props.map((p) => (
+      <tr>
+        <td><code>{p.name}</code></td>
+        <td><code>{p.type}</code></td>
+        <td>{p.default ? <code>{p.default}</code> : "—"}</td>
+        <td>{p.description}</td>
+      </tr>
+    ))
+  }
+</DataTable>

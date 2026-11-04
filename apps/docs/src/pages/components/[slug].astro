@@ -1,0 +1,50 @@
+---
+import { getCollection, render } from "astro:content";
+import PropsTable from "../../components/PropsTable.astro";
+import DocPage from "../../layouts/DocPage.astro";
+import { componentHref, neighbours, sortComponents } from "../../lib/components";
+
+export async function getStaticPaths() {
+  const entries = sortComponents(await getCollection("components"));
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry, ...neighbours(entries, entry.id) },
+  }));
+}
+
+const { entry, previous, next } = Astro.props;
+const { Content } = await render(entry);
+const { title, group, summary, interactive, props, a11y } = entry.data;
+---
+<DocPage title={title} description={summary} eyebrow={group}>
+  <nav slot="before-title" aria-label="Breadcrumbs">
+    <ol class="sw-breadcrumbs">
+      <li class="sw-breadcrumb">
+        <a class="sw-link" href="/components/">Components</a>
+        <span class="sw-breadcrumb-separator" aria-hidden="true">/</span>
+      </li>
+      <li class="sw-breadcrumb"><span class="sw-link" aria-current="page">{title}</span></li>
+    </ol>
+  </nav>
+  {
+    interactive && (
+      <p slot="aside" class="sw-type-caption sw-text-secondary">
+        Interactive. In Astro, render it inside a React island with a <code>client:*</code> directive.
+      </p>
+    )
+  }
+
+  <h2>Examples</h2>
+  <Content />
+
+  <h2>Props</h2>
+  <PropsTable title={title} props={props} />
+
+  <h2>Accessibility</h2>
+  <ul class="sw-measure">{a11y.map((note) => <li>{note}</li>)}</ul>
+
+  <nav class="docs-pager" aria-label="Previous and next component">
+    {previous && <a class="sw-link" href={componentHref(previous.id)} rel="prev">Previous: {previous.data.title}</a>}
+    {next && <a class="sw-link" href={componentHref(next.id)} rel="next">Next: {next.data.title}</a>}
+  </nav>
+</DocPage>
