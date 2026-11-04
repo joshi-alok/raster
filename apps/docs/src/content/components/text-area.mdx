@@ -1,0 +1,32 @@
+---
+title: TextArea
+group: Forms
+order: 3
+summary: A multi-line text input with its label, description and error.
+interactive: true
+props:
+  - name: label
+    type: ReactNode
+    description: Required. The visible label.
+  - name: rows
+    type: number
+    description: Initial height in lines. Users can resize vertically.
+  - name: description / errorMessage
+    type: ReactNode
+    description: As on TextField.
+  - name: value / defaultValue
+    type: string
+    description: Controlled or initial value.
+  - name: onChange
+    type: "(value: string) => void"
+    description: Called with the new value.
+a11y:
+  - Behaves like TextField; Enter inserts a new line instead of submitting the form.
+---
+import Example from "../../components/Example.astro";
+import Basic from "../../demos/text-area/Basic";
+import basicSource from "../../demos/text-area/Basic.tsx?raw";
+
+<Example title="Brief" source={basicSource} of={Basic}>
+  <Basic client:load />
+</Example>

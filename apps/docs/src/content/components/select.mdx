@@ -1,0 +1,43 @@
+---
+title: Select
+group: Forms
+order: 4
+summary: Picks one option from a list that opens in a popover, themed with its surroundings.
+interactive: true
+props:
+  - name: label
+    type: ReactNode
+    description: Required. The visible label.
+  - name: value / defaultValue
+    type: Key
+    description: Controlled or initial selected item id.
+  - name: onChange
+    type: "(key: Key) => void"
+    description: Called with the new selection.
+  - name: description / errorMessage
+    type: ReactNode
+    description: As on TextField.
+  - name: items
+    type: Iterable<T>
+    description: Dynamic items; children is then a function of each item.
+  - name: isRequired / isDisabled / isInvalid
+    type: boolean
+    default: "false"
+    description: Validation and availability states.
+  - name: SelectItem id
+    type: Key
+    description: Required on each SelectItem. The value reported on selection.
+a11y:
+  - The trigger is a button that announces its label and current value; Enter, Space or the arrow keys open the list.
+  - In the list, arrow keys move, typing jumps to a match, Enter selects and Escape closes, returning focus to the trigger.
+  - Inside a ThemeRegion the list opens in the region's theme and mode.
+---
+import Example from "../../components/Example.astro";
+import Basic from "../../demos/select/Basic";
+import basicSource from "../../demos/select/Basic.tsx?raw";
+
+Select needs @raster/react for its behaviour, so this page shows only the React snippet.
+
+<Example title="Theme" source={basicSource}>
+  <Basic client:load />
+</Example>
