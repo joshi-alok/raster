@@ -22,3 +22,17 @@ test.describe("grid and spacing", () => {
     await expect(nav.getByRole("link", { name: "Grid and spacing" })).toHaveAttribute("aria-current", "page");
   });
 });
+
+test.describe("type", () => {
+  test("shows eight specimens; the h1 step is 42px at 1440 and 33px at 360", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/foundations/type/");
+    await expect(page.locator(".docs-specimen")).toHaveCount(8);
+    const h1 = page.locator(".docs-specimen .sw-type-h1");
+    // The fluid clamp() resolves to 41.9995px at 1440px, so compare to the nearest pixel.
+    const fontSize = () => h1.evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+    expect(Math.round(await fontSize())).toBe(42);
+    await page.setViewportSize({ width: 360, height: 800 });
+    await expect.poll(async () => Math.round(await fontSize())).toBe(33);
+  });
+});

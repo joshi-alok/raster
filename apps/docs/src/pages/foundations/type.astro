@@ -1,0 +1,59 @@
+---
+import { TYPE_STEPS } from "@raster/tokens";
+import CodeBlock from "../../components/CodeBlock.astro";
+import FoundationsNav from "../../components/FoundationsNav.astro";
+import DocPage from "../../layouts/DocPage.astro";
+
+const steps = Object.entries(TYPE_STEPS).map(([name, step]) => ({
+  name,
+  size: step.min === step.max ? `${step.min}px` : `${step.min}–${step.max}px`,
+  ...step,
+}));
+
+const HEADING_REACT = `<Heading level={2} size="h4">Level 2 in the outline, h4 on screen</Heading>`;
+const HEADING_HTML = `<h2 class="sw-type-h4">Level 2 in the outline, h4 on screen</h2>`;
+---
+<DocPage
+  title="Type"
+  eyebrow="Foundations"
+  description="Geist in a short, light scale: sizes interpolate between 360px and 1440px screens, and headings stay smaller than habit suggests."
+>
+  <FoundationsNav slot="aside" />
+
+  <h2>Scale</h2>
+  <div>
+    {
+      steps.map((step) => (
+        <div class="docs-specimen">
+          <p class="sw-type-label sw-text-secondary">
+            {step.name} · {step.size} · weight {step.weight} · tracking {step.tracking} · leading {step.leading}
+          </p>
+          <p class={`sw-type-${step.name}`}>Raster und Raum</p>
+        </div>
+      ))
+    }
+  </div>
+
+  <h2>Level and size are separate</h2>
+  <p class="sw-measure">
+    The heading level describes the document outline; the size describes its visual weight. Choose
+    the level for structure and the size for the design, and never skip a level to get a smaller look.
+  </p>
+  <CodeBlock code={HEADING_REACT} label="Heading in React" />
+  <CodeBlock code={HEADING_HTML} label="Heading in HTML" />
+
+  <h2>Typefaces</h2>
+  <ul class="sw-measure">
+    <li>Geist (variable) for text and headings; weights 300 to 500 only.</li>
+    <li>Geist Mono for labels, numbers in tables and code.</li>
+    <li>Noto Sans as the fallback for scripts Geist does not cover.</li>
+  </ul>
+
+  <h2>Rules</h2>
+  <ul class="sw-measure">
+    <li>Flush left, ragged right; never justified.</li>
+    <li>Body text holds a 66-character measure (<code>.sw-measure</code>).</li>
+    <li>Hyphenation follows the page's <code>lang</code> attribute.</li>
+    <li>Line heights round to a 4px rhythm where the browser supports <code>round()</code>.</li>
+  </ul>
+</DocPage>
