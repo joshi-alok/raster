@@ -1,0 +1,17 @@
+---
+import { ariaCurrent, FOUNDATIONS } from "../lib/nav";
+const path = Astro.url.pathname;
+---
+<nav class="docs-local-nav" aria-label="Foundations">
+  <ul>
+    {
+      FOUNDATIONS.map((item) => (
+        <li>
+          <a class="sw-link" href={item.href} aria-current={ariaCurrent(path, item)}>
+            {item.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
