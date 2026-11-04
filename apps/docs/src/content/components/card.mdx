@@ -1,0 +1,24 @@
+---
+title: Card
+group: Display
+order: 1
+summary: A flat, hairline-bordered surface that groups related content; no shadow.
+props:
+  - name: as
+    type: ElementType
+    default: '"div"'
+    description: Element to render, for example "article" or "li".
+  - name: className
+    type: string
+    description: Extra classes, added after sw-card.
+a11y:
+  - A card adds no semantics. Render it as article when it stands alone, or as li inside a list of cards.
+  - Keep one real link or button per card rather than making the whole card clickable, so screen readers announce a clear name.
+---
+import Example from "../../components/Example.astro";
+import Basic from "../../demos/card/Basic";
+import basicSource from "../../demos/card/Basic.tsx?raw";
+
+<Example title="Case study" source={basicSource} of={Basic}>
+  <Basic />
+</Example>

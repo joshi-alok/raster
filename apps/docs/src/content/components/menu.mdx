@@ -1,0 +1,39 @@
+---
+title: Menu
+group: Overlay and navigation
+order: 2
+summary: A list of actions that opens from a button in a popover.
+interactive: true
+props:
+  - name: onAction
+    type: "(key: Key) => void"
+    description: Called with the id of the activated item.
+  - name: placement
+    type: Placement
+    default: '"bottom start"'
+    description: Where the popover opens relative to the trigger; it flips when there is no room.
+  - name: MenuItem id
+    type: Key
+    description: Identifies the item in onAction.
+  - name: MenuItem variant
+    type: '"default" | "danger"'
+    default: '"default"'
+    description: Danger items are for destructive actions; their text must say so.
+  - name: MenuSeparator
+    type: component
+    description: A hairline between groups of items.
+  - name: MenuTrigger
+    type: component
+    description: Wraps the trigger Button and the Menu.
+a11y:
+  - Enter, Space or the arrow keys open the menu; arrow keys move, typing jumps to an item, Enter activates.
+  - Escape closes the menu and returns focus to the trigger.
+  - Use a menu for actions, not for navigation between pages.
+---
+import Example from "../../components/Example.astro";
+import Actions from "../../demos/menu/Actions";
+import actionsSource from "../../demos/menu/Actions.tsx?raw";
+
+<Example title="Actions" source={actionsSource}>
+  <Actions client:load />
+</Example>

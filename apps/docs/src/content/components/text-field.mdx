@@ -1,0 +1,45 @@
+---
+title: TextField
+group: Forms
+order: 2
+summary: A single-line text input with its label, description and error.
+interactive: true
+props:
+  - name: label
+    type: ReactNode
+    description: Required. The visible label.
+  - name: description
+    type: ReactNode
+    description: Help text below the input.
+  - name: errorMessage
+    type: ReactNode
+    description: Shown when the field is invalid (isInvalid or failed validation).
+  - name: type
+    type: '"text" | "email" | "password" | "search" | "tel" | "url"'
+    default: '"text"'
+    description: Input type; sets the keyboard on touch devices.
+  - name: value / defaultValue
+    type: string
+    description: Controlled or initial value.
+  - name: onChange
+    type: "(value: string) => void"
+    description: Called with the new value.
+  - name: isRequired / isInvalid / isDisabled
+    type: boolean
+    default: "false"
+    description: Validation and availability states.
+  - name: placeholder
+    type: string
+    description: An example value. Never a substitute for the label.
+a11y:
+  - The label is a real label element tied to the input.
+  - Required fields are marked with the required attribute; say "required" in the label or description when it matters.
+  - The 40px input keeps a visible border-strong outline (3:1) and a 2px accent focus ring.
+---
+import Example from "../../components/Example.astro";
+import Basic from "../../demos/text-field/Basic";
+import basicSource from "../../demos/text-field/Basic.tsx?raw";
+
+<Example title="Fields" source={basicSource} of={Basic}>
+  <Basic client:load />
+</Example>

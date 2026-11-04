@@ -1,0 +1,31 @@
+---
+title: Breadcrumbs
+group: Overlay and navigation
+order: 7
+summary: The path from the home page to the current page, with mono separators.
+props:
+  - name: aria-label
+    type: string
+    default: '"Breadcrumbs"'
+    description: Name of the navigation landmark.
+  - name: Breadcrumb href
+    type: string
+    description: Link target. The last Breadcrumb is always the current page and ignores href.
+  - name: Breadcrumb children
+    type: ReactNode
+    description: The page name.
+  - name: isDisabled / onAction
+    type: boolean / (key) => void
+    description: Disables every item, or handles activation without navigation.
+a11y:
+  - A navigation landmark containing an ordered list; the last item has aria-current="page".
+  - The slash separators are hidden from screen readers.
+  - This site's component pages use the same markup above each title.
+---
+import Example from "../../components/Example.astro";
+import Basic from "../../demos/breadcrumbs/Basic";
+import basicSource from "../../demos/breadcrumbs/Basic.tsx?raw";
+
+<Example title="Trail" source={basicSource} of={Basic}>
+  <Basic />
+</Example>

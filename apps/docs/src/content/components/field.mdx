@@ -1,0 +1,30 @@
+---
+title: Field
+group: Forms
+order: 1
+summary: The label, description and error that every form control shares, wired together for assistive technology.
+interactive: true
+props:
+  - name: FieldLabel
+    type: LabelProps
+    description: The visible label. React Aria links it to the control with for or aria-labelledby.
+  - name: FieldDescription
+    type: TextProps
+    description: Help text, linked to the control with aria-describedby.
+  - name: FieldError
+    type: FieldErrorProps
+    description: The error message. Shown when the field is invalid and linked with aria-describedby.
+a11y:
+  - Every control has a visible label; placeholders never replace it.
+  - The description and the error are announced with the control, because aria-describedby points at both.
+  - Errors say how to fix the problem and are shown as text with a danger border, never by colour alone.
+---
+import Example from "../../components/Example.astro";
+import Wiring from "../../demos/field/Wiring";
+import wiringSource from "../../demos/field/Wiring.tsx?raw";
+
+TextField, TextArea, Select and RadioGroup compose these parts; use them directly only when building a new control with React Aria.
+
+<Example title="Label, description and error" source={wiringSource} of={Wiring}>
+  <Wiring client:load />
+</Example>

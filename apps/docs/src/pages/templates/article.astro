@@ -1,0 +1,68 @@
+---
+import Base from "../../layouts/Base.astro";
+---
+<Base title="Form follows grid" description="Template: an editorial article set on a hanging grid.">
+  <article class="sw-grid" data-layout="hanging" data-page-grid>
+    <p class="sw-type-label sw-text-secondary">Essay · November 2026</p>
+    <header class="docs-article-head">
+      <h1 class="sw-type-display">Form follows grid</h1>
+      <p class="docs-lead sw-measure sw-text-secondary">
+        Why a Swiss grid still works on screens of every size, and what changes when the page has no
+        fixed edges.
+      </p>
+      <p class="sw-type-caption sw-text-secondary">By the Raster studio · 6 minute read</p>
+    </header>
+
+    <p class="sw-type-label sw-text-secondary">01</p>
+    <div class="docs-prose sw-measure">
+      <h2 class="sw-type-h3">The page without edges</h2>
+      <p>
+        A printed page has four edges, and the grid begins from them. A screen has none that stay
+        put: the same article is read on a phone held in one hand and on a monitor across a desk.
+        The grid has to start from somewhere else.
+      </p>
+      <p>
+        Raster starts from the container. A column of text in a sidebar and the same text across a
+        full section measure their own width and choose four, eight or twelve columns to match. The
+        proportions hold; only the count changes.
+      </p>
+    </div>
+
+    <p class="sw-type-label sw-text-secondary">Figure 1</p>
+    <figure class="sw-figure">
+      <svg viewBox="0 0 236 60" width="100%" role="img" aria-label="Twelve vertical bars of equal width">
+        {Array.from({ length: 12 }, (_, i) => <rect x={i * 20} y="0" width="16" height="60" fill="currentColor" opacity="0.15" />)}
+      </svg>
+      <figcaption class="sw-type-caption sw-text-secondary">
+        Figure 1 — Twelve columns and eleven gutters at full width.
+      </figcaption>
+    </figure>
+
+    <p class="sw-type-label sw-text-secondary">02</p>
+    <div class="docs-prose sw-measure">
+      <h2 class="sw-type-h3">Labels hang, text runs</h2>
+      <p>
+        The narrow column on the left holds what a reader scans first: numbers, dates, the name of a
+        figure. The wide column holds what they read. On a small screen the label simply sits above
+        its paragraph.
+      </p>
+      <blockquote class="docs-quote">
+        <p>The grid is not a cage. It is the one decision that makes every later decision easier.</p>
+      </blockquote>
+      <p>
+        Because placement comes from the grid, the type can stay quiet: one family, few sizes, weight
+        changes only where the structure needs them.
+      </p>
+    </div>
+
+    <p class="sw-type-label sw-text-secondary">03</p>
+    <div class="docs-prose sw-measure">
+      <h2 class="sw-type-h3">A calmer hierarchy</h2>
+      <p>
+        Headings in Raster are smaller and lighter than habit suggests. White space and alignment do
+        the separating, so a page reads as a sequence rather than a shout. Press Grid in the header to
+        see the columns this article sits on.
+      </p>
+    </div>
+  </article>
+</Base>

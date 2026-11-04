@@ -1,0 +1,32 @@
+---
+title: Switch
+group: Forms
+order: 7
+summary: Turns a setting on or off immediately, without a save step.
+interactive: true
+props:
+  - name: children
+    type: ReactNode
+    description: The label, naming the setting.
+  - name: isSelected / defaultSelected
+    type: boolean
+    description: Controlled or initial state.
+  - name: onChange
+    type: "(isSelected: boolean) => void"
+    description: Called when the state changes.
+  - name: isDisabled
+    type: boolean
+    default: "false"
+    description: Disables the switch.
+a11y:
+  - Announced as a switch that is on or off; Space toggles it.
+  - The thumb moves to show the state, so it does not depend on the track colour, and stays visible in forced-colours mode.
+  - Use a Checkbox instead when the change only applies after the form is submitted.
+---
+import Example from "../../components/Example.astro";
+import Basic from "../../demos/switch/Basic";
+import basicSource from "../../demos/switch/Basic.tsx?raw";
+
+<Example title="Settings" source={basicSource} of={Basic}>
+  <Basic client:load />
+</Example>

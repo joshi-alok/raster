@@ -1,12 +1,14 @@
 ---
 import tokens from "@raster/tokens/tokens.json";
-import { ROLES } from "@raster/tokens";
+import { ROLES, SCALE_STOPS } from "@raster/tokens";
 import DataTable from "../../components/DataTable.astro";
 import FoundationsNav from "../../components/FoundationsNav.astro";
 import DocPage from "../../layouts/DocPage.astro";
 import { contrastTables, formatRatio, THEME_NAMES, type TokensJson } from "../../lib/contrast-table";
 
 const tables = contrastTables(tokens as unknown as TokensJson);
+type ScalesJson = { themes: Record<string, { scales: Record<string, Record<string, { $value: string }>> }> };
+const scaleThemes = Object.entries((tokens as unknown as ScalesJson).themes);
 ---
 <DocPage
   title="Colour"
@@ -38,6 +40,38 @@ const tables = contrastTables(tokens as unknown as TokensJson);
     <li>In Alpine, red appears only for alerts and destructive actions.</li>
     <li>State is never shown by colour alone; a border, icon, weight or text always comes with it.</li>
   </ul>
+
+  <h2>Scales</h2>
+  <p class="sw-measure">
+    Each theme maps its roles onto these hue ramps; components never use them directly. In light
+    mode, text and fills use the 700 stops and tints the 100 stops; in dark mode, tints use the 900
+    stops.
+  </p>
+  {
+    scaleThemes.map(([theme, { scales }]) => (
+      <DataTable id={`scales-${theme}`} caption={`${THEME_NAMES[theme] ?? theme} scales`} columns={["Hue", ...SCALE_STOPS]}>
+        {Object.entries(scales).map(([hue, stops]) => (
+          <tr>
+            <th scope="row">{hue.replace("-", " ")}</th>
+            {SCALE_STOPS.map((stop) => {
+              const value = stops[stop]?.$value;
+              return (
+                <td>
+                  {value ? (
+                    <>
+                      <span class="docs-swatch" style={`background-color: ${value}`} /> <code>{value}</code>
+                    </>
+                  ) : (
+                    "—"
+                  )}
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </DataTable>
+    ))
+  }
 
   <h2>Verified contrast</h2>
   <p class="sw-measure">

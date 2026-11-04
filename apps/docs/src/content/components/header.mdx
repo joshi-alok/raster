@@ -1,0 +1,41 @@
+---
+title: Header
+group: Overlay and navigation
+order: 6
+summary: The site banner with a skip link, brand, primary navigation and actions; sticky by default.
+props:
+  - name: brand
+    type: ReactNode
+    description: Required. Logo or site name, usually a link home.
+  - name: children
+    type: ReactNode
+    description: Navigation links. Mark the current one with aria-current="page".
+  - name: actions
+    type: ReactNode
+    description: Controls at the inline end, such as a theme switch.
+  - name: navLabel
+    type: string
+    default: '"Main"'
+    description: Name of the navigation landmark.
+  - name: skipTo
+    type: string
+    default: '"#main"'
+    description: Target of the skip link; give the main element that id and tabIndex={-1}.
+  - name: sticky
+    type: boolean
+    default: "true"
+    description: Sticks to the top; the page then reserves scroll padding so focused content is never hidden (WCAG 2.4.11).
+a11y:
+  - The skip link is the first tab stop and appears when focused.
+  - The current page is marked with aria-current and shown by weight and underline.
+  - On narrow screens the navigation scrolls sideways inside the header rather than wrapping.
+---
+import Example from "../../components/Example.astro";
+import Basic from "../../demos/header/Basic";
+import basicSource from "../../demos/header/Basic.tsx?raw";
+
+This site's own header is the same component, written as HTML.
+
+<Example title="Site header" source={basicSource} of={Basic}>
+  <Basic />
+</Example>

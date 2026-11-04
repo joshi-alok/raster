@@ -1,0 +1,27 @@
+---
+import DocPage from "../../layouts/DocPage.astro";
+
+const TEMPLATES = [
+  { href: "/templates/article/", title: "Editorial article", summary: "Long-form reading on a hanging grid, with numbered sections, a figure and a pull quote." },
+  { href: "/templates/dashboard/", title: "Dashboard", summary: "Figures, a project table with status tags, and tabbed activity." },
+  { href: "/templates/landing/", title: "Landing page", summary: "A display headline, calls to action, staggered feature cards and a closing section." },
+];
+---
+<DocPage
+  title="Templates"
+  eyebrow="Templates"
+  description="Whole pages built only from the class contract, with React islands only where something responds to input. Use them as starting points."
+>
+  <ul class="docs-component-list">
+    {
+      TEMPLATES.map((t) => (
+        <li>
+          <a class="sw-link" href={t.href}>
+            {t.title}
+          </a>
+          <span class="sw-type-caption sw-text-secondary">{t.summary}</span>
+        </li>
+      ))
+    }
+  </ul>
+</DocPage>

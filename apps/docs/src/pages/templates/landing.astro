@@ -1,0 +1,66 @@
+---
+import CodeBlock from "../../components/CodeBlock.astro";
+import Base from "../../layouts/Base.astro";
+
+const FEATURES = [
+  { title: "Fluid grid", body: "Four, eight or twelve columns, chosen by the container rather than the screen." },
+  { title: "Calm type", body: "Geist in a short scale, with headings smaller than habit suggests." },
+  { title: "Checked colour", body: "Every pairing passes 4.5:1, enforced when the tokens build." },
+  { title: "Two themes", body: "Alpine and Zürich, each in light and dark, switchable on any element." },
+  { title: "HTML first", body: "A class contract that works without JavaScript, mirrored by thin React components." },
+  { title: "Optional motion", body: "Scroll reveals and page transitions in a separate stylesheet, off for reduced motion." },
+];
+
+const INSTALL = `<link rel="stylesheet" href="node_modules/@raster/css/dist/raster.css" />
+
+<main class="sw-container sw-section">
+  <div class="sw-grid" data-layout="hanging">…</div>
+</main>`;
+---
+<Base title="Raster for studios" description="Template: a landing page with a display headline, features and a closing call to action.">
+  <div class="sw-grid" data-layout="hanging" data-page-grid>
+    <p class="sw-type-label sw-text-secondary">Raster · Version 1</p>
+    <div class="docs-hero">
+      <h1 class="sw-type-display">Design on the grid, ship on the web.</h1>
+      <p class="docs-lead sw-measure sw-text-secondary">
+        A Swiss Style design system for studios that care about alignment, legibility and restraint.
+      </p>
+      <div class="sw-stack" data-direction="row" data-gap="3">
+        <a class="sw-button" data-variant="primary" href="/components/">Browse components</a>
+        <a class="sw-button" data-variant="secondary" href="/">Read the principles</a>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sw-rule" data-variant="signal" />
+
+  <section class="sw-section" aria-labelledby="features-title">
+    <div class="sw-grid" data-layout="hanging">
+      <h2 id="features-title" class="sw-type-label sw-text-secondary">What you get</h2>
+      <ul class="sw-reveal docs-feature-list" data-stagger>
+        {
+          FEATURES.map((f) => (
+            <li class="sw-card">
+              <h3 class="sw-type-h4">{f.title}</h3>
+              <p class="sw-text-secondary">{f.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="sw-section" aria-labelledby="start-title">
+    <div class="sw-grid" data-layout="hanging">
+      <p class="sw-type-label sw-text-secondary">Get started</p>
+      <div class="docs-prose">
+        <h2 id="start-title">Start with the class contract.</h2>
+        <p class="sw-measure">
+          Link one stylesheet and write HTML. Add the React components when something needs to
+          respond to input.
+        </p>
+        <CodeBlock code={INSTALL} label="Starting markup" />
+      </div>
+    </div>
+  </section>
+</Base>

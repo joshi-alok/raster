@@ -125,21 +125,30 @@
   );
 }
 
-/* Debug overlay: tinted columns. */
+/* Debug overlay: tinted columns over a 4px baseline (a faint hairline every 4px). */
 .sw-grid[data-grid-debug] {
+  --_baseline: repeating-linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--accent) 8%, transparent) 0 1px,
+    transparent 1px 4px
+  );
   background-origin: content-box;
   background-clip: content-box;
-  background-image: repeating-linear-gradient(
-    to right,
-    color-mix(in srgb, var(--accent) 10%, transparent) 0 var(--_colw),
-    transparent var(--_colw) calc(var(--_colw) + var(--grid-gutter))
-  );
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      color-mix(in srgb, var(--accent) 10%, transparent) 0 var(--_colw),
+      transparent var(--_colw) calc(var(--_colw) + var(--grid-gutter))
+    ),
+    var(--_baseline);
 }
 
 .sw-grid[data-grid-debug]:dir(rtl) {
-  background-image: repeating-linear-gradient(
-    to left,
-    color-mix(in srgb, var(--accent) 10%, transparent) 0 var(--_colw),
-    transparent var(--_colw) calc(var(--_colw) + var(--grid-gutter))
-  );
+  background-image:
+    repeating-linear-gradient(
+      to left,
+      color-mix(in srgb, var(--accent) 10%, transparent) 0 var(--_colw),
+      transparent var(--_colw) calc(var(--_colw) + var(--grid-gutter))
+    ),
+    var(--_baseline);
 }

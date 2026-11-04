@@ -1,0 +1,48 @@
+---
+title: Tabs
+group: Overlay and navigation
+order: 5
+summary: Switches between panels of related content in place, marked by an accent underline and weight.
+interactive: true
+props:
+  - name: selectedKey / defaultSelectedKey
+    type: Key
+    description: Controlled or initial selected tab id.
+  - name: onSelectionChange
+    type: "(key: Key) => void"
+    description: Called when another tab is selected.
+  - name: orientation
+    type: '"horizontal" | "vertical"'
+    default: '"horizontal"'
+    description: Layout and arrow-key direction.
+  - name: keyboardActivation
+    type: '"automatic" | "manual"'
+    default: '"automatic"'
+    description: Manual waits for Enter or Space before switching panels.
+  - name: TabList aria-label
+    type: string
+    description: Required (or aria-labelledby). Names the set of tabs.
+  - name: Tab id / isDisabled
+    type: Key / boolean
+    description: Identifies the tab and its panel; disabled tabs are skipped.
+  - name: TabPanel id
+    type: Key
+    description: Matches the id of its Tab.
+a11y:
+  - The tab list is a single tab stop; arrow keys move between tabs and skip disabled ones, and Tab moves on to the panel.
+  - The selected tab is shown by an underline and weight, not colour alone, and stays visible in forced-colours mode.
+  - Use links, not tabs, when each section has its own URL.
+---
+import Example from "../../components/Example.astro";
+import Horizontal from "../../demos/tabs/Horizontal";
+import horizontalSource from "../../demos/tabs/Horizontal.tsx?raw";
+import Vertical from "../../demos/tabs/Vertical";
+import verticalSource from "../../demos/tabs/Vertical.tsx?raw";
+
+<Example title="Horizontal" source={horizontalSource}>
+  <Horizontal client:load />
+</Example>
+
+<Example title="Vertical" source={verticalSource}>
+  <Vertical client:load />
+</Example>

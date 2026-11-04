@@ -1,0 +1,27 @@
+---
+title: Callout
+group: Display
+order: 4
+summary: A static message in the page flow, with an icon and an optional title, in four tones.
+props:
+  - name: tone
+    type: '"info" | "success" | "warning" | "danger"'
+    default: '"info"'
+    description: Icon, tint and the word announced before the message.
+  - name: title
+    type: ReactNode
+    description: A short summary set above the message.
+  - name: children
+    type: ReactNode
+    description: The message.
+a11y:
+  - The tone is announced as a word (for example "Warning:") and shown by an icon, not only by colour.
+  - A callout is not a live region. For messages that appear after an action, use a Toast.
+---
+import Example from "../../components/Example.astro";
+import Tones from "../../demos/callout/Tones";
+import tonesSource from "../../demos/callout/Tones.tsx?raw";
+
+<Example title="Tones" source={tonesSource} of={Tones}>
+  <Tones />
+</Example>

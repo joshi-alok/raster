@@ -1,0 +1,38 @@
+---
+title: RadioGroup
+group: Forms
+order: 6
+summary: One choice from a short list of options that are all visible at once.
+interactive: true
+props:
+  - name: label
+    type: ReactNode
+    description: Required. Names the group.
+  - name: value / defaultValue
+    type: string
+    description: Controlled or initial selected value.
+  - name: onChange
+    type: "(value: string) => void"
+    description: Called with the new value.
+  - name: description / errorMessage
+    type: ReactNode
+    description: As on TextField.
+  - name: orientation
+    type: '"vertical" | "horizontal"'
+    default: '"vertical"'
+    description: Lays the options out in a column or a wrapping row; all arrow keys move between options either way.
+  - name: Radio value
+    type: string
+    description: Required on each Radio.
+a11y:
+  - The group is one tab stop; arrow keys move between options and select them.
+  - The selected option shows a thick ring, not only a colour change, and it survives forced-colours mode.
+  - Use a Select instead when there are more than about five options.
+---
+import Example from "../../components/Example.astro";
+import Basic from "../../demos/radio-group/Basic";
+import basicSource from "../../demos/radio-group/Basic.tsx?raw";
+
+<Example title="Paper size" source={basicSource} of={Basic}>
+  <Basic client:load />
+</Example>
