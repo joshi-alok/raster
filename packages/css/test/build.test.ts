@@ -34,3 +34,34 @@ describe("raster.css bundle", () => {
     expect(css).toMatch(/\[data-motion="?reduce"?\][\s\S]*--dur-layout: 0(?:ms|s)\b/);
   });
 });
+
+describe("layout: container and grid", () => {
+  it("makes the container a named size container with fluid margins", () => {
+    expect(css).toMatch(/\.sw-container\s*\{[^}]*container:\s*raster\s*\/\s*inline-size/);
+    expect(css).toMatch(/\.sw-container\s*\{[^}]*padding-inline:\s*var\(--page-margin\)/);
+  });
+
+  it("starts the grid at 4 columns and switches to 8 and 12 by container width", () => {
+    expect(css).toMatch(/\.sw-grid\s*\{[^}]*--_cols:\s*4/);
+    expect(css).toMatch(/@container[^{]*600px[^{]*\{\s*\.sw-grid\s*\{\s*--_cols:\s*8/);
+    expect(css).toMatch(/@container[^{]*1024px[^{]*\{\s*\.sw-grid\s*\{\s*--_cols:\s*12/);
+  });
+
+  it("lets columns set a span per column count", () => {
+    expect(css).toContain("span var(--span-4, 4)");
+    expect(css).toContain("span var(--span-8, 8)");
+    expect(css).toContain("span var(--span-12, 12)");
+  });
+
+  it("ships the hanging and asymmetric split presets", () => {
+    // Lightning CSS may drop the quotes around attribute values, so match either form.
+    expect(css).toMatch(/\.sw-grid\[data-layout="?hanging"?\]/);
+    expect(css).toMatch(/\.sw-grid\[data-layout="?split-5-7"?\]/);
+    expect(css).toMatch(/\.sw-grid\[data-layout="?split-1-2"?\]/);
+  });
+
+  it("ships visible grid rules and the debug overlay", () => {
+    expect(css).toContain(".sw-grid[data-grid-rules]");
+    expect(css).toContain(".sw-grid[data-grid-debug]");
+  });
+});
