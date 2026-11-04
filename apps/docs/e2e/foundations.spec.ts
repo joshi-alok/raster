@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 import { waitForIslands } from "./islands";
 
 const columnCount = (page: import("@playwright/test").Page, selector: string) =>
@@ -64,6 +65,14 @@ test.describe("motion", () => {
     for (let i = 0; i < 2; i++) {
       await page.getByRole("button", { name: "Open dialog" }).click();
       await expect(page.getByRole("dialog", { name: "Overlay motion" })).toBeVisible();
+      if (i === 0) {
+        // Outside a ThemeRegion the dialog portals straight into <body>.
+        const results = await new AxeBuilder({ page })
+          .include(".sw-modal-overlay")
+          .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+          .analyze();
+        expect(results.violations.map((v) => v.id)).toEqual([]);
+      }
       await page.keyboard.press("Escape");
       await expect(page.getByRole("dialog")).toHaveCount(0);
     }

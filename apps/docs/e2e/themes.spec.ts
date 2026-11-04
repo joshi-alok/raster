@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 import { waitForIslands } from "./islands";
 
 const REGIONS = ["Alpine light", "Alpine dark", "Zürich light", "Zürich dark"];
@@ -22,4 +23,9 @@ test("a select opened in a region renders in that region's theme and mode", asyn
   const host = page.locator(".sw-portal-host", { has: listbox });
   await expect(host).toHaveAttribute("data-theme", "zurich");
   await expect(host).toHaveAttribute("data-mode", "dark");
+  const results = await new AxeBuilder({ page })
+    .include(".sw-portal-host")
+    .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+    .analyze();
+  expect(results.violations.map((v) => v.id)).toEqual([]);
 });

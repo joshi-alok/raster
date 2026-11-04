@@ -17,6 +17,30 @@ test("the header marks the current page", async ({ page }) => {
   await expect(nav.getByRole("link", { name: "Components" })).not.toHaveAttribute("aria-current");
 });
 
+test("inside a section, the header marks the section link as current but not as the page", async ({ page }) => {
+  await page.goto("/foundations/type/");
+  const nav = page.getByRole("navigation", { name: "Main" });
+  await expect(nav.getByRole("link", { name: "Foundations" })).toHaveAttribute("aria-current", "true");
+  const local = page.getByRole("navigation", { name: "Foundations" });
+  await expect(local.getByRole("link", { name: "Type" })).toHaveAttribute("aria-current", "page");
+  await expect(page.locator('[aria-current="page"]')).toHaveCount(1);
+});
+
+test("pressed display toggles differ by more than colour", async ({ page }) => {
+  await page.goto("/");
+  const mode = page.getByRole("group", { name: "Mode" });
+  const style = (name: string) =>
+    mode.getByRole("button", { name }).evaluate((el) => {
+      const s = getComputedStyle(el);
+      return { shadow: s.boxShadow, underline: s.textDecorationLine };
+    });
+  const pressed = await style("System");
+  const unpressed = await style("Dark");
+  expect(pressed.underline).toContain("underline");
+  expect(unpressed.underline).not.toContain("underline");
+  expect(pressed.shadow).not.toBe(unpressed.shadow);
+});
+
 test("theme, mode and motion buttons apply and persist", async ({ page }) => {
   await page.goto("/");
   const html = page.locator("html");

@@ -76,7 +76,7 @@ The token build script is about 50 lines of TypeScript run with `tsx`. No Style 
 ### Visible grid
 
 - **Column rules:** an optional hairline column-rule treatment (`data-grid-rules`), usable as a design element.
-- **Debug overlay:** shows tinted columns (Plan 1). A 4px baseline stripe and the docs-header toggle arrive with the docs site (Plan 4).
+- **Debug overlay:** shows tinted columns (Plan 1). The docs-header toggle arrived with the docs site (Plan 4a); the 4px baseline stripe moves to Plan 4b.
 
 ## 4. Foundations: typography
 
@@ -112,7 +112,7 @@ The token build script is about 50 lines of TypeScript run with `tsx`. No Style 
 
 ### Token layers
 
-1. **Scales.** Per-theme hue ramps at stops 100/300/500/700/900, plus 50 for neutrals. These are design-time references: the token source stores role values directly, and the scales are added to the DTCG JSON and the docs colour page in Plan 4.
+1. **Scales.** Per-theme hue ramps at stops 100/300/500/700/900, plus 50 for neutrals. These are design-time references: the token source stores role values directly, and the scales are added to the DTCG JSON and the docs colour page in Plan 4b.
 2. **Roles.** The only layer components consume:
    - **Surfaces:** `surface-page`, `surface-raised`, `surface-subtle`.
    - **Text:** `text-primary`, `text-secondary`, `text-muted`.

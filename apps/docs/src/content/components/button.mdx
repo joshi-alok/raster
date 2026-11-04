@@ -25,7 +25,7 @@ props:
     description: Extra classes, added after sw-button.
 a11y:
   - Renders a native button, so Enter and Space activate it and it is announced as a button.
-  - Variants differ in fill, border and weight, not only in colour, and stay distinct in forced-colours mode.
+  - Variants signal emphasis, not meaning; the label must say what the button does, since primary and danger differ only in colour and all variants look alike in forced-colours mode.
   - The control is 40px tall and its hit area is padded to at least 44px (WCAG 2.5.8).
   - Disabled buttons cannot be focused. If people need to learn why an action is unavailable, keep the button enabled and explain on press.
 ---
@@ -36,7 +36,7 @@ import Disabled from "../../demos/button/Disabled";
 import disabledSource from "../../demos/button/Disabled.tsx?raw";
 
 <Example title="Variants" source={variantsSource} of={Variants}>
-  <Variants />
+  <Variants client:load />
 </Example>
 
 <Example title="Disabled" source={disabledSource} of={Disabled}>

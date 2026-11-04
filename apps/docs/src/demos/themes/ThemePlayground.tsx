@@ -21,7 +21,7 @@ export default function ThemePlayground() {
         >
           <Stack gap={4}>
             <Eyebrow>{region.name}</Eyebrow>
-            <Heading level={2} size="h3">
+            <Heading level={3} size="h3">
               Form follows grid
             </Heading>
             <Text tone="secondary">Flush left, ragged right, and every pairing above 4.5:1.</Text>

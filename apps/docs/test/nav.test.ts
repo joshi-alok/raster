@@ -9,9 +9,10 @@ describe("ariaCurrent", () => {
     expect(ariaCurrent("/themes/", item("Themes"))).toBe("page");
   });
 
-  it("marks a section link on any page inside the section", () => {
-    expect(ariaCurrent("/foundations/type/", item("Foundations"))).toBe("page");
-    expect(ariaCurrent("/components/button/", item("Components"))).toBe("page");
+  it("marks a section link as current (but not as the page) inside the section", () => {
+    expect(ariaCurrent("/foundations/type/", item("Foundations"))).toBe("true");
+    expect(ariaCurrent("/components/button/", item("Components"))).toBe("true");
+    expect(ariaCurrent("/components/", item("Components"))).toBe("page");
   });
 
   it("does not treat the home page as a section", () => {

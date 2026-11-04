@@ -521,8 +521,8 @@ describe("header", () => {
     expect(rule(".sw-skip-link")).not.toMatch(/transform/);
   });
 
-  it("marks the current nav item with weight and underline", () => {
-    const r = rule('.sw-header-nav .sw-link[aria-current="page"]');
+  it("marks the current nav item (page or section) with weight and underline", () => {
+    const r = rule('.sw-header-nav .sw-link[aria-current]:not([aria-current="false"])');
     expect(r).toMatch(/font-weight:\s*500/);
     expect(r).toMatch(/text-decoration-line:\s*underline/);
   });

@@ -30,9 +30,10 @@ const PRINCIPLES = [
   },
 ];
 
-const CSS_USAGE = `<link rel="stylesheet" href="@raster/css/raster.css" />
+const CSS_USAGE = `<!-- Paths from the workspace; with a bundler, import "@raster/css/raster.css" instead. -->
+<link rel="stylesheet" href="node_modules/@raster/css/dist/raster.css" />
 <!-- Optional, after raster.css: scroll reveals, page transitions, weight shift -->
-<link rel="stylesheet" href="@raster/css/motion.css" />
+<link rel="stylesheet" href="node_modules/@raster/css/dist/motion.css" />
 
 <main class="sw-container sw-section">
   <div class="sw-grid" data-layout="hanging">

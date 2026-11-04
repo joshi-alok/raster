@@ -32,7 +32,14 @@ const { title, description } = Astro.props;
     <SiteFooter />
     <script>
       import { bindSettings } from "../lib/settings";
-      bindSettings(document, localStorage);
+      // Reading localStorage throws when storage is blocked; the toggles still work for this page.
+      let storage: Pick<Storage, "getItem" | "setItem">;
+      try {
+        storage = window.localStorage;
+      } catch {
+        storage = { getItem: () => null, setItem: () => undefined };
+      }
+      bindSettings(document, storage);
     </script>
   </body>
 </html>

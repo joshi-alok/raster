@@ -57,7 +57,8 @@
   outline-offset: calc(-1 * var(--focus-width));
 }
 
-.sw-header-nav .sw-link[aria-current="page"] {
+/* "page" on the current page, "true" on the link to the section that contains it. */
+.sw-header-nav .sw-link[aria-current]:not([aria-current="false"]) {
   color: var(--text-primary);
   font-weight: 500;
   text-decoration-line: underline;

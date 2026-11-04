@@ -21,9 +21,9 @@ export const FOUNDATIONS: NavItem[] = [
 
 const withSlash = (path: string) => (path.endsWith("/") ? path : `${path}/`);
 
-/** "page" when the link is the current page, or the section that contains it. */
-export function ariaCurrent(pathname: string, item: NavItem): "page" | undefined {
+/** "page" when the link is the current page; "true" when it leads to the section containing it. */
+export function ariaCurrent(pathname: string, item: NavItem): "page" | "true" | undefined {
   const path = withSlash(pathname);
   if (path === item.href) return "page";
-  return item.section !== undefined && path.startsWith(item.section) ? "page" : undefined;
+  return item.section !== undefined && path.startsWith(item.section) ? "true" : undefined;
 }

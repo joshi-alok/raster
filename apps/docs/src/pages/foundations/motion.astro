@@ -64,14 +64,14 @@ const REVEAL_HTML = `<link rel="stylesheet" href="@raster/css/motion.css" />
   </div>
   <CodeBlock code={REVEAL_HTML} label="Reveal markup" />
 
-  <h2>Expressive: weight shift and page transitions</h2>
+  <h2 id="weight-shift">Expressive: weight shift and page transitions</h2>
   <p class="sw-measure">
     <code>.sw-weight-shift</code> eases Geist's variable weight on hover and focus. With
     <code>motion.css</code> loaded, moving between pages of this site cross-fades using the View
     Transitions API.
   </p>
   <div>
-    <button type="button" class="sw-button sw-weight-shift" data-variant="ghost">Hover or focus me</button>
+    <a class="sw-link sw-weight-shift" href="#weight-shift">Hover or focus this link</a>
   </div>
 
   <h2>Reduced motion</h2>
