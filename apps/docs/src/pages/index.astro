@@ -1,8 +1,84 @@
 ---
+import CodeBlock from "../components/CodeBlock.astro";
 import DocPage from "../layouts/DocPage.astro";
+
+const PRINCIPLES = [
+  {
+    number: "01",
+    title: "The grid is the identity",
+    body: "Every page sits on 4, 8 or 12 columns that follow the space they are given, not the device. Alignment, not decoration, is what makes a Raster page recognisable.",
+  },
+  {
+    number: "02",
+    title: "A calm hierarchy",
+    body: "Headings are smaller and lighter than you expect. Size steps are few, weight changes are rare, and white space does the separating that boxes and shadows do elsewhere.",
+  },
+  {
+    number: "03",
+    title: "Accessibility is a constraint",
+    body: "Every colour pairing is checked when the tokens build, every interactive component works from the keyboard, and these pages are tested with axe in both themes and both modes.",
+  },
+  {
+    number: "04",
+    title: "Motion is optional",
+    body: "Movement runs along the grid's axes, briefly, and never decorates. The expressive tier is a separate stylesheet, and reduced motion turns it off.",
+  },
+  {
+    number: "05",
+    title: "HTML first",
+    body: "The class contract is the API. The React components render exactly the same markup, so a page built with @raster/css alone looks the same as one built with @raster/react.",
+  },
+];
+
+const CSS_USAGE = `<link rel="stylesheet" href="@raster/css/raster.css" />
+<!-- Optional, after raster.css: scroll reveals, page transitions, weight shift -->
+<link rel="stylesheet" href="@raster/css/motion.css" />
+
+<main class="sw-container sw-section">
+  <div class="sw-grid" data-layout="hanging">
+    <p class="sw-type-label">01 / Intro</p>
+    <h1>Form follows grid</h1>
+  </div>
+</main>`;
+
+const REACT_USAGE = `import "@raster/css/raster.css";
+import { Container, Eyebrow, Grid, Heading } from "@raster/react";
+
+export function Intro() {
+  return (
+    <Container as="main" className="sw-section">
+      <Grid layout="hanging">
+        <Eyebrow as="p">01 / Intro</Eyebrow>
+        <Heading level={1}>Form follows grid</Heading>
+      </Grid>
+    </Container>
+  );
+}`;
 ---
 <DocPage
   title="Raster"
   eyebrow="Principles"
   description="A Swiss Style design system for the web: a fluid grid, a calm hierarchy and accessibility as a constraint."
-/>
+>
+  <ol class="docs-principles">
+    {
+      PRINCIPLES.map((p) => (
+        <li>
+          <span class="sw-type-label sw-text-secondary">{p.number}</span>
+          <h2 class="sw-type-h3">{p.title}</h2>
+          <p class="sw-measure">{p.body}</p>
+        </li>
+      ))
+    }
+  </ol>
+
+  <h2>Get started</h2>
+  <p class="sw-measure">
+    Raster ships as three workspace packages: <code>@raster/tokens</code>, <code>@raster/css</code> and
+    <code>@raster/react</code>. They are consumed inside this repository and are not published to npm yet.
+  </p>
+  <p class="sw-type-label sw-text-secondary">HTML and CSS</p>
+  <CodeBlock code={CSS_USAGE} label="HTML and CSS usage" />
+  <p class="sw-type-label sw-text-secondary">React</p>
+  <CodeBlock code={REACT_USAGE} label="React usage" />
+</DocPage>
