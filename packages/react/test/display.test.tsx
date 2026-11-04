@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { Callout } from "../src/display/Callout";
 import { Card } from "../src/display/Card";
+import { Table } from "../src/display/Table";
 import { Tag } from "../src/display/Tag";
 import { expectAccessible } from "./axe";
 
@@ -87,6 +88,49 @@ describe("Callout", () => {
         </p>
       </Callout>,
     );
+    await expectAccessible(container);
+  });
+});
+
+describe("Table", () => {
+  const rows = (
+    <>
+      <thead>
+        <tr>
+          <th scope="col">Quarter</th>
+          <th scope="col" data-numeric>
+            Revenue
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Q1</td>
+          <td data-numeric>1,200</td>
+        </tr>
+      </tbody>
+    </>
+  );
+
+  it("names both the table and its scrollable region from the caption", () => {
+    render(<Table caption="Quarterly revenue">{rows}</Table>);
+    expect(screen.getByRole("table", { name: "Quarterly revenue" })).toHaveClass("sw-table");
+    const region = screen.getByRole("region", { name: "Quarterly revenue" });
+    expect(region).toHaveClass("sw-table-wrap");
+    expect(region).toHaveAttribute("tabindex", "0");
+  });
+
+  it("marks striped tables", () => {
+    render(
+      <Table caption="Striped" striped>
+        {rows}
+      </Table>,
+    );
+    expect(screen.getByRole("table")).toHaveAttribute("data-striped");
+  });
+
+  it("has no structural violations", async () => {
+    const { container } = render(<Table caption="Quarterly revenue">{rows}</Table>);
     await expectAccessible(container);
   });
 });

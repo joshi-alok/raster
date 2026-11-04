@@ -119,3 +119,25 @@ describe("callout", () => {
     expect(rule(".sw-callout a")).toMatch(/color:\s*inherit/);
   });
 });
+
+describe("table", () => {
+  it("scrolls horizontally inside its wrapper", () => {
+    expect(rule(".sw-table-wrap")).toMatch(/overflow-x:\s*auto/);
+  });
+
+  it("separates rows with hairlines and puts a strong rule under the header", () => {
+    expect(css).toMatch(/\.sw-table :is\(th, td\)\s*\{[^}]*border-block-end:\s*1px solid var\(--border\)/);
+    expect(rule(".sw-table thead th")).toMatch(/border-block-end-color:\s*var\(--text-primary\)/);
+  });
+
+  it("sets numeric cells in tabular mono, end-aligned", () => {
+    const r = rule(".sw-table [data-numeric]");
+    expect(r).toMatch(/text-align:\s*end/);
+    expect(r).toMatch(/font-variant-numeric:\s*tabular-nums/);
+    expect(r).toMatch(/font-family:\s*var\(--font-mono\)/);
+  });
+
+  it("stripes body rows on the subtle surface when asked", () => {
+    expect(css).toMatch(/\.sw-table\[data-striped\] tbody tr:nth-child\((?:even|2n)\)\s*\{[^}]*var\(--surface-subtle\)/);
+  });
+});
