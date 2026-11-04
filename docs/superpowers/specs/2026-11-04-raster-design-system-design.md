@@ -42,7 +42,7 @@ raster/
 
 | Package | Inputs | Outputs |
 |---|---|---|
-| `@raster/tokens` | `src/tokens.ts` (single source of truth) | `dist/alpine.css`, `dist/zurich.css`, `dist/tokens.json` (W3C DTCG format), build failure on contrast violation |
+| `@raster/tokens` | `src/` TypeScript modules (single source of truth) | `dist/tokens.css` (foundation tokens, then Alpine, then Zürich), `dist/tokens.json` (W3C DTCG format), build failure on contrast violation |
 | `@raster/css` | token CSS variables | `dist/raster.css` (all layers), `dist/motion.css` (opt-in expressive tier) |
 | `@raster/react` | `@raster/css` class contract | ESM + type declarations |
 | `docs` | all three packages | static site |
@@ -120,8 +120,10 @@ The token build script is about 50 lines of TypeScript run with `tsx`. No Style 
    - **Accent:** `accent`, `accent-subtle`, `on-accent`.
    - **Status:** `success`, `warning`, `danger`, each with `-subtle` and `on-` variants.
 3. **Themes.** A theme is a role-to-scale mapping:
-   - **Selector:** `[data-theme="alpine" | "zurich"]` works on any element, and themes can nest.
-   - **Mode:** follows `prefers-color-scheme`, overridable with `[data-mode="light" | "dark"]`.
+   - **Selector:** `[data-theme="alpine" | "zurich"]` works on any element, and themes can nest. Alpine also applies on `:root` as the default.
+   - **Mode:** every colour role is emitted as `light-dark(<light>, <dark>)`. `:root` sets `color-scheme: light dark`, so mode follows `prefers-color-scheme`. `[data-mode="light" | "dark"]` sets `color-scheme` on any element. Because `color-scheme` inherits, nested themes follow the surrounding mode automatically.
+   - **Text-on-tint roles:** `on-accent-subtle`, `on-success-subtle`, `on-warning-subtle` and `on-danger-subtle`.
+   - **Decorative role:** `brand-signal`. In Alpine it is glacier 500 (#7FA7C9 light, #9DC0DE dark).
 
 ### Shade usage rule
 
