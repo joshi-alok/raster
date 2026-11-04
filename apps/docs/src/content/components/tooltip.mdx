@@ -1,0 +1,33 @@
+---
+title: Tooltip
+group: Overlay and navigation
+order: 3
+summary: A short inverted label that describes a control on hover and on keyboard focus.
+interactive: true
+props:
+  - name: children
+    type: ReactNode
+    description: The tooltip text. Keep it to a few words.
+  - name: placement
+    type: Placement
+    default: '"top"'
+    description: Side of the trigger; it flips when there is no room.
+  - name: offset
+    type: number
+    default: "8"
+    description: Distance from the trigger in pixels.
+  - name: TooltipTrigger delay / closeDelay
+    type: number
+    description: Milliseconds before showing and hiding.
+a11y:
+  - It appears on keyboard focus as well as hover, describes the trigger through aria-describedby, and Escape hides it.
+  - It never holds essential information or interactive content; touch users may never see it.
+  - Pair it with an IconButton to show its label to sighted users.
+---
+import Example from "../../components/Example.astro";
+import IconHint from "../../demos/tooltip/IconHint";
+import iconHintSource from "../../demos/tooltip/IconHint.tsx?raw";
+
+<Example title="Icon button hint" source={iconHintSource}>
+  <IconHint client:load />
+</Example>

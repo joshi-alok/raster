@@ -1,0 +1,39 @@
+---
+title: Dialog
+group: Overlay and navigation
+order: 1
+summary: A modal window over a scrim that holds focus until it is closed.
+interactive: true
+props:
+  - name: title
+    type: ReactNode
+    description: Required. The heading that names the dialog.
+  - name: children
+    type: "ReactNode | ({ close }) => ReactNode"
+    description: Content; the function form receives close for buttons inside.
+  - name: role
+    type: '"dialog" | "alertdialog"'
+    default: '"dialog"'
+    description: Use alertdialog for confirmations that interrupt the user.
+  - name: isDismissable
+    type: boolean
+    default: true for dialog, false for alertdialog
+    description: Whether a click on the scrim closes it.
+  - name: isOpen / defaultOpen / onOpenChange
+    type: boolean / (isOpen) => void
+    description: Controlled use without a DialogTrigger, for example from a menu item.
+  - name: DialogTrigger
+    type: component
+    description: Wraps the trigger Button and the Dialog; opens the dialog on press.
+a11y:
+  - Focus moves into the dialog when it opens, stays inside while it is open, and returns to the trigger when it closes.
+  - Escape closes it; the title names it for screen readers.
+  - Content behind the scrim is hidden from assistive technology while the dialog is open.
+---
+import Example from "../../components/Example.astro";
+import EditProfile from "../../demos/dialog/EditProfile";
+import editProfileSource from "../../demos/dialog/EditProfile.tsx?raw";
+
+<Example title="Edit profile" source={editProfileSource}>
+  <EditProfile client:load />
+</Example>
