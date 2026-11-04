@@ -1,0 +1,92 @@
+---
+import { initials, PEOPLE, PRINCIPLES, STEPS } from "../data/studio";
+import Site from "../layouts/Site.astro";
+---
+<Site title="Studio" description="Who we are and how we work: eight designers and a developer in Lucerne.">
+  <div class="sw-container">
+    <section class="sw-section st-hero" aria-labelledby="studio-title">
+      <div class="sw-grid" data-layout="hanging">
+        <p class="sw-type-label sw-text-secondary">Studio</p>
+        <div class="st-stack">
+          <h1 id="studio-title" class="sw-type-h1 st-hero-title">A small studio for work that has to hold up in public.</h1>
+          <div class="st-stack sw-measure">
+            <p class="sw-type-h4 sw-text-secondary">
+              Studio Achse was founded in Lucerne in 2011. We are eight designers and one developer, and we
+              work mostly for public institutions: transport, culture, health and housing.
+            </p>
+            <p>
+              <i lang="de">Achse</i> means axis. Every project starts by finding the one line the rest can
+              align to: a reader's path, a passenger's route, the order of a programme. Once it is found,
+              the design becomes a set of decisions that follow from it.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sw-section st-section" aria-labelledby="principles-title">
+      <div class="sw-grid" data-layout="hanging">
+        <h2 id="principles-title" class="sw-type-label sw-text-secondary">What we believe</h2>
+        <ol class="st-rows">
+          {
+            PRINCIPLES.map((p) => (
+              <li>
+                <h3 class="sw-type-h3">{p.title}</h3>
+                <p class="sw-text-secondary">{p.body}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <section class="sw-section st-section" aria-labelledby="steps-title">
+      <div class="sw-grid" data-layout="hanging">
+        <h2 id="steps-title" class="sw-type-label sw-text-secondary">How we work</h2>
+        <ol class="st-figures">
+          {
+            STEPS.map((s, i) => (
+              <li>
+                <span class="sw-type-label sw-text-secondary">Step {i + 1}</span>
+                <h3 class="sw-type-h4">{s.title}</h3>
+                <p class="sw-type-caption sw-text-secondary">{s.body}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <section class="sw-section st-section" aria-labelledby="people-title">
+      <div class="st-section-head">
+        <h2 id="people-title" class="sw-type-h2">People</h2>
+        <span class="sw-type-caption sw-text-secondary">Portraits are placeholders.</span>
+      </div>
+      <ul class="st-people">
+        {
+          PEOPLE.map((person) => (
+            <li class="st-person">
+              <span class="st-portrait" aria-hidden="true">{initials(person.name)}</span>
+              <h3 class="sw-type-h4">{person.name}</h3>
+              <span class="sw-type-caption sw-text-secondary">{person.role}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="sw-section st-section" aria-labelledby="join-title">
+      <div class="sw-grid" data-layout="hanging">
+        <p class="sw-type-label sw-text-secondary">Join us</p>
+        <div class="st-cta">
+          <h2 id="join-title" class="sw-type-h2">We hire one or two designers a year.</h2>
+          <p class="sw-measure sw-text-secondary">
+            Send a short letter and five projects you can explain from start to finish. We read every
+            application and reply within three weeks.
+          </p>
+          <a class="sw-button" data-variant="secondary" href="/contact/">Get in touch</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</Site>

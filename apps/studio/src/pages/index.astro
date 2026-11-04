@@ -1,0 +1,98 @@
+---
+import Art from "../components/Art.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import { PROJECTS } from "../data/projects";
+import { CLIENTS, FIGURES, SERVICES } from "../data/studio";
+import Site from "../layouts/Site.astro";
+
+const featured = PROJECTS.slice(0, 3);
+const lead = PROJECTS[0];
+---
+<Site title="Home" description="Studio Achse is a design studio in Lucerne for identity, wayfinding, editorial and digital work.">
+  <div class="sw-container">
+    <section class="sw-section st-hero" aria-labelledby="hero-title">
+      <div class="sw-grid" data-layout="hanging">
+        <p class="sw-type-label sw-text-secondary">Design studio · Lucerne</p>
+        <div class="st-stack">
+          <h1 id="hero-title" class="sw-type-display st-hero-title">We design the things people find their way through.</h1>
+          <p class="sw-type-h4 sw-measure sw-text-secondary">
+            Identity, wayfinding, editorial and digital work for public institutions and the companies
+            that serve them. Clear first, then beautiful.
+          </p>
+          <div class="sw-stack" data-direction="row" data-gap="3">
+            <a class="sw-button" data-variant="primary" href="/work/">See our work</a>
+            <a class="sw-button" data-variant="secondary" href="/studio/">About the studio</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <figure class="sw-figure">
+      <Art kind={lead.cover} label={lead.coverLabel} ratio="16:9" />
+      <figcaption class="sw-type-caption sw-text-secondary">
+        {lead.title} — {lead.summary} <a class="sw-link" href={`/work/${lead.slug}/`}>Read the case study</a>
+      </figcaption>
+    </figure>
+
+    <section class="sw-section st-section" aria-labelledby="work-title">
+      <div class="st-section-head">
+        <h2 id="work-title" class="sw-type-h2">Selected work</h2>
+        <a class="sw-link" href="/work/">All projects</a>
+      </div>
+      <ul class="st-projects">
+        {featured.map((project) => <li><ProjectCard project={project} /></li>)}
+      </ul>
+    </section>
+
+    <section class="sw-section st-section" aria-labelledby="services-title">
+      <div class="sw-grid" data-layout="hanging">
+        <h2 id="services-title" class="sw-type-label sw-text-secondary">What we do</h2>
+        <ol class="st-rows">
+          {
+            SERVICES.map((service, i) => (
+              <li>
+                <h3 class="sw-type-h3">
+                  <span class="sw-mono sw-text-secondary sw-type-label">{String(i + 1).padStart(2, "0")}</span> {service.title}
+                </h3>
+                <p class="sw-text-secondary">{service.body}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <section class="sw-section st-section" aria-labelledby="figures-title">
+      <div class="sw-grid" data-layout="hanging">
+        <h2 id="figures-title" class="sw-type-label sw-text-secondary">The studio in figures</h2>
+        <ul class="st-figures">
+          {
+            FIGURES.map((f) => (
+              <li>
+                <span class="st-figure-value">{f.value}</span>
+                <span class="sw-type-caption sw-text-secondary">{f.label}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <section class="sw-section st-section" aria-labelledby="clients-title">
+      <div class="sw-grid" data-layout="hanging">
+        <h2 id="clients-title" class="sw-type-label sw-text-secondary">Clients include</h2>
+        <ul class="st-clients">{CLIENTS.map((client) => <li>{client}</li>)}</ul>
+      </div>
+    </section>
+
+    <section class="sw-section st-section" aria-labelledby="cta-title">
+      <div class="sw-grid" data-layout="hanging">
+        <p class="sw-type-label sw-text-secondary">Next</p>
+        <div class="st-cta">
+          <h2 id="cta-title" class="sw-type-h1 st-hero-title">Have something people need to find, read or use?</h2>
+          <a class="sw-button" data-variant="primary" href="/contact/">Start a project</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</Site>

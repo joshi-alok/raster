@@ -1,0 +1,371 @@
+/*
+ * Studio Achse: composition rules for this site only. Everything visual comes from Raster tokens
+ * and the sw- class contract; these rules arrange it. Unlayered, so they win over Raster's layers.
+ */
+
+/* Artwork: theme roles only. */
+.st-art {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  border-radius: var(--radius);
+}
+.st-tint { fill: var(--surface-subtle); }
+.st-paper { fill: var(--surface-page); }
+.st-paper-framed { fill: var(--surface-page); stroke: var(--border); stroke-width: 2; }
+.st-paper-ink { fill: var(--surface-page); stroke: var(--text-primary); stroke-width: 8; }
+.st-ink { fill: var(--text-primary); }
+.st-muted { fill: var(--text-muted); }
+.st-accent { fill: var(--accent); }
+.st-accent-subtle { fill: var(--accent-subtle); }
+.st-signal { fill: var(--brand-signal); }
+.st-line-strong { fill: var(--border-strong); }
+.st-stroke-ink { fill: none; stroke: var(--text-primary); stroke-width: 4; }
+.st-stroke-accent { fill: none; stroke: var(--accent); stroke-width: 4; }
+.st-thick { stroke-width: 16; stroke-linejoin: round; stroke-linecap: square; }
+
+/* Header */
+.st-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--text-h4-size);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.st-wordmark-mark {
+  inline-size: 0.75em;
+  block-size: 0.75em;
+  background-color: var(--brand-signal);
+}
+
+a.st-wordmark:focus-visible {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+@media (width < 600px) {
+  .st-header-cta {
+    display: none;
+  }
+}
+
+/* Page sections */
+.st-section {
+  padding-block: var(--space-9);
+}
+
+.st-section + .st-section {
+  border-block-start: 1px solid var(--border);
+}
+
+.st-hero {
+  padding-block: var(--space-9) var(--space-8);
+}
+
+.st-hero-title {
+  max-inline-size: 18ch;
+}
+
+.st-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-inline-size: 0;
+}
+
+.st-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-block-end: var(--space-7);
+}
+
+.st-plain-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Project cards: the whole card is one link; the image sits above the text. */
+.st-projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  gap: var(--space-7) var(--grid-gutter);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.st-project {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  color: inherit;
+  text-decoration: none;
+}
+
+.st-project-title {
+  margin: 0;
+  font-size: var(--text-h4-size);
+  font-weight: 500;
+  line-height: var(--text-h4-leading);
+}
+
+.st-project:hover .st-project-title {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.st-project:focus-visible {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+.st-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  color: var(--text-secondary);
+}
+
+/* Services, principles, steps: numbered rows on the hanging grid. */
+.st-rows {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.st-rows > li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-2) var(--grid-gutter);
+  padding-block: var(--space-5);
+  border-block-start: 1px solid var(--border);
+}
+
+.st-rows > li:first-child {
+  border-block-start-color: var(--text-primary);
+}
+
+@container (min-width: 600px) {
+  .st-rows > li {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  }
+}
+
+.st-rows h3 {
+  margin: 0;
+}
+
+/* Figures: a band of numbers with mono labels. */
+.st-figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+  gap: var(--space-6) var(--grid-gutter);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.st-figures li {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-block-start: var(--space-4);
+  border-block-start: 2px solid var(--brand-signal);
+}
+
+.st-figures .st-figure-value {
+  font-size: var(--text-h1-size);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: var(--text-h1-tracking);
+  font-variant-numeric: tabular-nums;
+}
+
+.st-clients {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  gap: var(--space-3) var(--grid-gutter);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.st-clients li {
+  padding-block: var(--space-3);
+  border-block-end: 1px solid var(--border);
+}
+
+/* Closing call to action. */
+.st-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-6);
+}
+
+/* Case study */
+.st-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  gap: var(--space-5) var(--grid-gutter);
+  margin: 0;
+}
+
+.st-facts div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-block-start: var(--space-3);
+  border-block-start: 1px solid var(--border);
+}
+
+.st-facts dd {
+  margin: 0;
+}
+
+.st-quote {
+  margin: 0;
+  padding-inline-start: var(--space-5);
+  border-inline-start: 2px solid var(--brand-signal);
+}
+
+.st-quote blockquote,
+.st-quote p {
+  margin: 0;
+}
+
+.st-quote figcaption {
+  margin-block-start: var(--space-4);
+}
+
+.st-figure-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: var(--space-6) var(--grid-gutter);
+}
+
+/* People: initials tiles in place of portraits. */
+.st-people {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  gap: var(--space-6) var(--grid-gutter);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.st-person {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.st-portrait {
+  display: grid;
+  place-items: end start;
+  aspect-ratio: 4 / 5;
+  padding: var(--space-4);
+  border-radius: var(--radius);
+  background-color: var(--surface-subtle);
+  background-image: linear-gradient(to top, var(--accent-subtle) 0 38%, transparent 38%);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-h2-size);
+  line-height: 1;
+}
+
+.st-person h3 {
+  margin: 0;
+}
+
+/* Contact */
+.st-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-inline-size: 40rem;
+}
+
+.st-form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--space-5) var(--grid-gutter);
+}
+
+.st-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.st-form-status:empty {
+  display: none;
+}
+
+/* Footer */
+.st-footer {
+  border-block-start: 1px solid var(--border);
+  background-color: var(--surface-subtle);
+}
+
+.st-footer-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.st-footer address {
+  font-style: normal;
+}
+
+.st-footer-rule {
+  margin-block: var(--space-7) var(--space-4);
+}
+
+.st-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-6);
+}
+
+.st-switch-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.st-segment {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.st-toggle[aria-pressed="true"] {
+  box-shadow: inset 0 0 0 1px var(--accent);
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.3em;
+}
+
+/* Work index: on a narrow container, keep year and project; the cards above carry the rest. */
+@container (width < 36rem) {
+  .st-index [data-wide] {
+    display: none;
+  }
+}

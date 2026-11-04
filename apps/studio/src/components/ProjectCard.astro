@@ -1,0 +1,21 @@
+---
+import type { Project } from "../data/projects";
+import Art from "./Art.astro";
+
+interface Props {
+  project: Project;
+  headingLevel?: 2 | 3;
+}
+const { project, headingLevel = 3 } = Astro.props;
+const Heading = `h${headingLevel}` as "h2" | "h3";
+---
+<a class="st-project" href={`/work/${project.slug}/`}>
+  <Art kind={project.cover} label="" />
+  <Heading class="st-project-title">{project.title}</Heading>
+  <span class="st-meta sw-type-caption">
+    <span>{project.client}</span>
+    <span>{project.disciplines.join(", ")}</span>
+    <span>{project.year}</span>
+  </span>
+  <span class="sw-text-secondary">{project.summary}</span>
+</a>
