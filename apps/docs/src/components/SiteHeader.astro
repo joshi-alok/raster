@@ -1,0 +1,16 @@
+---
+import { ariaCurrent, NAV } from "../lib/nav";
+const path = Astro.url.pathname;
+---
+<header class="sw-header" data-sticky>
+  <a class="sw-skip-link" href="#main">Skip to content</a>
+  <div class="sw-header-inner">
+    <div class="sw-header-brand"><a class="docs-brand" href="/">Raster</a></div>
+    <nav class="sw-header-nav" aria-label="Main">
+      {NAV.map((item) => <a class="sw-link" href={item.href} aria-current={ariaCurrent(path, item)}>{item.label}</a>)}
+    </nav>
+    <div class="sw-header-actions">
+      <button type="button" class="sw-button docs-toggle" data-variant="ghost" data-setting="grid" data-value="on" data-toggle aria-pressed="false">Grid</button>
+    </div>
+  </div>
+</header>

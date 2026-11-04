@@ -1,0 +1,40 @@
+---
+const GROUPS = [
+  { key: "theme", label: "Theme", options: [["alpine", "Alpine"], ["zurich", "Zürich"]] },
+  { key: "mode", label: "Mode", options: [["system", "System"], ["light", "Light"], ["dark", "Dark"]] },
+  { key: "motion", label: "Motion", options: [["full", "Full"], ["reduce", "Reduced"]] },
+] as const;
+---
+<footer class="docs-footer">
+  <div class="sw-container docs-footer-inner">
+    <div class="sw-grid" data-layout="hanging">
+      <h2 class="sw-type-label sw-text-secondary">Display</h2>
+      <div class="docs-settings">
+        {
+          GROUPS.map((group) => (
+            <div class="docs-setting" role="group" aria-labelledby={`setting-${group.key}`}>
+              <span id={`setting-${group.key}`} class="sw-type-label sw-text-secondary">
+                {group.label}
+              </span>
+              <div class="docs-segment">
+                {group.options.map(([value, label]) => (
+                  <button
+                    type="button"
+                    class="sw-button docs-toggle"
+                    data-variant="secondary"
+                    data-setting={group.key}
+                    data-value={value}
+                    aria-pressed="false"
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <p class="sw-type-caption sw-text-secondary">Raster, a Swiss Style design system. Set in Geist.</p>
+  </div>
+</footer>
