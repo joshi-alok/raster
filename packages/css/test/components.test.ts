@@ -59,3 +59,15 @@ describe("button", () => {
     expect(rule(".sw-icon-button")).toMatch(/inline-size:\s*var\(--control-height\)/);
   });
 });
+
+describe("link", () => {
+  it("uses the accent colour with a thin underline that thickens on hover", () => {
+    expect(rule(".sw-link")).toMatch(/color:\s*var\(--accent\)/);
+    expect(rule(".sw-link")).toMatch(/text-decoration-thickness:\s*1px/);
+    expect(rule(".sw-link:hover")).toMatch(/text-decoration-thickness:\s*2px/);
+  });
+
+  it("mirrors the external-link arrow in right-to-left text", () => {
+    expect(css).toMatch(/\.sw-link svg:dir\(rtl\)\s*\{[^}]*scaleX\(-1\)/);
+  });
+});

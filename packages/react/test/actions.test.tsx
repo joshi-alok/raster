@@ -4,6 +4,7 @@ import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { Button } from "../src/actions/Button";
 import { IconButton } from "../src/actions/IconButton";
+import { Link } from "../src/actions/Link";
 import { expectAccessible } from "./axe";
 
 describe("Button", () => {
@@ -67,6 +68,36 @@ describe("IconButton", () => {
           <X />
         </IconButton>
       </div>,
+    );
+    await expectAccessible(container);
+  });
+});
+
+describe("Link", () => {
+  it("renders a plain link by default", () => {
+    render(<Link href="/docs">Docs</Link>);
+    const a = screen.getByRole("link", { name: "Docs" });
+    expect(a).toHaveClass("sw-link");
+    expect(a).not.toHaveAttribute("target");
+  });
+
+  it("opens external links in a new tab and says so to screen readers", () => {
+    render(
+      <Link href="https://example.com" external>
+        Example
+      </Link>,
+    );
+    const a = screen.getByRole("link", { name: "Example (opens in a new tab)" });
+    expect(a).toHaveAttribute("target", "_blank");
+    expect(a).toHaveAttribute("rel", "noopener noreferrer");
+    expect(a.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("has no structural violations", async () => {
+    const { container } = render(
+      <p>
+        Read the <Link href="/docs">docs</Link> or <Link href="https://example.com" external>example</Link>.
+      </p>,
     );
     await expectAccessible(container);
   });

@@ -10,3 +10,4 @@
 @import "./utilities.css" layer(raster.utilities);
 @import "./components/figure.css" layer(raster.components);
 @import "./components/button.css" layer(raster.components);
+@import "./components/link.css" layer(raster.components);
