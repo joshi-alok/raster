@@ -1,0 +1,27 @@
+---
+title: Heading
+group: Type
+order: 1
+summary: A heading whose outline level and visual size are set independently.
+props:
+  - name: level
+    type: 1 | 2 | 3 | 4 | 5 | 6
+    description: Required. The element (h1 to h6) and its place in the document outline.
+  - name: size
+    type: '"display" | "h1" | "h2" | "h3" | "h4"'
+    default: matches the level
+    description: Visual size from the type scale. Levels 5 and 6 default to h4.
+  - name: className
+    type: string
+    description: Extra classes, added after the size class.
+a11y:
+  - Choose the level for structure and the size for appearance; never skip a level to get a smaller heading.
+  - Use one level-1 heading per page.
+---
+import Example from "../../components/Example.astro";
+import LevelsAndSizes from "../../demos/heading/LevelsAndSizes";
+import levelsSource from "../../demos/heading/LevelsAndSizes.tsx?raw";
+
+<Example title="Levels and sizes" source={levelsSource} of={LevelsAndSizes}>
+  <LevelsAndSizes />
+</Example>

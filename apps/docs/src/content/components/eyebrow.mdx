@@ -1,0 +1,24 @@
+---
+title: Eyebrow
+group: Type
+order: 3
+summary: A small mono label that annotates a heading or section, Swiss-style, with numbers and slashes.
+props:
+  - name: as
+    type: ElementType
+    default: '"span"'
+    description: Element to render; use "p" when the label stands alone.
+  - name: className
+    type: string
+    description: Extra classes, added after sw-type-label.
+a11y:
+  - An eyebrow is not a heading; keep the real heading as the next element so the outline stays meaningful.
+  - It is named Eyebrow, not Label, so it is never confused with a form field label.
+---
+import Example from "../../components/Example.astro";
+import Basic from "../../demos/eyebrow/Basic";
+import basicSource from "../../demos/eyebrow/Basic.tsx?raw";
+
+<Example title="Above a heading" source={basicSource} of={Basic}>
+  <Basic />
+</Example>

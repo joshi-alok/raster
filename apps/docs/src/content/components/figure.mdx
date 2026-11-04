@@ -1,0 +1,25 @@
+---
+title: Figure
+group: Type
+order: 4
+summary: An image, chart or table with a caption set in the secondary caption style.
+props:
+  - name: caption
+    type: ReactNode
+    description: Required. Rendered as the figcaption, after the content.
+  - name: children
+    type: ReactNode
+    description: Required. The figure content.
+  - name: className
+    type: string
+    description: Extra classes, added after sw-figure.
+a11y:
+  - The figcaption names the figure for assistive technology; images inside still need their own alt text or role="img" with a label.
+---
+import Example from "../../components/Example.astro";
+import Basic from "../../demos/figure/Basic";
+import basicSource from "../../demos/figure/Basic.tsx?raw";
+
+<Example title="With a caption" source={basicSource} of={Basic}>
+  <Basic />
+</Example>
