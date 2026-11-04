@@ -1,0 +1,36 @@
+---
+title: Checkbox
+group: Forms
+order: 5
+summary: A single on or off choice, with an indeterminate state for partial selections.
+interactive: true
+props:
+  - name: children
+    type: ReactNode
+    description: The label, rendered beside the box.
+  - name: isSelected / defaultSelected
+    type: boolean
+    description: Controlled or initial state.
+  - name: onChange
+    type: "(isSelected: boolean) => void"
+    description: Called when the state changes.
+  - name: isIndeterminate
+    type: boolean
+    default: "false"
+    description: Shows a dash for "some selected"; it is announced as mixed.
+  - name: isDisabled / isRequired / isInvalid
+    type: boolean
+    default: "false"
+    description: Availability and validation states.
+a11y:
+  - A native checkbox input carries the state, visually hidden behind the drawn box, so the whole label is clickable.
+  - Checked and indeterminate states show a tick or a dash, not just a fill colour.
+  - Space toggles it; a standalone required checkbox shows only a danger border when invalid, so explain the requirement in nearby text.
+---
+import Example from "../../components/Example.astro";
+import States from "../../demos/checkbox/States";
+import statesSource from "../../demos/checkbox/States.tsx?raw";
+
+<Example title="States" source={statesSource} of={States}>
+  <States client:load />
+</Example>
