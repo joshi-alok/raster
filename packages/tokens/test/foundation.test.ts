@@ -52,6 +52,7 @@ describe("foundationTokens", () => {
     expect(t["content-max"]).toBe("90rem");
     expect(t["control-height"]).toBe("2.5rem");
     expect(t["target-min"]).toBe("2.75rem");
+    expect(t["header-height"]).toBe("4rem");
     expect(t["focus-width"]).toBe("2px");
     expect(t["dur-fast"]).toBe("120ms");
     expect(t["ease-standard"]).toBe("cubic-bezier(0.2, 0, 0, 1)");

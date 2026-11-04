@@ -62,6 +62,7 @@ export function foundationTokens(): Record<string, string> {
     "content-max": "90rem",
     "control-height": rem(40),
     "target-min": rem(44),
+    "header-height": rem(64),
     "focus-width": "2px",
     "focus-offset": "2px",
     "radius-full": "9999px",

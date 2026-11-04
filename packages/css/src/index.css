@@ -25,3 +25,4 @@
 @import "./components/toast.css" layer(raster.components);
 @import "./components/breadcrumbs.css" layer(raster.components);
 @import "./components/tabs.css" layer(raster.components);
+@import "./components/header.css" layer(raster.components);

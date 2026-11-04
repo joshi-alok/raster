@@ -1,7 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { Link } from "../src/actions/Link";
 import { Breadcrumb, Breadcrumbs } from "../src/navigation/Breadcrumbs";
+import { Header } from "../src/navigation/Header";
 import { Tab, TabList, TabPanel, Tabs } from "../src/navigation/Tabs";
 import { expectAccessible } from "./axe";
 
@@ -106,6 +108,68 @@ describe("Tabs", () => {
 
   it("has no structural violations", async () => {
     const { container } = render(<Example />);
+    await expectAccessible(container);
+  });
+});
+
+describe("Header", () => {
+  function Page() {
+    return (
+      <>
+        <Header
+          brand={<a href="/">Raster</a>}
+          actions={<button type="button">Theme</button>}
+        >
+          <Link href="/foundations">Foundations</Link>
+          <Link href="/components" aria-current="page">
+            Components
+          </Link>
+        </Header>
+        <main id="main" tabIndex={-1}>
+          Content
+        </main>
+      </>
+    );
+  }
+
+  it("is a banner with a skip link first, then brand, nav and actions", () => {
+    render(<Page />);
+    const banner = screen.getByRole("banner");
+    expect(banner).toHaveClass("sw-header");
+    expect(banner).toHaveAttribute("data-sticky");
+    const skip = screen.getByRole("link", { name: "Skip to content" });
+    expect(skip).toHaveAttribute("href", "#main");
+    expect(skip).toHaveClass("sw-skip-link");
+    expect(banner.querySelector("a")).toBe(skip);
+    expect(screen.getByRole("navigation", { name: "Main" })).toHaveClass("sw-header-nav");
+    expect(screen.getByRole("button", { name: "Theme" }).closest(".sw-header-actions")).not.toBeNull();
+  });
+
+  it("puts the skip link first in the tab order", async () => {
+    const user = userEvent.setup();
+    render(<Page />);
+    await user.tab();
+    expect(screen.getByRole("link", { name: "Skip to content" })).toHaveFocus();
+  });
+
+  it("marks the current page link", () => {
+    render(<Page />);
+    expect(screen.getByRole("link", { name: "Components" })).toHaveAttribute("aria-current", "page");
+  });
+
+  it("can opt out of sticky and rename the landmark and skip target", () => {
+    render(
+      <Header brand="Raster" sticky={false} navLabel="Primary" skipTo="#content">
+        <Link href="/">Home</Link>
+      </Header>,
+    );
+    expect(screen.getByRole("banner")).not.toHaveAttribute("data-sticky");
+    expect(screen.getByRole("navigation", { name: "Primary" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Skip to content" })).toHaveAttribute("href", "#content");
+  });
+
+  it("has no structural violations", async () => {
+    const { container } = render(<Page />);
     await expectAccessible(container);
   });
 });

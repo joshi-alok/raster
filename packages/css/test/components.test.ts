@@ -469,3 +469,28 @@ describe("tabs", () => {
     );
   });
 });
+
+describe("header", () => {
+  it("sticks to the top below modals and toasts", () => {
+    const r = rule(".sw-header[data-sticky]");
+    expect(r).toMatch(/position:\s*sticky/);
+    expect(r).toMatch(/z-index:\s*var\(--z-sticky\)/);
+  });
+
+  it("keeps focused content clear of the sticky header (WCAG 2.4.11)", () => {
+    expect(css).toMatch(
+      /:root:has\(\.sw-header\[data-sticky\]\)\s*\{[^}]*scroll-padding-block-start:\s*calc\(var\(--header-height\) \+ var\(--space-4\)\)/,
+    );
+  });
+
+  it("hides the skip link off-screen until it is focused", () => {
+    expect(rule(".sw-skip-link")).toMatch(/transform:\s*translateY\(/);
+    expect(rule(".sw-skip-link:focus")).toMatch(/transform:\s*none/);
+  });
+
+  it("marks the current nav item with weight and underline", () => {
+    const r = rule('.sw-header-nav .sw-link[aria-current="page"]');
+    expect(r).toMatch(/font-weight:\s*500/);
+    expect(r).toMatch(/text-decoration-line:\s*underline/);
+  });
+});
