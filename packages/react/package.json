@@ -2,6 +2,7 @@
   "name": "@raster/react",
   "version": "0.1.0",
   "private": true,
+  "sideEffects": false,
   "type": "module",
   "exports": {
     ".": {
@@ -16,11 +17,10 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^19.0.0"
   },
   "dependencies": {
-    "lucide-react": "1.68.0"
+    "lucide-react": "^1.68.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "6.10.0",

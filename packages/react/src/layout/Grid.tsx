@@ -15,7 +15,7 @@ export type GridProps<E extends ElementType = "div"> = PolymorphicProps<
     /** Tint the columns (development aid). */
     debug?: boolean;
     rowGap?: SpaceStep;
-    style?: CSSProperties;
+    style?: CSSProperties & CSSVars;
   }
 >;
 

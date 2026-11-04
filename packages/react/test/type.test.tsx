@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { Eyebrow } from "../src/type/Eyebrow";
 import { Figure } from "../src/type/Figure";
 import { Heading } from "../src/type/Heading";
-import { Label } from "../src/type/Label";
 import { Text } from "../src/type/Text";
 import { expectAccessible } from "./axe";
 
@@ -47,9 +47,9 @@ describe("Text", () => {
   });
 });
 
-describe("Label", () => {
-  it("renders a mono label span", () => {
-    render(<Label>01 / Grid</Label>);
+describe("Eyebrow", () => {
+  it("renders a mono annotation span", () => {
+    render(<Eyebrow>01 / Grid</Eyebrow>);
     const el = screen.getByText("01 / Grid");
     expect(el.tagName).toBe("SPAN");
     expect(el).toHaveClass("sw-type-label");

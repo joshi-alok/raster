@@ -31,18 +31,10 @@
   inset-inline: 0;
 }
 
-.sw-button:hover {
-  background-color: var(--surface-subtle);
-}
-
 .sw-button[data-variant="primary"] {
   border-color: var(--accent);
   background-color: var(--accent);
   color: var(--on-accent);
-}
-
-.sw-button[data-variant="primary"]:hover {
-  background-color: color-mix(in srgb, var(--accent) 85%, var(--text-primary));
 }
 
 .sw-button[data-variant="ghost"] {
@@ -55,8 +47,18 @@
   color: var(--on-danger);
 }
 
-.sw-button[data-variant="danger"]:hover {
-  background-color: color-mix(in srgb, var(--danger) 85%, var(--text-primary));
+@media (hover: hover) {
+  .sw-button:hover:not(:disabled, [aria-disabled="true"]) {
+    background-color: var(--surface-subtle);
+  }
+
+  .sw-button[data-variant="primary"]:hover:not(:disabled, [aria-disabled="true"]) {
+    background-color: color-mix(in srgb, var(--accent) 85%, var(--text-primary));
+  }
+
+  .sw-button[data-variant="danger"]:hover:not(:disabled, [aria-disabled="true"]) {
+    background-color: color-mix(in srgb, var(--danger) 85%, var(--text-primary));
+  }
 }
 
 .sw-button:is(:disabled, [aria-disabled="true"]) {

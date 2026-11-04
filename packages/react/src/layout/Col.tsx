@@ -13,7 +13,7 @@ export type ColProps<E extends ElementType = "div"> = PolymorphicProps<
   {
     span?: PerColumnCount;
     start?: PerColumnCount;
-    style?: CSSProperties;
+    style?: CSSProperties & CSSVars;
   }
 >;
 

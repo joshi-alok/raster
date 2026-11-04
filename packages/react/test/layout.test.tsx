@@ -120,3 +120,12 @@ describe("layout accessibility", () => {
     await expectAccessible(container);
   });
 });
+
+describe("style typing", () => {
+  it("accepts CSS custom properties on Col and Grid", () => {
+    render(<Col data-testid="c" style={{ "--x": "1" }} />);
+    expect(screen.getByTestId("c").style.getPropertyValue("--x")).toBe("1");
+    render(<Grid data-testid="g" style={{ "--y": 2 }} />);
+    expect(screen.getByTestId("g").style.getPropertyValue("--y")).toBe("2");
+  });
+});

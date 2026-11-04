@@ -141,3 +141,23 @@ describe("table", () => {
     expect(css).toMatch(/\.sw-table\[data-striped\] tbody tr:nth-child\((?:even|2n)\)\s*\{[^}]*var\(--surface-subtle\)/);
   });
 });
+
+describe("review fixes", () => {
+  it("guards every button hover rule against disabled and hover-less devices", () => {
+    expect(css).not.toMatch(/\.sw-button[^{,]*:hover(?![^{,]*:not\()[^{,]*\s*\{/);
+    const hovers = css.match(/\.sw-button[^{}]*:hover[^{}]*\{/g) ?? [];
+    expect(hovers.length).toBeGreaterThanOrEqual(3);
+    for (const h of hovers) expect(h).toMatch(/:not\(:disabled/);
+    const block = css.match(/@media\s*\(hover:\s*hover\)\s*\{([\s\S]*?\n  \})/)?.[1] ?? "";
+    expect((block.match(/\.sw-button[^{}]*:hover[^{}]*\{/g) ?? []).length).toBe(hovers.length);
+  });
+
+  it("spaces callout body children except the first and the one after the sr-only span", () => {
+    expect(css).toMatch(/\.sw-callout-body\s*>\s*:not\(\s*:first-child\s*,\s*\.sw-sr-only\s*\+\s*\*\s*\)\s*\{[^}]*margin-block-start:\s*var\(--space-2\)/);
+    expect(css).not.toMatch(/\.sw-callout-body\s*>\s*\*\s*\+\s*\*/);
+  });
+
+  it("anchors the callout's sr-only span", () => {
+    expect(rule(".sw-callout")).toMatch(/position:\s*relative/);
+  });
+});

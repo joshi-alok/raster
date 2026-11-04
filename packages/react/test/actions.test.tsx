@@ -102,3 +102,10 @@ describe("Link", () => {
     await expectAccessible(container);
   });
 });
+
+describe("Link rel merging", () => {
+  it("keeps the caller's rel alongside noopener noreferrer", () => {
+    render(<Link external rel="sponsored" href="https://x.test">x</Link>);
+    expect(screen.getByRole("link")).toHaveAttribute("rel", "noopener noreferrer sponsored");
+  });
+});

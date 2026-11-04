@@ -13,7 +13,7 @@ export { Section, type SectionProps } from "./layout/Section";
 export { Stack, type StackProps } from "./layout/Stack";
 export { Figure, type FigureProps } from "./type/Figure";
 export { Heading, type HeadingLevel, type HeadingProps, type HeadingSize } from "./type/Heading";
-export { Label, type LabelProps } from "./type/Label";
+export { Eyebrow, type EyebrowProps } from "./type/Eyebrow";
 export { Text, type TextProps } from "./type/Text";
 export { cx, type ClassValue } from "./utils/cx";
 export type { PolymorphicProps } from "./utils/polymorphic";

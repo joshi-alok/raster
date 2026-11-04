@@ -31,7 +31,7 @@ export function Callout({ tone = "info", title, children, className, ...rest }: 
       <Icon aria-hidden="true" strokeWidth={1.5} />
       <div className="sw-callout-body">
         <span className="sw-sr-only">{TONE_WORDS[tone]}:</span>
-        {title && <p className="sw-callout-title">{title}</p>}
+        {title != null && title !== false && <p className="sw-callout-title">{title}</p>}
         {children}
       </div>
     </div>

@@ -12,7 +12,7 @@ export function Link({ external, className, children, target, rel, ...rest }: Li
     <a
       className={cx("sw-link", className)}
       target={external ? "_blank" : target}
-      rel={external ? "noopener noreferrer" : rel}
+      rel={external ? cx("noopener noreferrer", rel) : rel}
       {...rest}
     >
       {children}

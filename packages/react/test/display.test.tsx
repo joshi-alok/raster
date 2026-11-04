@@ -134,3 +134,27 @@ describe("Table", () => {
     await expectAccessible(container);
   });
 });
+
+describe("review fixes", () => {
+  it("passes wrapperProps to the table wrapper without losing the region", () => {
+    render(
+      <Table caption="Specs" wrapperProps={{ className: "extra", "data-testid": "wrap" } as never}>
+        <tbody><tr><td>x</td></tr></tbody>
+      </Table>,
+    );
+    const wrap = screen.getByTestId("wrap");
+    expect(wrap).toHaveClass("sw-table-wrap", "extra");
+    expect(screen.getByRole("region", { name: "Specs" })).toBe(wrap);
+    expect(wrap).toHaveAttribute("tabindex", "0");
+  });
+
+  it("renders a numeric 0 callout title", () => {
+    const { container } = render(<Callout title={0}>Body</Callout>);
+    expect(container.querySelector(".sw-callout-title")).toHaveTextContent("0");
+  });
+
+  it("omits the callout title for false and null", () => {
+    const { container } = render(<Callout title={false}>Body</Callout>);
+    expect(container.querySelector(".sw-callout-title")).toBeNull();
+  });
+});
