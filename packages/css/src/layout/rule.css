@@ -1,0 +1,14 @@
+.sw-rule {
+  border: 0;
+  border-block-start: 1px solid var(--border);
+  margin-block: var(--space-6);
+}
+
+.sw-rule[data-variant="strong"] {
+  border-block-start-color: var(--text-primary);
+}
+
+.sw-rule[data-variant="signal"] {
+  border-block-start: 2px solid var(--brand-signal);
+  inline-size: var(--space-8);
+}

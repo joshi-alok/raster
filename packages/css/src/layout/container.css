@@ -1,0 +1,16 @@
+.sw-container {
+  container: raster / inline-size;
+  inline-size: 100%;
+  max-inline-size: calc(var(--content-max) + 2 * var(--page-margin));
+  margin-inline: auto;
+  padding-inline: var(--page-margin);
+}
+
+.sw-section {
+  container-type: inline-size;
+  padding-block: var(--space-8);
+}
+
+.sw-bleed {
+  margin-inline: calc(-1 * var(--page-margin));
+}

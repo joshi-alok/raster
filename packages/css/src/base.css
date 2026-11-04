@@ -1,0 +1,120 @@
+:root {
+  font-family: var(--font-sans);
+  background-color: var(--surface-page);
+  color: var(--text-primary);
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:where([data-theme], [data-mode]) {
+  color: var(--text-primary);
+  background-color: var(--surface-page);
+}
+
+body {
+  container-type: inline-size;
+  min-block-size: 100dvh;
+}
+
+/* Each text element picks a step from the type scale through four private custom properties. */
+:where(body) {
+  --_size: var(--text-body-size);
+  --_leading: var(--text-body-leading);
+  --_weight: var(--text-body-weight);
+  --_tracking: var(--text-body-tracking);
+}
+
+:where(h1) {
+  --_size: var(--text-h1-size);
+  --_leading: var(--text-h1-leading);
+  --_weight: var(--text-h1-weight);
+  --_tracking: var(--text-h1-tracking);
+}
+
+:where(h2) {
+  --_size: var(--text-h2-size);
+  --_leading: var(--text-h2-leading);
+  --_weight: var(--text-h2-weight);
+  --_tracking: var(--text-h2-tracking);
+}
+
+:where(h3) {
+  --_size: var(--text-h3-size);
+  --_leading: var(--text-h3-leading);
+  --_weight: var(--text-h3-weight);
+  --_tracking: var(--text-h3-tracking);
+}
+
+:where(h4) {
+  --_size: var(--text-h4-size);
+  --_leading: var(--text-h4-leading);
+  --_weight: var(--text-h4-weight);
+  --_tracking: var(--text-h4-tracking);
+}
+
+:where(body, p, li, dd, dt, figcaption, blockquote, h1, h2, h3, h4) {
+  font-size: var(--_size);
+  line-height: var(--_leading);
+  font-weight: var(--_weight);
+  letter-spacing: var(--_tracking);
+}
+
+/* Snap block text to the 4px baseline where round() is supported. Body stays unitless so it inherits safely. */
+@supports (line-height: round(up, 1px, 4px)) {
+  :where(p, li, dd, dt, figcaption, blockquote, h1, h2, h3, h4) {
+    line-height: round(nearest, calc(var(--_size) * var(--_leading)), 4px);
+  }
+}
+
+:where(h5, h6, b, strong, th) {
+  font-weight: 500;
+}
+
+:where(h1, h2, h3, h4) {
+  text-wrap: balance;
+}
+
+:where(p, li, dd, figcaption, blockquote) {
+  text-wrap: pretty;
+  hyphens: auto;
+}
+
+:where(a) {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+:where(a:hover) {
+  text-decoration-thickness: 2px;
+}
+
+:where(code, kbd, samp, pre) {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+:focus-visible {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+::selection {
+  background-color: var(--accent-subtle);
+  color: var(--on-accent-subtle);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-base: 120ms;
+    --dur-slow: 120ms;
+    --dur-layout: 0ms;
+  }
+}
+
+[data-motion="reduce"] {
+  --dur-base: 120ms;
+  --dur-slow: 120ms;
+  --dur-layout: 0ms;
+}

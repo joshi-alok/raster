@@ -1,0 +1,13 @@
+{
+  "name": "raster",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test",
+    "lint": "pnpm -r run lint",
+    "typecheck": "pnpm -r run typecheck"
+  },
+  "pnpm": { "onlyBuiltDependencies": ["esbuild"] }
+}

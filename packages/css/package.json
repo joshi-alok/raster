@@ -1,0 +1,25 @@
+{
+  "name": "@raster/css",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./dist/raster.css",
+    "./raster.css": "./dist/raster.css"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "pnpm --filter @raster/tokens run build && vitest run",
+    "lint": "stylelint \"src/**/*.css\""
+  },
+  "dependencies": {
+    "@raster/tokens": "workspace:*"
+  },
+  "devDependencies": {
+    "@fontsource-variable/geist": "5.3.0",
+    "@fontsource-variable/geist-mono": "5.3.0",
+    "lightningcss": "1.33.0",
+    "stylelint": "16.26.1",
+    "vitest": "3.2.7"
+  }
+}

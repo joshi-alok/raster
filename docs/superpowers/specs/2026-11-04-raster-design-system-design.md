@@ -55,8 +55,8 @@ The token build script is about 50 lines of TypeScript run with `tsx`. No Style 
 
 - **Columns by container width (CSS container queries), not viewport:**
   - Under 600px: 4 columns
-  - 600–1024px: 8 columns
-  - Over 1024px: 12 columns
+  - 600px up to (not including) 1024px: 8 columns
+  - 1024px and wider: 12 columns
 - **Gutter:** `clamp(16px, 2vw, 32px)`.
 - **Page margin:** `clamp(16px, 5vw, 96px)`.
 - **Max content width:** 1440px.
@@ -71,18 +71,18 @@ The token build script is about 50 lines of TypeScript run with `tsx`. No Style 
 
 - **Hanging:** labels in columns 1–3, content in 4–12. Collapses to stacked under 8 columns.
 - **Asymmetric splits:** 5/7 and 1/3 + 2/3.
-- **Full bleed:** content runs edge to edge, ignoring page margins.
+- **Full bleed:** content cancels the page margins (`.sw-bleed`). Once the container reaches its maximum width it no longer touches the viewport edge; a viewport-wide variant is a version 2 item.
 
 ### Visible grid
 
 - **Column rules:** an optional hairline column-rule treatment (`data-grid-rules`), usable as a design element.
-- **Debug overlay:** shows columns and baseline; toggleable in the docs header.
+- **Debug overlay:** shows tinted columns (Plan 1). A 4px baseline stripe and the docs-header toggle arrive with the docs site (Plan 4).
 
 ## 4. Foundations: typography
 
 - **Families:**
   - **Geist** for all text.
-  - **Geist Mono** for numerals, labels, captions, grid annotations and code.
+  - **Geist Mono** for labels, grid annotations, code and figures in data contexts (`.sw-mono`). Captions stay in Geist.
   - **Fallbacks:** Noto Sans for scripts Geist does not cover, then `system-ui`.
 - **Fluid modular scale:**
   - Ratio 1.2 at a 360px viewport, rising to 1.25 at 1440px.
@@ -112,7 +112,7 @@ The token build script is about 50 lines of TypeScript run with `tsx`. No Style 
 
 ### Token layers
 
-1. **Scales.** Per-theme hue ramps at stops 100/300/500/700/900, plus 50 for neutrals.
+1. **Scales.** Per-theme hue ramps at stops 100/300/500/700/900, plus 50 for neutrals. These are design-time references: the token source stores role values directly, and the scales are added to the DTCG JSON and the docs colour page in Plan 4.
 2. **Roles.** The only layer components consume:
    - **Surfaces:** `surface-page`, `surface-raised`, `surface-subtle`.
    - **Text:** `text-primary`, `text-secondary`, `text-muted`.
@@ -217,7 +217,7 @@ The build-time check enforces these thresholds:
 
 - **Radius:** `radius` is 4px in Alpine and 0 in Zürich. `radius-full` is reserved for Switch and Tag only.
 - **Shadow:** `shadow-overlay` is the only shadow token. It is used by Dialog, Menu, Tooltip and Toast.
-- **Focus:** `focus-ring` is a 2px `accent` outline with a 2px offset.
+- **Focus:** a 2px `accent` outline with a 2px offset, from the `focus-width` and `focus-offset` tokens.
 
 ## 6. Components
 
