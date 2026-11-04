@@ -317,7 +317,31 @@ describe("select", () => {
   });
 
   it("highlights focused options on the subtle surface", () => {
-    expect(rule(".sw-listbox-item[data-focused]")).toMatch(/background-color:\s*var\(--surface-subtle\)/);
-    expect(rule(".sw-listbox-item")).toMatch(/min-block-size:\s*var\(--control-height\)/);
+    expect(css).toMatch(/\.sw-listbox-item\[data-focused\][^{]*\{[^}]*background-color:\s*var\(--surface-subtle\)/);
+    expect(css).toMatch(/\.sw-listbox-item[^{]*\{[^}]*min-block-size:\s*var\(--control-height\)/);
+  });
+});
+
+describe("overlay stylesheet", () => {
+  it("keeps popover and listbox styles, now shared", () => {
+    expect(rule(".sw-popover")).toMatch(/box-shadow:\s*var\(--shadow-overlay\)/);
+    expect(css).toMatch(/\.sw-listbox-item,\s*\.sw-menu-item\s*\{[^}]*min-block-size:\s*var\(--control-height\)/);
+    expect(css).toMatch(/\.sw-listbox-item\[data-focused\],\s*\.sw-menu-item\[data-focused\]\s*\{[^}]*var\(--surface-subtle\)/);
+  });
+
+  it("animates overlays in with a fade and short slide, and out with a fade", () => {
+    expect(css).toMatch(/@keyframes sw-overlay-in\s*\{[^}]*from\s*\{[^}]*opacity:\s*0/);
+    expect(css).toMatch(/:is\(\.sw-popover, \.sw-tooltip, \.sw-modal\)\[data-entering\]\s*\{[^}]*animation:\s*sw-overlay-in var\(--dur-base\) var\(--ease-standard\)/);
+    expect(css).toMatch(/:is\(\.sw-popover, \.sw-tooltip, \.sw-modal\)\[data-exiting\]\s*\{[^}]*animation:\s*sw-overlay-out var\(--dur-fast\)/);
+  });
+
+  it("slides from the trigger side for each placement", () => {
+    expect(css).toMatch(/\[data-placement="?top"?\]\s*\{\s*--_overlay-from:\s*translateY\(4px\)/);
+    expect(css).toMatch(/\[data-placement="?left"?\]\s*\{\s*--_overlay-from:\s*translateX\(4px\)/);
+  });
+
+  it("falls back to a plain fade under reduced motion", () => {
+    expect(css).toMatch(/prefers-reduced-motion: reduce[^{]*\{[^@]*\[data-entering\]\s*\{\s*animation-name:\s*sw-fade-in/);
+    expect(css).toMatch(/\[data-motion="?reduce"?\] :is\(\.sw-popover, \.sw-tooltip, \.sw-modal\)\[data-entering\]\s*\{\s*animation-name:\s*sw-fade-in/);
   });
 });

@@ -55,5 +55,6 @@ describe("foundationTokens", () => {
     expect(t["focus-width"]).toBe("2px");
     expect(t["dur-fast"]).toBe("120ms");
     expect(t["ease-standard"]).toBe("cubic-bezier(0.2, 0, 0, 1)");
+    expect(t["scrim"]).toBe("light-dark(rgb(0 0 0 / 0.4), rgb(0 0 0 / 0.6))");
   });
 });
