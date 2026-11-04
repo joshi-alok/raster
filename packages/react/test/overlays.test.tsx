@@ -13,6 +13,26 @@ import { createToastQueue, ToastRegion } from "../src/overlays/Toast";
 import { ThemeRegion } from "../src/overlays/ThemeRegion";
 
 describe("ThemeRegion", () => {
+  it("renders an initially open overlay inside the themed host on the first render", async () => {
+    render(
+      <ThemeRegion theme="zurich">
+        <Dialog isOpen title="Already open">
+          <p>Body</p>
+        </Dialog>
+      </ThemeRegion>,
+    );
+    const dialog = await screen.findByRole("dialog", { name: "Already open" });
+    expect(dialog.closest(".sw-portal-host")).not.toBeNull();
+    expect(dialog.closest('[data-theme="zurich"]')).not.toBeNull();
+  });
+
+  it("removes its host from the body when unmounted", () => {
+    const { unmount } = render(<ThemeRegion theme="zurich" />);
+    expect(document.body.querySelectorAll(".sw-portal-host")).toHaveLength(1);
+    unmount();
+    expect(document.body.querySelectorAll(".sw-portal-host")).toHaveLength(0);
+  });
+
   it("sets theme and mode attributes on its element", () => {
     render(
       <ThemeRegion theme="zurich" mode="dark" data-testid="r">
