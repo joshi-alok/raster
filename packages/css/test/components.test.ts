@@ -170,3 +170,28 @@ describe("button pressed state", () => {
     );
   });
 });
+
+describe("field", () => {
+  it("stacks label, control, description and error", () => {
+    expect(rule(".sw-field")).toMatch(/display:\s*grid/);
+    expect(rule(".sw-field-label")).toMatch(/font-weight:\s*500/);
+    expect(rule(".sw-field-description")).toMatch(/color:\s*var\(--text-secondary\)/);
+    expect(rule(".sw-field-error")).toMatch(/color:\s*var\(--danger\)/);
+  });
+
+  it("makes inputs 40px controls with a control-strength border", () => {
+    const r = rule(".sw-input");
+    expect(r).toMatch(/min-block-size:\s*var\(--control-height\)/);
+    expect(r).toMatch(/border:\s*1px solid var\(--border-strong\)/);
+    expect(r).toMatch(/background-color:\s*var\(--surface-raised\)/);
+  });
+
+  it("marks invalid inputs with colour and a thicker leading edge", () => {
+    expect(css).toMatch(/\.sw-input\[aria-invalid="?true"?\]\s*\{[^}]*border-color:\s*var\(--danger\)/);
+    expect(css).toMatch(/\.sw-input\[aria-invalid="?true"?\]\s*\{[^}]*border-inline-start-width:\s*4px/);
+  });
+
+  it("lets text areas grow vertically", () => {
+    expect(rule(".sw-textarea")).toMatch(/resize:\s*vertical/);
+  });
+});
