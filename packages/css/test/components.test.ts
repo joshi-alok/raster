@@ -345,3 +345,26 @@ describe("overlay stylesheet", () => {
     expect(css).toMatch(/\[data-motion="?reduce"?\] :is\(\.sw-popover, \.sw-tooltip, \.sw-modal\)\[data-entering\]\s*\{\s*animation-name:\s*sw-fade-in/);
   });
 });
+
+describe("modal dialog", () => {
+  it("covers the viewport with the scrim and centres the modal", () => {
+    const r = rule(".sw-modal-overlay");
+    expect(r).toMatch(/position:\s*fixed/);
+    expect(r).toMatch(/background-color:\s*var\(--scrim\)/);
+    expect(r).toMatch(/place-items:\s*center/);
+  });
+
+  it("is a raised surface with the overlay shadow that scrolls when tall", () => {
+    // overlay.css already has an earlier `.sw-modal` rule (motion custom property), so rule() would
+    // return that one; match the modal.css rule by its declarations instead.
+    const r = css.match(/(?:^|[}\s])\.sw-modal\s*\{([^}]*box-shadow[^}]*)\}/)?.[1] ?? "";
+    expect(r).toMatch(/box-shadow:\s*var\(--shadow-overlay\)/);
+    expect(r).toMatch(/background-color:\s*var\(--surface-raised\)/);
+    expect(r).toMatch(/overflow:\s*auto/);
+  });
+
+  it("fades the scrim in and out", () => {
+    expect(rule(".sw-modal-overlay[data-entering]")).toMatch(/animation:\s*sw-fade-in/);
+    expect(rule(".sw-modal-overlay[data-exiting]")).toMatch(/animation:\s*sw-overlay-out/);
+  });
+});
