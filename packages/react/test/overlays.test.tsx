@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { X } from "lucide-react";
@@ -9,6 +9,7 @@ import { Menu, MenuItem, MenuSeparator, MenuTrigger } from "../src/overlays/Menu
 import { expectAccessible } from "./axe";
 import { Select, SelectItem } from "../src/forms/Select";
 import { Tooltip, TooltipTrigger } from "../src/overlays/Tooltip";
+import { createToastQueue, ToastRegion } from "../src/overlays/Toast";
 import { ThemeRegion } from "../src/overlays/ThemeRegion";
 
 describe("ThemeRegion", () => {
@@ -205,5 +206,32 @@ describe("Tooltip", () => {
     await screen.findByRole("tooltip");
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("tooltip")).toBeNull();
+  });
+});
+
+describe("Toast", () => {
+  it("shows queued toasts with title, description and tone, and dismisses them", async () => {
+    const user = userEvent.setup();
+    const queue = createToastQueue();
+    render(<ToastRegion queue={queue} />);
+    act(() => {
+      queue.add({ title: "File saved", description: "All changes synced.", tone: "success" });
+    });
+    const title = await screen.findByText("File saved");
+    const toast = title.closest(".sw-toast")!;
+    expect(toast).toHaveAttribute("data-tone", "success");
+    expect(screen.getByText("All changes synced.")).toHaveClass("sw-toast-description");
+    expect(toast.querySelector(".sw-toast-icon")).toHaveAttribute("aria-hidden", "true");
+    await user.click(screen.getByRole("button", { name: "Dismiss" }));
+    expect(screen.queryByText("File saved")).toBeNull();
+  });
+
+  it("names the region for assistive tech", () => {
+    const queue = createToastQueue();
+    render(<ToastRegion queue={queue} />);
+    act(() => {
+      queue.add({ title: "Hello" });
+    });
+    expect(screen.getByRole("region", { name: /notifications?/i })).toHaveClass("sw-toast-region");
   });
 });

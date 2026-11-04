@@ -380,3 +380,23 @@ describe("tooltip", () => {
     expect(r).toMatch(/max-inline-size:\s*16rem/);
   });
 });
+
+describe("toast", () => {
+  it("pins the region to the inline-end bottom corner", () => {
+    const r = rule(".sw-toast-region");
+    expect(r).toMatch(/position:\s*fixed/);
+    expect(r).toMatch(/inset-inline-end:\s*var\(--space-5\)/);
+    expect(r).toMatch(/inset-block-end:\s*var\(--space-5\)/);
+  });
+
+  it("is a raised surface with icon, content and close button in a row", () => {
+    const r = rule(".sw-toast");
+    expect(r).toMatch(/grid-template-columns:\s*auto minmax\(0,\s*1fr\) auto/);
+    expect(r).toMatch(/box-shadow:\s*var\(--shadow-overlay\)/);
+  });
+
+  it("colours the tone icon from role tokens", () => {
+    expect(rule('.sw-toast[data-tone="danger"] .sw-toast-icon')).toMatch(/color:\s*var\(--danger\)/);
+    expect(rule('.sw-toast[data-tone="success"] .sw-toast-icon')).toMatch(/color:\s*var\(--success\)/);
+  });
+});
