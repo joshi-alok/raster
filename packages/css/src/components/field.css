@@ -33,7 +33,7 @@
   background-color: var(--surface-raised);
   color: var(--text-primary);
   font-size: var(--text-body-size);
-  line-height: 1.5;
+  line-height: 1.25;
   transition: border-color var(--dur-fast) var(--ease-standard);
 }
 
@@ -61,5 +61,6 @@
 
 .sw-textarea {
   min-block-size: calc(var(--control-height) * 2.5);
+  line-height: 1.5;
   resize: vertical;
 }

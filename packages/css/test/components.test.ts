@@ -194,6 +194,12 @@ describe("field", () => {
   it("lets text areas grow vertically", () => {
     expect(rule(".sw-textarea")).toMatch(/resize:\s*vertical/);
   });
+
+  it("keeps single-line inputs at exactly the 40px control height", () => {
+    // 8px + 8px padding + 2px border + 1.25 × 16–17px text stays under 40px, so min-block-size wins.
+    expect(rule(".sw-input")).toMatch(/line-height:\s*1\.25/);
+    expect(rule(".sw-textarea")).toMatch(/line-height:\s*1\.5/);
+  });
 });
 
 describe("checkbox", () => {
