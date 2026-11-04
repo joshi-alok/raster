@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Raster playground</title>
+    <link rel="stylesheet" href="../node_modules/@fontsource-variable/geist/index.css" />
+    <link rel="stylesheet" href="../node_modules/@fontsource-variable/geist-mono/index.css" />
+    <link rel="stylesheet" href="../dist/raster.css" />
+  </head>
+  <body>
+    <main class="sw-container sw-section">
+      <div class="sw-stack" data-direction="row" data-gap="3">
+        <span class="sw-type-label sw-text-secondary">Theme</span>
+        <button type="button" data-set-theme="alpine">Alpine</button>
+        <button type="button" data-set-theme="zurich">Zürich</button>
+        <span class="sw-type-label sw-text-secondary">Mode</span>
+        <button type="button" data-set-mode="">System</button>
+        <button type="button" data-set-mode="light">Light</button>
+        <button type="button" data-set-mode="dark">Dark</button>
+        <span class="sw-type-label sw-text-secondary">Grid</span>
+        <button type="button" data-toggle-debug>Toggle overlay</button>
+      </div>
+
+      <hr class="sw-rule" data-variant="signal" />
+
+      <div class="sw-grid" data-layout="hanging" data-grid-rules>
+        <p class="sw-type-label sw-text-secondary">01 / Type</p>
+        <div class="sw-stack" data-gap="5">
+          <p class="sw-type-display">Raster und Raum</p>
+          <h1>Form follows grid</h1>
+          <h2>Columns, gutters, rhythm</h2>
+          <h3>A calmer hierarchy</h3>
+          <h4>Section label</h4>
+          <p class="sw-measure">
+            Flush left, ragged right. Body copy holds a 66-character measure so lines stay readable at
+            any width, and <a href="#">links use the accent colour</a>.
+          </p>
+          <p class="sw-type-caption sw-text-secondary">Figure 03 — Supporting text and metadata</p>
+        </div>
+
+        <p class="sw-type-label sw-text-secondary">02 / Grid</p>
+        <div class="sw-grid" id="demo-grid">
+          <div class="sw-col" style="--span-8: 4; --span-12: 4"><p>Span 4 of 12</p></div>
+          <div class="sw-col" style="--span-8: 4; --span-12: 8"><p>Span 8 of 12</p></div>
+          <div class="sw-col" style="--span-4: 2; --span-8: 2; --span-12: 3"><p>3</p></div>
+          <div class="sw-col" style="--span-4: 2; --span-8: 6; --span-12: 9"><p>9</p></div>
+        </div>
+
+        <p class="sw-type-label sw-text-secondary">03 / Split 5 / 7</p>
+        <div class="sw-grid" data-layout="split-5-7">
+          <p>Narrow column. Stacks below 600px of container width.</p>
+          <p class="sw-text-secondary">Wide column. Resize the window to see 4, 8 and 12 columns.</p>
+        </div>
+
+        <p class="sw-type-label sw-text-secondary">04 / Surfaces</p>
+        <div class="sw-stack" data-direction="row" data-gap="3">
+          <p class="sw-type-caption" style="background: var(--surface-subtle); padding: var(--space-4)">surface-subtle</p>
+          <p class="sw-type-caption" style="background: var(--accent-subtle); color: var(--on-accent-subtle); padding: var(--space-4)">accent-subtle</p>
+          <p class="sw-type-caption" style="background: var(--danger-subtle); color: var(--on-danger-subtle); padding: var(--space-4)">danger-subtle</p>
+          <p class="sw-type-caption" style="background: var(--accent); color: var(--on-accent); padding: var(--space-4)">accent</p>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const root = document.documentElement;
+      document.querySelectorAll("[data-set-theme]").forEach((b) =>
+        b.addEventListener("click", () => (root.dataset.theme = b.dataset.setTheme)),
+      );
+      document.querySelectorAll("[data-set-mode]").forEach((b) =>
+        b.addEventListener("click", () => {
+          if (b.dataset.setMode) root.dataset.mode = b.dataset.setMode;
+          else delete root.dataset.mode;
+        }),
+      );
+      document.querySelector("[data-toggle-debug]").addEventListener("click", () => {
+        document.getElementById("demo-grid").toggleAttribute("data-grid-debug");
+      });
+    </script>
+  </body>
+</html>
