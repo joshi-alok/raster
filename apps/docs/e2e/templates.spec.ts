@@ -31,3 +31,11 @@ test("dashboard: figures, a project table with status words, and tabbed activity
   await tabs.getByRole("tab", { name: "Last week" }).click();
   await expect(page.getByRole("tabpanel", { name: "Last week" })).toBeVisible();
 });
+
+test("landing: a display headline, two calls to action and six staggered features", async ({ page }) => {
+  await page.goto("/templates/landing/");
+  await expect(page.locator("h1")).toHaveClass(/sw-type-display/);
+  await expect(page.getByRole("link", { name: "Browse components" })).toHaveAttribute("href", "/components/");
+  await expect(page.getByRole("link", { name: "Read the principles" })).toHaveAttribute("href", "/");
+  await expect(page.locator(".sw-reveal[data-stagger] > li")).toHaveCount(6);
+});
