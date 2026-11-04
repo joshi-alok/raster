@@ -5,7 +5,8 @@
  * the element itself. Presets (data-layout) own child placement and ignore
  * --span-*. Column spans and starts (--span-N, --start-N) and --grid-row-gap
  * are declared on the element itself, so they never inherit from a parent
- * column or grid; set them inline per element. data-grid-debug replaces data-grid-rules if both are set.
+ * column or grid; set them inline per element. data-grid-debug replaces
+ * data-grid-rules if both are set.
  */
 
 .sw-grid {
