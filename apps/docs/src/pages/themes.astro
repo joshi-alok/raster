@@ -1,0 +1,32 @@
+---
+import CodeBlock from "../components/CodeBlock.astro";
+import ThemePlayground from "../demos/themes/ThemePlayground";
+import DocPage from "../layouts/DocPage.astro";
+
+const HTML = `<html data-theme="zurich" data-mode="dark">   <!-- the whole page -->
+<section data-theme="alpine" data-mode="light">  <!-- one region -->`;
+
+const REACT = `import { ThemeRegion } from "@raster/react";
+
+<ThemeRegion theme="zurich" mode="dark">
+  {/* Selects, menus, dialogs and tooltips opened in here keep the region's theme. */}
+</ThemeRegion>`;
+---
+<DocPage
+  title="Themes"
+  eyebrow="Themes"
+  description="Alpine is the default, calm and cool; Zürich is warmer and squarer. Each has a light and a dark mode, and any part of a page can switch."
+>
+  <h2>Side by side</h2>
+  <ThemePlayground client:load />
+
+  <h2>Switching</h2>
+  <p class="sw-measure">
+    Set <code>data-theme</code> and <code>data-mode</code> on any element; everything inside
+    re-themes with no component changes. Without <code>data-mode</code>, the system preference
+    decides. In React, <code>ThemeRegion</code> also carries the theme to overlays, which render at
+    the end of the page.
+  </p>
+  <CodeBlock code={HTML} label="Theme attributes in HTML" />
+  <CodeBlock code={REACT} label="ThemeRegion in React" />
+</DocPage>
