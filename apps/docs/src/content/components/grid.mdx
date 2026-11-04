@@ -1,0 +1,44 @@
+---
+title: Grid
+group: Layout
+order: 3
+summary: Four, eight or twelve columns, chosen by the width of the nearest size container.
+props:
+  - name: layout
+    type: '"hanging" | "split-5-7" | "split-1-2"'
+    description: A preset that places children in alternating narrow and wide columns. Presets ignore Col spans.
+  - name: rules
+    type: boolean
+    default: "false"
+    description: Draws hairlines between columns.
+  - name: debug
+    type: boolean
+    default: "false"
+    description: Shows the column overlay.
+  - name: rowGap
+    type: 1 – 9
+    default: "6"
+    description: Row gap as a spacing step.
+  - name: as
+    type: ElementType
+    default: '"div"'
+    description: Element to render.
+a11y:
+  - The grid changes only visual placement; reading and tab order follow the source order, so write the source in reading order.
+  - Below 600px of container width, presets stack into one column, which keeps content readable at 320px.
+---
+import Example from "../../components/Example.astro";
+import Spans from "../../demos/grid/Spans";
+import spansSource from "../../demos/grid/Spans.tsx?raw";
+import Hanging from "../../demos/grid/Hanging";
+import hangingSource from "../../demos/grid/Hanging.tsx?raw";
+
+A grid must sit inside a size container (Container, Section, Col or the page body). The `docs-cell` class only colours these demos.
+
+<Example title="Spans per column count" source={spansSource} of={Spans}>
+  <Spans />
+</Example>
+
+<Example title="Hanging layout" source={hangingSource} of={Hanging}>
+  <Hanging />
+</Example>

@@ -1,0 +1,36 @@
+---
+title: IconButton
+group: Actions
+order: 2
+summary: A square button that shows only an icon and carries its name in a required label.
+interactive: true
+props:
+  - name: label
+    type: string
+    description: Required. The accessible name, set as aria-label.
+  - name: children
+    type: ReactElement
+    description: Required. One Lucide icon, outline style, stroke 1.5, with aria-hidden.
+  - name: variant
+    type: '"primary" | "secondary" | "ghost" | "danger"'
+    default: '"secondary"'
+    description: As on Button.
+  - name: onPress
+    type: "(event: PressEvent) => void"
+    description: Called on activation.
+  - name: isDisabled
+    type: boolean
+    default: "false"
+    description: Disables the button.
+a11y:
+  - The label is the only name screen readers get; describe the action ("Close panel"), not the icon ("X").
+  - The visible square is 40px and the hit area is padded to 44px.
+  - Pair it with a Tooltip so sighted mouse and keyboard users can read the label too.
+---
+import Example from "../../components/Example.astro";
+import Basic from "../../demos/icon-button/Basic";
+import basicSource from "../../demos/icon-button/Basic.tsx?raw";
+
+<Example title="Labelled icons" source={basicSource} of={Basic}>
+  <Basic />
+</Example>

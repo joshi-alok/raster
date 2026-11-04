@@ -1,0 +1,20 @@
+---
+interface Props {
+  /** Id of the caption, unique on the page; it names the scrollable region. */
+  id: string;
+  caption: string;
+  columns: string[];
+}
+const { id, caption, columns } = Astro.props;
+---
+<div class="sw-table-wrap" role="region" aria-labelledby={id} tabindex="0">
+  <table class="sw-table">
+    <caption id={id}>{caption}</caption>
+    <thead>
+      <tr>{columns.map((column) => <th scope="col">{column}</th>)}</tr>
+    </thead>
+    <tbody>
+      <slot />
+    </tbody>
+  </table>
+</div>

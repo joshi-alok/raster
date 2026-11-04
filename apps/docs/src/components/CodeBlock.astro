@@ -1,0 +1,9 @@
+---
+interface Props {
+  code: string;
+  /** Accessible name of the scrollable region, unique on the page (for example "React code: Variants"). */
+  label: string;
+}
+const { code, label } = Astro.props;
+---
+<pre class="docs-code" tabindex="0" role="region" aria-label={label}><code>{code.trim()}</code></pre>

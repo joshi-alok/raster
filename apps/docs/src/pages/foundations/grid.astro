@@ -1,0 +1,110 @@
+---
+import { foundationTokens } from "@raster/tokens";
+import CodeBlock from "../../components/CodeBlock.astro";
+import DataTable from "../../components/DataTable.astro";
+import FoundationsNav from "../../components/FoundationsNav.astro";
+import DocPage from "../../layouts/DocPage.astro";
+
+const tokens = foundationTokens();
+const SPACES = Array.from({ length: 9 }, (_, i) => `space-${i + 1}`);
+const FRAMES = [
+  { width: "360", caption: "A 360px container: four columns." },
+  { width: "720", caption: "A 720px container: eight columns (fewer if your screen is narrower)." },
+];
+const CELLS = [
+  { span: "--span-4: 4; --span-8: 4", label: "4 · 4" },
+  { span: "--span-4: 2; --span-8: 2", label: "2 · 2" },
+  { span: "--span-4: 2; --span-8: 2", label: "2 · 2" },
+];
+
+const PRESETS = [
+  { name: "hanging", split: "2 + 6 of 8, 3 + 9 of 12", use: "Labels or numbers hanging beside content." },
+  { name: "split-5-7", split: "3 + 5 of 8, 5 + 7 of 12", use: "Text beside a larger image or table." },
+  { name: "split-1-2", split: "3 + 5 of 8, 4 + 8 of 12", use: "A third and two thirds." },
+];
+
+const GRID_HTML = `<main class="sw-container">           <!-- the size container -->
+  <div class="sw-grid">
+    <div class="sw-col" style="--span-8: 4; --span-12: 8">Wide</div>
+    <div class="sw-col" style="--span-8: 4; --span-12: 4">Narrow</div>
+  </div>
+  <div class="sw-grid" data-layout="hanging">
+    <p class="sw-type-label">01</p>
+    <p>Content in the wide column.</p>
+  </div>
+</main>`;
+---
+<DocPage
+  title="Grid and spacing"
+  eyebrow="Foundations"
+  description="Four, eight or twelve columns, chosen by the width of the container rather than the screen, on a 4px spacing scale."
+>
+  <FoundationsNav slot="aside" />
+
+  <h2>Columns follow the container</h2>
+  <p class="sw-measure">
+    A grid measures its nearest size container: under 600px it has four columns, from 600px eight,
+    and from 1024px twelve. The same component therefore lays itself out correctly in a sidebar and
+    in a full-width section. Press <strong>Grid</strong> in the header to see this page's own grid.
+  </p>
+  {
+    FRAMES.map((frame) => (
+      <figure class="docs-figure">
+        <div class="docs-frame" data-frame={frame.width}>
+          <div class="sw-grid" data-grid-debug>
+            {CELLS.map((cell) => (
+              <div class="sw-col" style={cell.span}>
+                <div class="docs-cell">{cell.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <figcaption class="sw-type-caption sw-text-secondary">{frame.caption}</figcaption>
+      </figure>
+    ))
+  }
+  <CodeBlock code={GRID_HTML} label="Grid markup" />
+
+  <h2>Layout presets</h2>
+  <DataTable id="presets-caption" caption="Layout presets" columns={["data-layout", "Columns", "Use"]}>
+    {
+      PRESETS.map((p) => (
+        <tr>
+          <td><code>{p.name}</code></td>
+          <td>{p.split}</td>
+          <td>{p.use}</td>
+        </tr>
+      ))
+    }
+  </DataTable>
+  <p class="sw-measure">All presets stack into one column below 600px of container width.</p>
+
+  <h2>Gutters and margins</h2>
+  <DataTable id="layout-caption" caption="Layout tokens" columns={["Token", "Value"]}>
+    {
+      ["grid-gutter", "page-margin", "content-max"].map((name) => (
+        <tr>
+          <td><code>--{name}</code></td>
+          <td><code>{tokens[name]}</code></td>
+        </tr>
+      ))
+    }
+  </DataTable>
+
+  <h2>Spacing</h2>
+  <p class="sw-measure">
+    Steps 1 to 6 are fixed; steps 7 to 9 grow with the viewport, so sections breathe more on large
+    screens without changing the rhythm inside components.
+  </p>
+  <DataTable id="spacing-caption" caption="Spacing scale" columns={["Token", "Value", "Size"]}>
+    {
+      SPACES.map((name) => (
+        <tr>
+          <td><code>--{name}</code></td>
+          <td><code>{tokens[name]}</code></td>
+          <td><span class="docs-space-bar" style={`inline-size: var(--${name})`} /></td>
+        </tr>
+      ))
+    }
+  </DataTable>
+</DocPage>

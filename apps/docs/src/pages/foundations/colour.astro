@@ -1,0 +1,71 @@
+---
+import tokens from "@raster/tokens/tokens.json";
+import { ROLES } from "@raster/tokens";
+import DataTable from "../../components/DataTable.astro";
+import FoundationsNav from "../../components/FoundationsNav.astro";
+import DocPage from "../../layouts/DocPage.astro";
+import { contrastTables, formatRatio, THEME_NAMES, type TokensJson } from "../../lib/contrast-table";
+
+const tables = contrastTables(tokens as unknown as TokensJson);
+---
+<DocPage
+  title="Colour"
+  eyebrow="Foundations"
+  description="Two themes, each in light and dark, built from semantic roles. Every pairing the system promises is checked when the tokens build, and again below."
+>
+  <FoundationsNav slot="aside" />
+
+  <h2>Roles</h2>
+  <p class="sw-measure">
+    Components use roles, never raw colours. The swatches show the theme and mode you have chosen in
+    the display settings at the foot of the page.
+  </p>
+  <ul class="docs-swatches">
+    {
+      ROLES.map((role) => (
+        <li data-role={role}>
+          <span class="docs-swatch" style={`background-color: var(--${role})`} />
+          <code>--{role}</code>
+        </li>
+      ))
+    }
+  </ul>
+
+  <h2>Usage</h2>
+  <ul class="sw-measure">
+    <li>Pages are white or near-white in light mode: Alpine uses pure white, Zürich a warm off-white.</li>
+    <li>The accent marks links, focus and the one primary action in a view.</li>
+    <li>In Alpine, red appears only for alerts and destructive actions.</li>
+    <li>State is never shown by colour alone; a border, icon, weight or text always comes with it.</li>
+  </ul>
+
+  <h2>Verified contrast</h2>
+  <p class="sw-measure">
+    Text roles need 4.5:1 on every surface, <code>border-strong</code> needs 3:1, and every
+    <code>on-*</code> colour needs 4.5:1 on its fill and tint. These tables are computed from
+    <code>tokens.json</code> at build time.
+  </p>
+  {
+    tables.map((table) => (
+      <DataTable
+        id={`contrast-${table.theme}-${table.mode}`}
+        caption={`${THEME_NAMES[table.theme] ?? table.theme} ${table.mode} contrast`}
+        columns={["Foreground", "Background", "Ratio", "Minimum", "Result"]}
+      >
+        {table.rows.map((row) => (
+          <tr>
+            <td>
+              <span class="docs-swatch" style={`background-color: ${row.foregroundValue}`} /> <code>{row.foreground}</code>
+            </td>
+            <td>
+              <span class="docs-swatch" style={`background-color: ${row.backgroundValue}`} /> <code>{row.background}</code>
+            </td>
+            <td><code>{formatRatio(row.ratio)}</code></td>
+            <td><code>{row.minimum}:1</code></td>
+            <td>{row.passes ? "Passes" : "Fails"}</td>
+          </tr>
+        ))}
+      </DataTable>
+    ))
+  }
+</DocPage>

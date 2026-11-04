@@ -1,0 +1,37 @@
+---
+title: Text
+group: Type
+order: 2
+summary: Body and caption text in primary, secondary or muted tone, optionally at the reading measure or in mono.
+props:
+  - name: size
+    type: '"body" | "caption"'
+    default: '"body"'
+    description: Step on the type scale.
+  - name: tone
+    type: '"primary" | "secondary" | "muted"'
+    default: '"primary"'
+    description: Text colour role. Every tone passes 4.5:1 on every surface.
+  - name: measure
+    type: boolean
+    default: "false"
+    description: Limits the line length to 66 characters.
+  - name: mono
+    type: boolean
+    default: "false"
+    description: Sets the text in Geist Mono.
+  - name: as
+    type: ElementType
+    default: '"p"'
+    description: Element to render.
+a11y:
+  - Muted text still meets 4.5:1, but keep essential information in primary or secondary tone.
+  - Text resizes with browser zoom up to 200% without loss of content.
+---
+import Example from "../../components/Example.astro";
+import Tones from "../../demos/text/Tones";
+import tonesSource from "../../demos/text/Tones.tsx?raw";
+
+<Example title="Tones and sizes" source={tonesSource} of={Tones}>
+  <Tones />
+</Example>

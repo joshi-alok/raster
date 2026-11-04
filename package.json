@@ -7,7 +7,9 @@
     "build": "pnpm -r run build",
     "test": "pnpm -r run test",
     "lint": "pnpm -r run lint",
-    "typecheck": "pnpm -r run typecheck"
+    "typecheck": "pnpm -r run typecheck",
+    "e2e": "pnpm --filter @raster/docs run e2e",
+    "verify": "pnpm build && pnpm lint && pnpm typecheck && pnpm test && pnpm e2e"
   },
   "pnpm": { "onlyBuiltDependencies": ["esbuild"] }
 }

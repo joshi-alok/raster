@@ -45,7 +45,7 @@ raster/
 | `@raster/tokens` | `src/` TypeScript modules (single source of truth) | `dist/tokens.css` (foundation tokens, then Alpine, then Zürich), `dist/tokens.json` (W3C DTCG format), build failure on contrast violation |
 | `@raster/css` | token CSS variables | `dist/raster.css` (all layers), `dist/motion.css` (opt-in expressive tier) |
 | `@raster/react` | `@raster/css` class contract | ESM + type declarations, emitted by `tsc` (consumed through a bundler) |
-| `docs` | all three packages | static site |
+| `docs` | all three packages | static site (Astro 7.4.1, pinned: later 7.x releases need Node ≥ 22.23.4) |
 
 The token build script is about 50 lines of TypeScript run with `tsx`. No Style Dictionary.
 
@@ -76,7 +76,7 @@ The token build script is about 50 lines of TypeScript run with `tsx`. No Style 
 ### Visible grid
 
 - **Column rules:** an optional hairline column-rule treatment (`data-grid-rules`), usable as a design element.
-- **Debug overlay:** shows tinted columns (Plan 1). A 4px baseline stripe and the docs-header toggle arrive with the docs site (Plan 4).
+- **Debug overlay:** shows tinted columns (Plan 1). The docs-header toggle arrived with the docs site (Plan 4a); the 4px baseline stripe moves to Plan 4b.
 
 ## 4. Foundations: typography
 
@@ -112,7 +112,7 @@ The token build script is about 50 lines of TypeScript run with `tsx`. No Style 
 
 ### Token layers
 
-1. **Scales.** Per-theme hue ramps at stops 100/300/500/700/900, plus 50 for neutrals. These are design-time references: the token source stores role values directly, and the scales are added to the DTCG JSON and the docs colour page in Plan 4.
+1. **Scales.** Per-theme hue ramps at stops 100/300/500/700/900, plus 50 for neutrals. These are design-time references: the token source stores role values directly, and the scales are added to the DTCG JSON and the docs colour page in Plan 4b.
 2. **Roles.** The only layer components consume:
    - **Surfaces:** `surface-page`, `surface-raised`, `surface-subtle`.
    - **Text:** `text-primary`, `text-secondary`, `text-muted`.
@@ -345,7 +345,7 @@ Built entirely with Raster. Astro + MDX, React islands only where interactive.
 | React behavior | Keyboard, state, focus management per component | Vitest + Testing Library |
 | React accessibility | axe structural rules on each component in jsdom; colour contrast is enforced by the token build and re-checked in real browsers by the Playwright layer | axe-core (small test helper) |
 | Visual regression | Docs component pages × 4 combos × 360 / 768 / 1440px | Playwright screenshots |
-| Pages | axe on every docs page; keyboard walkthroughs of Dialog and Menu | Playwright + @axe-core/playwright |
+| Pages | axe on every built docs page in all four theme and mode combinations; reflow at 320px; keyboard walkthroughs of Dialog and Menu | Playwright + @axe-core/playwright |
 
 ## 11. Open decisions carried into later plans
 
@@ -354,11 +354,13 @@ Built entirely with Raster. Astro + MDX, React islands only where interactive.
 - **Shared overlay styles and theme-aware portal (done in Plan 3a).** `overlay.css` holds the popover, listbox, menu and overlay motion rules. `ThemeRegion` portals overlays into a host at the end of `<body>` that carries the region's effective theme and mode, so overlays escape transformed, clipped or stacked ancestors. Stacking uses the `--z-sticky`, `--z-modal` and `--z-toast` tokens.
 - **Overlay follow-ups (later).** Menu does not yet expose popover `offset` / `shouldFlip` or `SubmenuTrigger`. The shared `toastQueue` is created at import time, which is fine for static builds but is shared across server-rendered requests. `react-aria` and `react-aria-components` must stay pinned in lockstep, or `ThemeRegion` silently stops working.
 - **Link and React Aria (done in Plan 3b).** `Link` wraps React Aria's `Link` (`onPress`, `isDisabled`, `aria-current`). Without an `href` it renders a focusable `span` with `role="link"`, which only makes sense with `onPress`.
-- **Docs site notes (Plan 4).**
-  - **Hydration:** React Aria components need client hydration in Astro, for example Tabs, Select, Dialog, Menu and Tooltip, so give them a `client:*` directive. Header, Link and Breadcrumbs work as server-rendered HTML.
-  - **Stylesheet order:** load `raster.css` before `motion.css`. Both declare the full layer order, so loading them out of order is safe.
+- **Docs site (Plan 4a).**
+  - **Hydration:** React Aria components need client hydration in Astro, so interactive demos carry a `client:*` directive. Astro passes an island's children as static HTML, so composite components (Tabs, Select, Menu, Dialog) cannot be assembled in `.astro` or MDX: each interactive demo is one `.tsx` file rendered as a single island. Header, Link and Breadcrumbs work as server-rendered HTML.
+  - **HTML first:** `.astro` pages write the `sw-` class contract directly; React appears only in `src/demos/*.tsx`. Each example's React snippet is its demo file's source, and static examples also show the demo's rendered HTML with React Aria runtime attributes removed, so snippets never drift.
+  - **Stylesheet order:** load `raster.css` before `motion.css`. Both declare the full layer order, so loading them out of order is safe. Vite merges them into one file and drops the order statements, but keeps the layers in canonical first-appearance order.
   - **Page transitions:** loading `motion.css` opts the whole site into cross-document page transitions (`@view-transition`). The `[data-motion="reduce"]` switch cannot turn these off; only the OS reduced-motion setting can.
   - **Sticky header assumption:** `:root:has(.sw-header[data-sticky])` sets `scroll-padding` assuming the header is never taller than `--header-height`.
+  - **Tooling:** `astro check` does not resolve under pnpm here, so the docs type check is `tsc` over `.ts`/`.tsx` files, and the build checks `.astro` and `.mdx`. Astro 7's `preview` keeps a lock file, so Playwright starts it with `--ignore-lock`.
 - **Checkbox and Switch errors (later).** A standalone required `Checkbox` shows only a red border. React Aria's `CheckboxField` / `SwitchField` would add description and error slots.
 
 ## 12. Out of scope for version 1

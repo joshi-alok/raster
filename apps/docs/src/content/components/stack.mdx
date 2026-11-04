@@ -1,0 +1,34 @@
+---
+title: Stack
+group: Layout
+order: 5
+summary: Spaces its children evenly along one axis with a step from the spacing scale.
+props:
+  - name: gap
+    type: 1 – 9
+    default: "4"
+    description: Space between children as a spacing step.
+  - name: direction
+    type: '"column" | "row"'
+    default: '"column"'
+    description: Axis of the stack. Rows wrap.
+  - name: as
+    type: ElementType
+    default: '"div"'
+    description: Element to render, for example "ul" for a list.
+a11y:
+  - Stack adds no semantics; render it as ul or ol when the children form a list.
+---
+import Example from "../../components/Example.astro";
+import Column from "../../demos/stack/Column";
+import columnSource from "../../demos/stack/Column.tsx?raw";
+import Row from "../../demos/stack/Row";
+import rowSource from "../../demos/stack/Row.tsx?raw";
+
+<Example title="Column" source={columnSource} of={Column}>
+  <Column />
+</Example>
+
+<Example title="Row" source={rowSource} of={Row}>
+  <Row />
+</Example>

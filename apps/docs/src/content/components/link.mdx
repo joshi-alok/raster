@@ -1,0 +1,35 @@
+---
+title: Link
+group: Actions
+order: 3
+summary: An underlined text link in the accent colour; external links add an arrow and say they open a new tab.
+props:
+  - name: href
+    type: string
+    description: Destination. Without it the link renders as a span with role="link", for use with onPress only.
+  - name: external
+    type: boolean
+    default: "false"
+    description: Opens in a new tab with rel="noopener noreferrer", adds an arrow icon and announces "(opens in a new tab)".
+  - name: aria-current
+    type: '"page" | "true"'
+    description: Marks the link to the current page, shown at weight 500 with a thicker underline. Inside Breadcrumbs it switches to primary text without an underline.
+  - name: isDisabled
+    type: boolean
+    default: "false"
+    description: Disables the link.
+  - name: onPress
+    type: "(event: PressEvent) => void"
+    description: Called on activation, in addition to navigation.
+a11y:
+  - Links are underlined, so they are recognisable without colour (WCAG 1.4.1).
+  - Write link text that makes sense on its own; avoid "click here".
+  - External links say that they open a new tab, in text that screen readers announce.
+---
+import Example from "../../components/Example.astro";
+import Kinds from "../../demos/link/Kinds";
+import kindsSource from "../../demos/link/Kinds.tsx?raw";
+
+<Example title="Inline, external and current" source={kindsSource} of={Kinds}>
+  <Kinds />
+</Example>

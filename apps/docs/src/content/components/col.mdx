@@ -1,0 +1,31 @@
+---
+title: Col
+group: Layout
+order: 4
+summary: A grid item with a span and start for each column count; it is also a size container for nested grids.
+props:
+  - name: span
+    type: "{ 4?: number; 8?: number; 12?: number }"
+    default: full width
+    description: Columns to span when the grid has 4, 8 or 12 columns.
+  - name: start
+    type: "{ 4?: number; 8?: number; 12?: number }"
+    default: auto
+    description: Column to start at, per column count.
+  - name: as
+    type: ElementType
+    default: '"div"'
+    description: Element to render.
+  - name: style
+    type: CSSProperties
+    description: Merged after the span and start variables.
+a11y:
+  - Offsets move items visually only; keep the source order the same as the reading order.
+---
+import Example from "../../components/Example.astro";
+import Offsets from "../../demos/col/Offsets";
+import offsetsSource from "../../demos/col/Offsets.tsx?raw";
+
+<Example title="Starts and spans" source={offsetsSource} of={Offsets}>
+  <Offsets />
+</Example>

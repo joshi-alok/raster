@@ -1,0 +1,26 @@
+---
+import Base from "./Base.astro";
+
+interface Props {
+  title: string;
+  /** Lead paragraph and meta description. */
+  description: string;
+  /** Mono label in the hanging column, for example the section name. */
+  eyebrow: string;
+}
+const { title, description, eyebrow } = Astro.props;
+---
+<Base title={title} description={description}>
+  <div class="sw-grid" data-layout="hanging" data-page-grid>
+    <div class="docs-aside">
+      <p class="sw-type-label sw-text-secondary">{eyebrow}</p>
+      <slot name="aside" />
+    </div>
+    <article class="docs-content">
+      <slot name="before-title" />
+      <h1>{title}</h1>
+      <p class="docs-lead sw-measure sw-text-secondary">{description}</p>
+      <slot />
+    </article>
+  </div>
+</Base>
