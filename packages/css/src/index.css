@@ -17,3 +17,4 @@
 @import "./components/table.css" layer(raster.components);
 @import "./components/field.css" layer(raster.components);
 @import "./components/choice.css" layer(raster.components);
+@import "./components/select.css" layer(raster.components);

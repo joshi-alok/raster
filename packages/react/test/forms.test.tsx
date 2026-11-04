@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { Checkbox } from "../src/forms/Checkbox";
 import { Radio, RadioGroup } from "../src/forms/RadioGroup";
+import { Select, SelectItem } from "../src/forms/Select";
 import { Switch } from "../src/forms/Switch";
 import { TextArea, TextField } from "../src/forms/TextField";
 import { expectAccessible } from "./axe";
@@ -154,6 +155,64 @@ describe("RadioGroup", () => {
         <Radio value="alpine">Alpine</Radio>
         <Radio value="zurich">Zürich</Radio>
       </RadioGroup>,
+    );
+    await expectAccessible(container);
+  });
+});
+
+describe("Select", () => {
+  const options = (
+    <>
+      <SelectItem id="alpine">Alpine</SelectItem>
+      <SelectItem id="zurich">Zürich</SelectItem>
+    </>
+  );
+
+  it("labels the trigger and shows the placeholder", () => {
+    render(
+      <Select label="Theme" placeholder="Choose a theme">
+        {options}
+      </Select>,
+    );
+    const trigger = screen.getByRole("button", { name: /Theme/ });
+    expect(trigger).toHaveClass("sw-input", "sw-select-trigger");
+    expect(screen.getByText("Choose a theme")).toHaveAttribute("data-placeholder");
+  });
+
+  it("opens a listbox and selects an option", async () => {
+    const user = userEvent.setup();
+    let picked: unknown = null;
+    render(
+      <Select label="Theme" onChange={(key) => (picked = key)}>
+        {options}
+      </Select>,
+    );
+    await user.click(screen.getByRole("button", { name: /Theme/ }));
+    const listbox = await screen.findByRole("listbox");
+    expect(listbox).toHaveClass("sw-listbox");
+    await user.click(screen.getByRole("option", { name: "Zürich" }));
+    expect(picked).toBe("zurich");
+    expect(screen.getByRole("button", { name: /Zürich/ })).toBeInTheDocument();
+  });
+
+  it("shows a check on the selected option", async () => {
+    const user = userEvent.setup();
+    render(
+      <Select label="Theme" defaultValue="alpine">
+        {options}
+      </Select>,
+    );
+    await user.click(screen.getByRole("button", { name: /Theme/ }));
+    const selected = await screen.findByRole("option", { name: "Alpine" });
+    expect(selected).toHaveClass("sw-listbox-item");
+    expect(selected.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("has no structural violations when closed", async () => {
+    const { container } = render(
+      <Select label="Theme" description="Applies everywhere">
+        {options}
+      </Select>,
     );
     await expectAccessible(container);
   });

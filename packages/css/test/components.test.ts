@@ -240,3 +240,27 @@ describe("radio", () => {
     expect(rule('.sw-radio-group[data-orientation="horizontal"] .sw-radio-list')).toMatch(/display:\s*flex/);
   });
 });
+
+describe("select", () => {
+  it("lays the trigger out as value plus chevron", () => {
+    const r = rule(".sw-select-trigger");
+    expect(r).toMatch(/display:\s*flex/);
+    expect(r).toMatch(/justify-content:\s*space-between/);
+  });
+
+  it("mutes the placeholder value", () => {
+    expect(rule(".sw-select-value[data-placeholder]")).toMatch(/color:\s*var\(--text-muted\)/);
+  });
+
+  it("floats the popover with the single overlay shadow at the trigger's width", () => {
+    const r = rule(".sw-popover");
+    expect(r).toMatch(/box-shadow:\s*var\(--shadow-overlay\)/);
+    expect(r).toMatch(/min-inline-size:\s*var\(--trigger-width\)/);
+    expect(r).toMatch(/background-color:\s*var\(--surface-raised\)/);
+  });
+
+  it("highlights focused options on the subtle surface", () => {
+    expect(rule(".sw-listbox-item[data-focused]")).toMatch(/background-color:\s*var\(--surface-subtle\)/);
+    expect(rule(".sw-listbox-item")).toMatch(/min-block-size:\s*var\(--control-height\)/);
+  });
+});
