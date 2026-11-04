@@ -450,3 +450,22 @@ describe("breadcrumbs", () => {
     expect(r).toMatch(/text-decoration-line:\s*none/);
   });
 });
+
+describe("tabs", () => {
+  it("underlines the list with a hairline and gives tabs a 44px target", () => {
+    expect(rule(".sw-tab-list")).toMatch(/border-block-end:\s*1px solid var\(--border\)/);
+    expect(rule(".sw-tab")).toMatch(/min-block-size:\s*var\(--target-min\)/);
+  });
+
+  it("marks the selected tab with an accent underline and weight, not colour alone", () => {
+    const r = rule(".sw-tab[data-selected]");
+    expect(r).toMatch(/border-block-end-color:\s*var\(--accent\)/);
+    expect(r).toMatch(/font-weight:\s*500/);
+  });
+
+  it("moves the indicator to the inline end in vertical tabs", () => {
+    expect(rule('.sw-tab-list[data-orientation="vertical"] .sw-tab[data-selected]')).toMatch(
+      /border-inline-end-color:\s*var\(--accent\)/,
+    );
+  });
+});
