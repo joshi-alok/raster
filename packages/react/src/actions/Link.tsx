@@ -1,15 +1,20 @@
 import { ArrowUpRight } from "lucide-react";
-import type { ComponentPropsWithRef } from "react";
+import type { ReactNode, RefAttributes } from "react";
+import { Link as AriaLink, type LinkProps as AriaLinkProps } from "react-aria-components";
 import { cx } from "../utils/cx";
 
-export type LinkProps = ComponentPropsWithRef<"a"> & {
-  /** Open in a new tab, show an arrow, and announce it to screen readers. */
-  external?: boolean;
-};
+export type LinkProps = Omit<AriaLinkProps, "className" | "children"> &
+  RefAttributes<HTMLAnchorElement> & {
+    className?: string;
+    children?: ReactNode;
+    /** Open in a new tab, show an arrow, and announce it to screen readers. */
+    external?: boolean;
+  };
 
+/** React Aria link: `onPress` (not onClick), `isDisabled`; gets aria-current inside Breadcrumbs. */
 export function Link({ external, className, children, target, rel, ...rest }: LinkProps) {
   return (
-    <a
+    <AriaLink
       className={cx("sw-link", className)}
       target={external ? "_blank" : target}
       rel={external ? cx("noopener noreferrer", rel) : rel}
@@ -22,6 +27,6 @@ export function Link({ external, className, children, target, rel, ...rest }: Li
           <span className="sw-sr-only"> (opens in a new tab)</span>
         </>
       )}
-    </a>
+    </AriaLink>
   );
 }

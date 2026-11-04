@@ -7,9 +7,10 @@
     <link rel="stylesheet" href="../node_modules/@fontsource-variable/geist/index.css" />
     <link rel="stylesheet" href="../node_modules/@fontsource-variable/geist-mono/index.css" />
     <link rel="stylesheet" href="../dist/raster.css" />
+    <link rel="stylesheet" href="../dist/motion.css" />
   </head>
   <body>
-    <main class="sw-container sw-section">
+    <main id="main" class="sw-container sw-section">
       <div class="sw-stack" data-direction="row" data-gap="3">
         <span class="sw-type-label sw-text-secondary">Theme</span>
         <button type="button" data-set-theme="alpine">Alpine</button>
@@ -196,6 +197,47 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
             </button>
           </div>
+        </div>
+        <p class="sw-type-label sw-text-secondary">08 / Navigation</p>
+        <div class="sw-stack" data-gap="6">
+          <div style="position: relative; border: 1px solid var(--border)">
+            <header class="sw-header">
+              <a class="sw-skip-link" href="#main">Skip to content</a>
+              <div class="sw-header-inner">
+                <div class="sw-header-brand"><a class="sw-link" href="#">Raster</a></div>
+                <nav class="sw-header-nav" aria-label="Main">
+                  <a class="sw-link" href="#">Foundations</a>
+                  <a class="sw-link" href="#" aria-current="page">Components</a>
+                  <a class="sw-link" href="#">Patterns</a>
+                </nav>
+                <div class="sw-header-actions">
+                  <button type="button" class="sw-button" data-variant="ghost">Theme</button>
+                </div>
+              </div>
+            </header>
+          </div>
+          <nav aria-label="Breadcrumbs">
+            <ol class="sw-breadcrumbs">
+              <li class="sw-breadcrumb"><a class="sw-link" href="#">Home</a><span class="sw-breadcrumb-separator" aria-hidden="true">/</span></li>
+              <li class="sw-breadcrumb"><a class="sw-link" href="#">Components</a><span class="sw-breadcrumb-separator" aria-hidden="true">/</span></li>
+              <li class="sw-breadcrumb"><span class="sw-link" aria-current="page">Button</span></li>
+            </ol>
+          </nav>
+          <div class="sw-tabs">
+            <div class="sw-tab-list" role="tablist" aria-label="Foundations">
+              <div class="sw-tab" role="tab" aria-selected="true" data-selected>Grid</div>
+              <div class="sw-tab" role="tab" aria-selected="false">Type</div>
+              <div class="sw-tab" role="tab" aria-selected="false" aria-disabled="true" data-disabled>Colour</div>
+            </div>
+            <div class="sw-tab-panel" role="tabpanel">Grid panel content.</div>
+          </div>
+        </div>
+
+        <p class="sw-type-label sw-text-secondary">09 / Motion</p>
+        <div class="sw-grid sw-reveal" data-stagger>
+          <div class="sw-col sw-card" style="--span-8: 4; --span-12: 4"><p class="sw-weight-shift">Column one</p></div>
+          <div class="sw-col sw-card" style="--span-8: 4; --span-12: 4"><p class="sw-weight-shift">Column two</p></div>
+          <div class="sw-col sw-card" style="--span-8: 8; --span-12: 4"><p class="sw-weight-shift">Column three</p></div>
         </div>
       </div>
     </main>

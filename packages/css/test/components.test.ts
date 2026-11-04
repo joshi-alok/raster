@@ -417,3 +417,113 @@ describe("overlay review fixes", () => {
     );
   });
 });
+
+describe("link states", () => {
+  it("marks the current page with weight and a thick underline", () => {
+    const r = rule('.sw-link[aria-current="page"]');
+    expect(r).toMatch(/font-weight:\s*500/);
+    expect(r).toMatch(/text-decoration-thickness:\s*2px/);
+  });
+
+  it("mutes disabled links", () => {
+    expect(rule(".sw-link[data-disabled]")).toMatch(/color:\s*var\(--text-muted\)/);
+  });
+});
+
+describe("breadcrumbs", () => {
+  it("sets the trail in caption size through the type variables, so li children follow", () => {
+    const r = rule(".sw-breadcrumbs");
+    expect(r).toMatch(/--_size:\s*var\(--text-caption-size\)/);
+    expect(r).toMatch(/list-style:\s*none/);
+    expect(r).toMatch(/flex-wrap:\s*wrap/);
+  });
+
+  it("mutes the separator and sets it in mono", () => {
+    const r = rule(".sw-breadcrumb-separator");
+    expect(r).toMatch(/color:\s*var\(--text-muted\)/);
+    expect(r).toMatch(/font-family:\s*var\(--font-mono\)/);
+  });
+
+  it("shows the current page as plain primary text", () => {
+    const r = rule('.sw-breadcrumb .sw-link[aria-current="page"]');
+    expect(r).toMatch(/color:\s*var\(--text-primary\)/);
+    expect(r).toMatch(/text-decoration-line:\s*none/);
+  });
+});
+
+describe("tabs", () => {
+  it("underlines the list with an inset hairline and gives tabs a 44px target", () => {
+    expect(rule(".sw-tab-list")).toMatch(/box-shadow:\s*inset 0 -1px 0 var\(--border\)/);
+    expect(rule(".sw-tab-list")).not.toMatch(/border-block-end/);
+    expect(rule(".sw-tab")).toMatch(/min-block-size:\s*var\(--target-min\)/);
+  });
+
+  it("keeps the indicator inside the list: no negative margins on tabs", () => {
+    expect(css).not.toMatch(/\.sw-tab[^{]*\{[^}]*margin-block-end:\s*-1px/);
+    expect(css).not.toMatch(/\.sw-tab[^{]*\{[^}]*margin-inline-end:\s*-1px/);
+  });
+
+  it("draws the vertical hairline inset, mirrored in RTL", () => {
+    const v = rule('.sw-tab-list[data-orientation="vertical"]');
+    expect(v).toMatch(/box-shadow:\s*inset -1px 0 0 var\(--border\)/);
+    expect(v).not.toMatch(/border-inline-end/);
+    expect(rule('.sw-tab-list[data-orientation="vertical"]:dir(rtl)')).toMatch(
+      /box-shadow:\s*inset 1px 0 0 var\(--border\)/,
+    );
+  });
+
+  it("draws the tab focus ring inset so the scroll container cannot clip it", () => {
+    expect(rule(".sw-tab[data-focus-visible]")).toMatch(/outline-offset:\s*calc\(-1 \* var\(--focus-width\)\)/);
+  });
+
+  it("keeps selection and disabled state visible in forced colours", () => {
+    expect(css).toMatch(/forced-colors: active[\s\S]*\.sw-tab\[data-selected\]\s*\{[^}]*border-block-end-color:\s*highlight/i);
+    expect(css).toMatch(
+      /forced-colors: active[\s\S]*data-orientation="?vertical"?\] \.sw-tab\[data-selected\]\s*\{[^}]*border-inline-end-color:\s*highlight/i,
+    );
+    expect(css).toMatch(/forced-colors: active[\s\S]*\.sw-tab\[data-disabled\]\s*\{[^}]*color:\s*graytext/i);
+  });
+
+  it("marks the selected tab with an accent underline and weight, not colour alone", () => {
+    const r = rule(".sw-tab[data-selected]");
+    expect(r).toMatch(/border-block-end-color:\s*var\(--accent\)/);
+    expect(r).toMatch(/font-weight:\s*500/);
+  });
+
+  it("moves the indicator to the inline end in vertical tabs", () => {
+    expect(rule('.sw-tab-list[data-orientation="vertical"] .sw-tab[data-selected]')).toMatch(
+      /border-inline-end-color:\s*var\(--accent\)/,
+    );
+  });
+});
+
+describe("header", () => {
+  it("draws nav link focus rings inset so the scrolling nav cannot clip them", () => {
+    expect(rule(".sw-header-nav .sw-link:focus-visible")).toMatch(
+      /outline-offset:\s*calc\(-1 \* var\(--focus-width\)\)/,
+    );
+  });
+
+  it("sticks to the top below modals and toasts", () => {
+    const r = rule(".sw-header[data-sticky]");
+    expect(r).toMatch(/position:\s*sticky/);
+    expect(r).toMatch(/z-index:\s*var\(--z-sticky\)/);
+  });
+
+  it("keeps focused content clear of the sticky header (WCAG 2.4.11)", () => {
+    expect(css).toMatch(
+      /:root:has\(\.sw-header\[data-sticky\]\)\s*\{[^}]*scroll-padding-block-start:\s*calc\(var\(--header-height\) \+ var\(--space-4\)\)/,
+    );
+  });
+
+  it("clips the skip link to nothing until it is focused, wherever the header sits", () => {
+    expect(rule(".sw-skip-link:not(:focus)")).toMatch(/clip-path:\s*inset\(50%\)/);
+    expect(rule(".sw-skip-link")).not.toMatch(/transform/);
+  });
+
+  it("marks the current nav item with weight and underline", () => {
+    const r = rule('.sw-header-nav .sw-link[aria-current="page"]');
+    expect(r).toMatch(/font-weight:\s*500/);
+    expect(r).toMatch(/text-decoration-line:\s*underline/);
+  });
+});
