@@ -3,16 +3,19 @@
  * .sw-section, .sw-col or body) and must not share an element with one. The
  * column count queries the ancestor container, while child spans would query
  * the element itself. Presets (data-layout) own child placement and ignore
- * --span-*. data-grid-debug replaces data-grid-rules if both are set.
+ * --span-*. Column spans and starts (--span-N, --start-N) and --grid-row-gap
+ * are declared on the element itself, so they never inherit from a parent
+ * column or grid; set them inline per element. data-grid-debug replaces data-grid-rules if both are set.
  */
 
 .sw-grid {
+  --grid-row-gap: var(--space-6);
   --_cols: 4;
   --_colw: calc((100% - (var(--_cols) - 1) * var(--grid-gutter)) / var(--_cols));
   display: grid;
   grid-template-columns: repeat(var(--_cols), minmax(0, 1fr));
   column-gap: var(--grid-gutter);
-  row-gap: var(--grid-row-gap, var(--space-6));
+  row-gap: var(--grid-row-gap);
 }
 
 @container (min-width: 600px) {
@@ -29,19 +32,25 @@
 
 /* Columns: full width unless a span is set for the current column count. */
 .sw-col {
+  --span-4: 4;
+  --span-8: 8;
+  --span-12: 12;
+  --start-4: auto;
+  --start-8: auto;
+  --start-12: auto;
   container-type: inline-size;
-  grid-column: var(--start-4, auto) / span var(--span-4, 4);
+  grid-column: var(--start-4) / span var(--span-4);
 }
 
 @container (min-width: 600px) {
   .sw-col {
-    grid-column: var(--start-8, auto) / span var(--span-8, 8);
+    grid-column: var(--start-8) / span var(--span-8);
   }
 }
 
 @container (min-width: 1024px) {
   .sw-col {
-    grid-column: var(--start-12, auto) / span var(--span-12, 12);
+    grid-column: var(--start-12) / span var(--span-12);
   }
 }
 

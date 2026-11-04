@@ -7,6 +7,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+:where([data-theme], [data-mode]) {
+  color: var(--text-primary);
+  background-color: var(--surface-page);
+}
+
 body {
   container-type: inline-size;
   min-block-size: 100dvh;
@@ -60,6 +65,10 @@ body {
   :where(p, li, dd, dt, figcaption, blockquote, h1, h2, h3, h4) {
     line-height: round(nearest, calc(var(--_size) * var(--_leading)), 4px);
   }
+}
+
+:where(h5, h6, b, strong, th) {
+  font-weight: 500;
 }
 
 :where(h1, h2, h3, h4) {

@@ -48,9 +48,24 @@ describe("layout: container and grid", () => {
   });
 
   it("lets columns set a span per column count", () => {
-    expect(css).toContain("span var(--span-4, 4)");
-    expect(css).toContain("span var(--span-8, 8)");
-    expect(css).toContain("span var(--span-12, 12)");
+    expect(css).toMatch(/var\(--start-4\)\s*\/\s*span var\(--span-4\)/);
+    expect(css).toMatch(/var\(--start-8\)\s*\/\s*span var\(--span-8\)/);
+    expect(css).toMatch(/var\(--start-12\)\s*\/\s*span var\(--span-12\)/);
+  });
+
+  it("declares column span and start defaults on .sw-col so they never inherit", () => {
+    const col = css.match(/\.sw-col\s*\{[^}]*\}/)?.[0] ?? "";
+    expect(col).toMatch(/--span-4:\s*4/);
+    expect(col).toMatch(/--span-8:\s*8/);
+    expect(col).toMatch(/--span-12:\s*12/);
+    expect(col).toMatch(/--start-4:\s*auto/);
+    expect(col).toMatch(/--start-8:\s*auto/);
+    expect(col).toMatch(/--start-12:\s*auto/);
+  });
+
+  it("declares the row gap default on .sw-grid itself", () => {
+    expect(css).toMatch(/\.sw-grid\s*\{[^}]*--grid-row-gap:\s*var\(--space-6\)/);
+    expect(css).toMatch(/\.sw-grid\s*\{[^}]*row-gap:\s*var\(--grid-row-gap\)/);
   });
 
   it("ships the hanging and asymmetric split presets", () => {
@@ -76,9 +91,22 @@ describe("layout: container and grid", () => {
   });
 });
 
+describe("base: nested themes and weights", () => {
+  it("re-resolves colours on nested [data-theme] and [data-mode] elements", () => {
+    const m = css.match(/@layer raster\.base\s*\{[\s\S]*?\[data-theme\][^{]*\[data-mode\][^{]*\{[^}]*\}/);
+    expect(m?.[0]).toMatch(/color:\s*var\(--text-primary\)/);
+    expect(m?.[0]).toMatch(/background-color:\s*var\(--surface-page\)/);
+  });
+
+  it("caps default-bold elements at weight 500", () => {
+    expect(css).toMatch(/:where\(h5,\s*h6,\s*b,\s*strong,\s*th\)\s*\{[^}]*font-weight:\s*500/);
+  });
+});
+
 describe("layout: stack and rule", () => {
   it("stacks with a token gap that data-gap can change", () => {
-    expect(css).toMatch(/\.sw-stack\s*\{[^}]*gap:\s*var\(--stack-gap,\s*var\(--space-4\)\)/);
+    expect(css).toMatch(/\.sw-stack\s*\{[^}]*--stack-gap:\s*var\(--space-4\)/);
+    expect(css).toMatch(/\.sw-stack\s*\{[^}]*[^-]gap:\s*var\(--stack-gap\)/);
     expect(css).toMatch(/\.sw-stack\[data-gap="?9"?\]\s*\{\s*--stack-gap:\s*var\(--space-9\)/);
   });
 
