@@ -228,3 +228,15 @@ describe("switch", () => {
     expect(css).toMatch(/\[data-motion="?reduce"?\] \.sw-switch-thumb\s*\{[^}]*transition:\s*none/);
   });
 });
+
+describe("radio", () => {
+  it("draws a round dot that becomes a thick accent ring when selected", () => {
+    expect(rule(".sw-radio-dot")).toMatch(/border-radius:\s*var\(--radius-full\)/);
+    expect(rule(".sw-radio[data-selected] .sw-radio-dot")).toMatch(/border:\s*6px solid var\(--accent\)/);
+  });
+
+  it("lays options out vertically, or in a row when horizontal", () => {
+    expect(rule(".sw-radio-list")).toMatch(/display:\s*grid/);
+    expect(rule('.sw-radio-group[data-orientation="horizontal"] .sw-radio-list')).toMatch(/display:\s*flex/);
+  });
+});

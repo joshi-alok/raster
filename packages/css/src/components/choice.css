@@ -114,3 +114,44 @@
 [data-motion="reduce"] .sw-switch-thumb {
   transition: none;
 }
+
+/* Radio */
+.sw-radio-list {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.sw-radio-group[data-orientation="horizontal"] .sw-radio-list {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--space-5);
+}
+
+.sw-radio-dot {
+  flex: none;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-full);
+  background-color: var(--surface-raised);
+  transition: border-width var(--dur-fast) var(--ease-standard);
+}
+
+/* A thick ring, not a filled dot, so the selected state survives forced-colours mode. */
+.sw-radio[data-selected] .sw-radio-dot {
+  border: 6px solid var(--accent);
+}
+
+.sw-radio[data-invalid] .sw-radio-dot {
+  border-color: var(--danger);
+}
+
+.sw-radio[data-disabled] .sw-radio-dot {
+  border-color: var(--border);
+  background-color: var(--surface-subtle);
+}
+
+.sw-radio[data-focus-visible] .sw-radio-dot {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}

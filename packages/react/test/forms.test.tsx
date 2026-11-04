@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { Checkbox } from "../src/forms/Checkbox";
+import { Radio, RadioGroup } from "../src/forms/RadioGroup";
 import { Switch } from "../src/forms/Switch";
 import { TextArea, TextField } from "../src/forms/TextField";
 import { expectAccessible } from "./axe";
@@ -105,6 +106,54 @@ describe("checkbox and switch accessibility", () => {
         <Checkbox>Remember me</Checkbox>
         <Switch defaultSelected>Notifications</Switch>
       </div>,
+    );
+    await expectAccessible(container);
+  });
+});
+
+describe("RadioGroup", () => {
+  it("is a labelled group of radios with single selection", async () => {
+    const user = userEvent.setup();
+    let picked = "";
+    render(
+      <RadioGroup label="Theme" description="Applies to every page." onChange={(v) => (picked = v)}>
+        <Radio value="alpine">Alpine</Radio>
+        <Radio value="zurich">Zürich</Radio>
+      </RadioGroup>,
+    );
+    const group = screen.getByRole("radiogroup", { name: "Theme" });
+    expect(group).toHaveClass("sw-field", "sw-radio-group");
+    expect(group).toHaveAccessibleDescription("Applies to every page.");
+    await user.click(screen.getByText("Zürich"));
+    expect(screen.getByRole("radio", { name: "Zürich" })).toBeChecked();
+    expect(picked).toBe("zurich");
+  });
+
+  it("exposes orientation for horizontal layouts", () => {
+    render(
+      <RadioGroup label="Size" orientation="horizontal">
+        <Radio value="s">S</Radio>
+        <Radio value="m">M</Radio>
+      </RadioGroup>,
+    );
+    expect(screen.getByRole("radiogroup")).toHaveAttribute("data-orientation", "horizontal");
+  });
+
+  it("shows an error when invalid", () => {
+    render(
+      <RadioGroup label="Plan" isInvalid errorMessage="Choose a plan.">
+        <Radio value="a">A</Radio>
+      </RadioGroup>,
+    );
+    expect(screen.getByText("Choose a plan.")).toHaveClass("sw-field-error");
+  });
+
+  it("has no structural violations", async () => {
+    const { container } = render(
+      <RadioGroup label="Theme" defaultValue="alpine">
+        <Radio value="alpine">Alpine</Radio>
+        <Radio value="zurich">Zürich</Radio>
+      </RadioGroup>,
     );
     await expectAccessible(container);
   });
