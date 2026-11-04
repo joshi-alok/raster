@@ -1,0 +1,138 @@
+---
+import Art from "../components/Art.astro";
+import { STUDIO } from "../data/studio";
+import Site from "../layouts/Site.astro";
+
+const BUDGETS = ["Under CHF 20,000", "CHF 20,000 to 60,000", "CHF 60,000 to 150,000", "Over CHF 150,000", "Not sure yet"];
+---
+<Site title="Contact" description="Start a project with Studio Achse, or visit us in Lucerne.">
+  <div class="sw-container">
+    <section class="sw-section st-hero" aria-labelledby="contact-title">
+      <div class="sw-grid" data-layout="hanging">
+        <p class="sw-type-label sw-text-secondary">Contact</p>
+        <div class="st-stack">
+          <h1 id="contact-title" class="sw-type-h1 st-hero-title">Tell us what people need to find, read or use.</h1>
+          <p class="sw-type-h4 sw-measure sw-text-secondary">
+            We reply to every enquiry within two working days. A short description is enough to start.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="sw-section st-section" aria-labelledby="form-title">
+      <div class="sw-grid" data-layout="hanging">
+        <h2 id="form-title" class="sw-type-label sw-text-secondary">Enquiry</h2>
+        <form class="st-form" id="enquiry" novalidate>
+          <div class="sw-callout" role="note">
+            <div class="sw-callout-body">
+              <p class="sw-callout-title">This is a demonstration site</p>
+              <p>The form checks what you type but sends nothing. Nothing leaves this page.</p>
+            </div>
+          </div>
+          <div class="st-form-row">
+            <div class="sw-field">
+              <label class="sw-field-label" for="name">Name</label>
+              <input class="sw-input" id="name" name="name" autocomplete="name" required />
+              <p class="sw-field-error" id="name-error" hidden>Enter your name.</p>
+            </div>
+            <div class="sw-field">
+              <label class="sw-field-label" for="email">Email</label>
+              <input class="sw-input" id="email" name="email" type="email" autocomplete="email" required />
+              <p class="sw-field-error" id="email-error" hidden>Enter an email address, like name@example.com.</p>
+            </div>
+          </div>
+          <div class="sw-field">
+            <label class="sw-field-label" for="organisation">Organisation</label>
+            <p class="sw-field-description" id="organisation-description">Optional.</p>
+            <input class="sw-input" id="organisation" name="organisation" autocomplete="organization" aria-describedby="organisation-description" />
+          </div>
+          <div class="sw-field">
+            <label class="sw-field-label" for="budget">Budget</label>
+            <select class="sw-input" id="budget" name="budget">
+              {BUDGETS.map((b) => <option>{b}</option>)}
+            </select>
+          </div>
+          <div class="sw-field">
+            <label class="sw-field-label" for="message">About the project</label>
+            <p class="sw-field-description" id="message-description">Who is it for, and what should change for them?</p>
+            <textarea class="sw-input sw-textarea" id="message" name="message" rows="6" required aria-describedby="message-description"></textarea>
+            <p class="sw-field-error" id="message-error" hidden>Tell us a little about the project.</p>
+          </div>
+          <div class="st-form-actions">
+            <button class="sw-button" data-variant="primary" type="submit">Send enquiry</button>
+          </div>
+          <div class="st-form-status" id="enquiry-status" role="status" tabindex="-1"></div>
+        </form>
+      </div>
+    </section>
+
+    <section class="sw-section st-section" aria-labelledby="visit-title">
+      <div class="sw-grid" data-layout="hanging">
+        <h2 id="visit-title" class="sw-type-label sw-text-secondary">Visit</h2>
+        <div class="st-stack">
+          <div class="st-form-row">
+            <address class="st-stack" style="font-style: normal;">
+              <span>{STUDIO.name}<br />{STUDIO.street}<br />{STUDIO.city}<br />{STUDIO.country}</span>
+              <span>
+                <a class="sw-link" href={`mailto:${STUDIO.email}`}>{STUDIO.email}</a><br />
+                <span class="sw-mono">{STUDIO.phone}</span>
+              </span>
+            </address>
+            <p class="sw-text-secondary">{STUDIO.hours}. Five minutes on foot from Lucerne station, on the second floor.</p>
+          </div>
+          <figure class="sw-figure">
+            <Art kind="map" label="A simplified street map with the studio marked by a circle" ratio="16:9" />
+            <figcaption class="sw-type-caption sw-text-secondary">Placeholder map.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+  </div>
+</Site>
+
+<script>
+  // Demo only: validate in place and confirm, without sending or navigating.
+  const form = document.querySelector<HTMLFormElement>("#enquiry");
+  const status = document.querySelector<HTMLElement>("#enquiry-status");
+  if (form && status) {
+    const fields = Array.from(form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("[required]"));
+    // Each field's own description stays; its error is linked only while it is shown, so a
+    // screen reader never announces an error that is not there.
+    const base = new Map(fields.map((field) => [field, field.getAttribute("aria-describedby") ?? ""]));
+    const check = (field: HTMLInputElement | HTMLTextAreaElement) => {
+      const valid = field.value.trim() !== "" && field.checkValidity();
+      field.setAttribute("aria-invalid", String(!valid));
+      document.getElementById(`${field.id}-error`)?.toggleAttribute("hidden", valid);
+      const describedBy = [base.get(field), valid ? "" : `${field.id}-error`].filter(Boolean).join(" ");
+      if (describedBy) field.setAttribute("aria-describedby", describedBy);
+      else field.removeAttribute("aria-describedby");
+      return valid;
+    };
+    // Re-check a flagged field as it is typed in, not on blur: clearing an error on blur moves the
+    // submit button while the pointer is on its way to it, and the click lands on nothing.
+    fields.forEach((field) => field.addEventListener("input", () => field.getAttribute("aria-invalid") === "true" && check(field)));
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const invalid = fields.filter((field) => !check(field));
+      if (invalid.length > 0) {
+        status.replaceChildren();
+        invalid[0].focus();
+        return;
+      }
+      const callout = document.createElement("div");
+      callout.className = "sw-callout";
+      callout.dataset.tone = "success";
+      callout.innerHTML =
+        '<div class="sw-callout-body"><p class="sw-callout-title">Thank you</p><p>On a real site, your enquiry would now be on its way. This demo sent nothing.</p></div>';
+      status.replaceChildren(callout);
+      form.reset();
+      fields.forEach((field) => {
+        field.removeAttribute("aria-invalid");
+        const describedBy = base.get(field);
+        if (describedBy) field.setAttribute("aria-describedby", describedBy);
+        else field.removeAttribute("aria-describedby");
+      });
+      status.focus();
+    });
+  }
+</script>

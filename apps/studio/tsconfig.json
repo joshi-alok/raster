@@ -1,0 +1,5 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": ["src/lib", "src/data", "e2e", "playwright.config.ts"],
+  "compilerOptions": { "types": ["node"] }
+}

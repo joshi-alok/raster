@@ -1,0 +1,137 @@
+---
+import Art from "../../components/Art.astro";
+import type { ArtKind } from "../../lib/art";
+import { type Project, PROJECTS } from "../../data/projects";
+import Site from "../../layouts/Site.astro";
+
+export function getStaticPaths() {
+  return PROJECTS.map((project, i) => ({
+    params: { slug: project.slug },
+    props: { project, next: PROJECTS[(i + 1) % PROJECTS.length] },
+  }));
+}
+
+interface Props {
+  project: Project;
+  next: Project;
+}
+const { project, next } = Astro.props;
+
+// The wayfinding project shows its sign family and route; the others show their grid and palette.
+const figures: { kind: ArtKind; label: string; caption: string }[] =
+  project.slug === "linie-7"
+    ? [
+        { kind: "signs", label: "Three sign panels of increasing width, each with a pictogram and a destination line", caption: "One panel height, three widths. The pictogram and destination never move." },
+        { kind: "route", label: "Fourteen stations along a single horizontal line, the two termini marked", caption: "The line diagram, used on platforms and inside trains." },
+      ]
+    : [
+        { kind: "grid-study", label: "A six-by-four module grid with a title, an image area and columns of text placed on it", caption: "The grid every page or screen in the project is built on." },
+        { kind: "palette", label: "Five colour swatches in proportion: background, tint, ink, accent and signal", caption: "The palette in the proportions it is used." },
+      ];
+
+const SECTIONS = [
+  { id: "challenge", title: "Challenge", body: project.challenge },
+  { id: "approach", title: "Approach", body: project.approach },
+  { id: "outcome", title: "Outcome", body: project.outcome },
+];
+---
+<Site title={`${project.title} for ${project.client}`} description={project.summary}>
+  <div class="sw-container">
+    <section class="sw-section st-hero" aria-labelledby="project-title">
+      <div class="sw-grid" data-layout="hanging">
+        <p class="sw-type-label sw-text-secondary">
+          <a class="sw-link" href="/work/">Work</a> / {project.year}
+        </p>
+        <div class="st-stack">
+          <h1 id="project-title" class="sw-type-h1">{project.title}</h1>
+          <p class="sw-type-h4 sw-measure sw-text-secondary">{project.summary}</p>
+        </div>
+      </div>
+    </section>
+
+    <figure class="sw-figure">
+      <Art kind={project.cover} label={project.coverLabel} ratio="16:9" />
+      <figcaption class="sw-type-caption sw-text-secondary">{project.title}, {project.client}. Placeholder artwork.</figcaption>
+    </figure>
+
+    <section class="sw-section" aria-labelledby="facts-title">
+      <div class="sw-grid" data-layout="hanging">
+        <h2 id="facts-title" class="sw-type-label sw-text-secondary">Project facts</h2>
+        <dl class="st-facts">
+          {
+            project.facts.map((f) => (
+              <div>
+                <dt class="sw-type-caption sw-text-secondary">{f.label}</dt>
+                <dd>{f.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </section>
+
+    {
+      SECTIONS.map((s, i) => (
+        <section class="sw-section st-section" aria-labelledby={s.id}>
+          <div class="sw-grid" data-layout="hanging">
+            <p class="sw-type-label sw-text-secondary">{String(i + 1).padStart(2, "0")}</p>
+            <div class="st-stack sw-measure">
+              <h2 id={s.id} class="sw-type-h3">{s.title}</h2>
+              {s.body.map((p) => <p>{p}</p>)}
+            </div>
+          </div>
+          {i === 1 && (
+            <div class="st-figure-pair sw-mbs-8">
+              {figures.map((f) => (
+                <figure class="sw-figure">
+                  <Art kind={f.kind} label={f.label} />
+                  <figcaption class="sw-type-caption sw-text-secondary">{f.caption}</figcaption>
+                </figure>
+              ))}
+            </div>
+          )}
+        </section>
+      ))
+    }
+
+    <section class="sw-section st-section" aria-labelledby="results-title">
+      <div class="sw-grid" data-layout="hanging">
+        <h2 id="results-title" class="sw-type-label sw-text-secondary">Results</h2>
+        <div class="st-stack">
+          <ul class="st-figures">
+            {
+              project.results.map((r) => (
+                <li>
+                  <span class="st-figure-value">{r.value}</span>
+                  <span class="sw-type-caption sw-text-secondary">{r.label}</span>
+                </li>
+              ))
+            }
+          </ul>
+          {
+            project.quote && (
+              <figure class="st-quote sw-mbs-6">
+                <blockquote>
+                  <p class="sw-type-h3">{project.quote.text}</p>
+                </blockquote>
+                <figcaption class="sw-type-caption sw-text-secondary">
+                  {project.quote.author}, {project.quote.role}
+                </figcaption>
+              </figure>
+            )
+          }
+        </div>
+      </div>
+    </section>
+
+    <nav class="sw-section st-section" aria-label="Next project">
+      <div class="sw-grid" data-layout="hanging">
+        <p class="sw-type-label sw-text-secondary">Next project</p>
+        <p class="sw-type-h2">
+          <a class="sw-link" href={`/work/${next.slug}/`}>{next.title}</a>
+          <span class="sw-type-body sw-text-secondary"> for {next.client}</span>
+        </p>
+      </div>
+    </nav>
+  </div>
+</Site>

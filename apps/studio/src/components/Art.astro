@@ -1,0 +1,218 @@
+---
+/**
+ * Placeholder artwork for the studio's projects. Every shape is coloured by a theme role through an
+ * .st-* class (SVG presentation attributes cannot read var()), so the art re-themes with data-theme
+ * and data-mode. Geometry sits on a 12-column field: columns 78 wide, gutters 24, 1200 across.
+ */
+import type { ArtKind } from "../lib/art";
+interface Props {
+  kind: ArtKind;
+  /** What the picture shows; "" when the surrounding text already says it. */
+  label: string;
+  ratio?: "4:3" | "16:9";
+}
+const { kind, label, ratio = "4:3" } = Astro.props;
+// An empty label marks the art as decorative (inside a link that already names the project).
+const a11y = label ? { role: "img", "aria-label": label } : { "aria-hidden": "true" as const };
+
+const W = 1200;
+// Art is drawn on a 4:3 field; 16:9 shows its middle band.
+const H = 900;
+const VIEW_H = ratio === "4:3" ? H : 675;
+const VIEW_Y = (H - VIEW_H) / 2;
+const COL = 78;
+const GUT = 24;
+const x = (i: number) => i * (COL + GUT);
+const span = (n: number) => n * COL + (n - 1) * GUT;
+const cols = Array.from({ length: 12 }, (_, i) => i);
+
+// Concert: bar heights read like the durations of a programme.
+const BARS = [0.42, 0.7, 0.28, 0.9, 0.55, 0.36, 0.8, 0.62, 0.2, 0.74, 0.48, 0.33];
+const barClass = (i: number) => (i === 3 ? "st-accent" : i === 8 ? "st-signal" : "st-ink");
+
+// Wayfinding and route: fourteen stations along one line.
+const stations = Array.from({ length: 14 }, (_, i) => 60 + i * ((W - 120) / 13));
+
+// Report: 80 squares, 58 filled.
+const squares = Array.from({ length: 80 }, (_, i) => ({ c: i % 10, r: Math.floor(i / 10), on: i < 58 }));
+
+// Forum: one step per decade.
+const steps = [0, 0, 1, 1, 2, 2, 3, 4, 5, 6, 8, 10];
+const forumPath = steps
+  .map((s, i) => {
+    const y = 520 - s * 36;
+    return `${i === 0 ? "M" : "L"}${x(i)} ${y} L${x(i) + COL + GUT} ${y}`;
+  })
+  .join(" ");
+
+// Grid study: a 6 × 4 module field with a few modules taken by content.
+const modules = Array.from({ length: 24 }, (_, i) => ({ c: i % 6, r: Math.floor(i / 6) }));
+const MOD_W = (W - 5 * GUT) / 6;
+const MOD_H = (H - 3 * GUT) / 4;
+
+// Palette: the theme's roles as swatches, in the proportions the studio uses them.
+const SWATCHES = [
+  { cls: "st-paper-framed", w: 5 },
+  { cls: "st-tint", w: 3 },
+  { cls: "st-ink", w: 2 },
+  { cls: "st-accent", w: 1 },
+  { cls: "st-signal", w: 1 },
+];
+let px = 0;
+const swatches = SWATCHES.map((s) => {
+  const r = { ...s, x: px, w: span(s.w) };
+  px += span(s.w) + GUT;
+  return r;
+});
+---
+<svg class="st-art" viewBox={`0 ${VIEW_Y} ${W} ${VIEW_H}`} {...a11y}>
+  <rect class="st-tint" x="0" y="0" width={W} height={H} />
+  {
+    kind === "concert" && (
+      <g>
+        <rect class="st-ink" x="0" y="120" width={W} height="4" />
+        {cols.map((i) => {
+          const h = BARS[i] * 600;
+          return <rect class={barClass(i)} x={x(i)} y={780 - h} width={COL} height={h} />;
+        })}
+        <rect class="st-ink" x="0" y="800" width={span(3)} height="12" />
+      </g>
+    )
+  }
+  {
+    kind === "wayfinding" && (
+      <g>
+        <rect class="st-ink" x="0" y="234" width={W} height="12" />
+        {stations.map((cx, i) => (
+          <circle class={i === 5 ? "st-accent" : "st-paper-ink"} cx={cx} cy="240" r={i === 5 ? 30 : 18} />
+        ))}
+        {[0, 1, 2].map((i) => (
+          <g>
+            <rect class={i === 0 ? "st-accent" : "st-ink"} x={x(i * 2)} y={420 + i * 130} width={span(12 - i * 2)} height="100" />
+            <rect class="st-paper" x={x(i * 2) + 30} y={455 + i * 130} width={span(4) - 60} height="30" />
+            <polygon class="st-paper" points={`${x(11) + 50},${445 + i * 130} ${x(11) + 50},${495 + i * 130} ${x(11) + 76},${470 + i * 130}`} />
+          </g>
+        ))}
+      </g>
+    )
+  }
+  {
+    kind === "atlas" && (
+      <g>
+        {cols.map((i) => <rect class="st-paper" x={x(i)} y="0" width={COL} height={H} opacity="0.6" />)}
+        {[60, 130, 200, 270, 340, 410, 480].map((r, i) => (
+          <ellipse class={i === 2 ? "st-stroke-accent" : "st-stroke-ink"} cx="720" cy="470" rx={r * 1.35} ry={r} />
+        ))}
+        <circle class="st-signal" cx="720" cy="470" r="16" />
+        <rect class="st-ink" x="0" y="60" width={span(4)} height="56" />
+      </g>
+    )
+  }
+  {
+    kind === "bicycle" && (
+      <g>
+        <circle class="st-stroke-ink st-thick" cx="320" cy="580" r="190" />
+        <circle class="st-stroke-ink st-thick" cx="880" cy="580" r="190" />
+        <polyline class="st-stroke-ink st-thick" points="320,580 560,580 800,320 500,320 320,580" />
+        <line class="st-stroke-accent st-thick" x1="560" y1="580" x2="480" y2="270" />
+        <line class="st-stroke-ink st-thick" x1="800" y1="320" x2="880" y2="580" />
+        <line class="st-stroke-ink st-thick" x1="800" y1="320" x2="780" y2="240" />
+        <rect class="st-ink" x="720" y="226" width="130" height="16" />
+        <rect class="st-signal" x="430" y="250" width="110" height="16" />
+      </g>
+    )
+  }
+  {
+    kind === "forum" && (
+      <g>
+        {Array.from({ length: 12 }, (_, i) => <rect class="st-line-strong" x="0" y={600 + i * 24} width={W} height="2" />)}
+        <path class="st-stroke-accent st-thick" d={forumPath} fill="none" />
+        <rect class="st-signal" x={x(11)} y={520 - 10 * 36 - 60} width={COL} height="40" />
+        <rect class="st-ink" x="0" y="80" width={span(5)} height="56" />
+      </g>
+    )
+  }
+  {
+    kind === "report" && (
+      <g>
+        {squares.map((s) => (
+          <rect class={s.on ? (s.c === 9 && s.r === 5 ? "st-accent" : "st-ink") : "st-paper"} x={60 + s.c * 52} y={140 + s.r * 52} width="40" height="40" />
+        ))}
+        {Array.from({ length: 12 }, (_, i) => (
+          <rect class="st-muted" x={x(7)} y={150 + i * 48} width={i % 4 === 3 ? span(3) : span(5)} height="10" />
+        ))}
+        <rect class="st-signal" x={x(7)} y="100" width={span(2)} height="12" />
+      </g>
+    )
+  }
+  {
+    kind === "signs" && (
+      <g>
+        {[
+          { w: 3, y: 120 },
+          { w: 6, y: 340 },
+          { w: 12, y: 560 },
+        ].map((s, i) => (
+          <g>
+            <rect class={i === 1 ? "st-accent" : "st-ink"} x="0" y={s.y} width={span(s.w)} height="160" />
+            <rect class="st-paper" x="40" y={s.y + 40} width="80" height="80" />
+            <rect class="st-paper" x="160" y={s.y + 56} width={Math.max(span(s.w) - 260, 60)} height="20" />
+            <rect class="st-paper" x="160" y={s.y + 92} width={Math.max((span(s.w) - 260) * 0.6, 40)} height="12" />
+          </g>
+        ))}
+      </g>
+    )
+  }
+  {
+    kind === "route" && (
+      <g>
+        <rect class="st-ink" x="0" y={H / 2 - 6} width={W} height="12" />
+        {stations.map((cx, i) => (
+          <g>
+            <circle class={i === 0 || i === 13 ? "st-accent" : "st-paper-ink"} cx={cx} cy={H / 2} r={i === 0 || i === 13 ? 28 : 16} />
+            <rect class="st-muted" x={cx - 30} y={i % 2 === 0 ? H / 2 - 90 : H / 2 + 60} width="60" height="10" />
+          </g>
+        ))}
+        <rect class="st-signal" x={stations[7] - 40} y={H / 2 + 110} width="80" height="12" />
+      </g>
+    )
+  }
+  {
+    kind === "grid-study" && (
+      <g>
+        {modules.map((m) => (
+          <rect class="st-paper" x={m.c * (MOD_W + GUT)} y={m.r * (MOD_H + GUT)} width={MOD_W} height={MOD_H} />
+        ))}
+        <rect class="st-ink" x="0" y="0" width={MOD_W * 3 + GUT * 2} height={MOD_H * 0.4} />
+        <rect class="st-accent" x={MOD_W * 3 + GUT * 3} y="0" width={MOD_W * 3 + GUT * 2} height={MOD_H * 3 + GUT * 2} />
+        {[1, 2].map((r) =>
+          [0, 1, 2, 3].map((l) => (
+            <rect class="st-muted" x="0" y={r * (MOD_H + GUT) + l * 28} width={l === 3 ? MOD_W * 1.5 : MOD_W * 3 + GUT * 2} height="8" />
+          )),
+        )}
+        <rect class="st-signal" x="0" y={3 * (MOD_H + GUT)} width={MOD_W} height="10" />
+      </g>
+    )
+  }
+  {
+    kind === "palette" && (
+      <g>
+        {swatches.map((s) => (
+          <rect class={s.cls} x={s.x} y="0" width={s.w} height={H} />
+        ))}
+      </g>
+    )
+  }
+  {
+    kind === "map" && (
+      <g>
+        {[120, 300, 520, 700].map((y) => <rect class="st-paper" x="0" y={y} width={W} height="36" />)}
+        {[180, 460, 820, 1040].map((xx) => <rect class="st-paper" x={xx} y="0" width="36" height={H} />)}
+        <rect class="st-accent-subtle" x="560" y="360" width="220" height="140" />
+        <polygon class="st-paper" points={`0,${H} 0,${H - 160} 380,${H - 60} 520,${H}`} />
+        <circle class="st-accent" cx="670" cy="430" r="26" />
+        <circle class="st-paper" cx="670" cy="430" r="9" />
+      </g>
+    )
+  }
+</svg>

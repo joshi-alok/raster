@@ -1,0 +1,56 @@
+---
+import ProjectCard from "../../components/ProjectCard.astro";
+import { PROJECTS } from "../../data/projects";
+import Site from "../../layouts/Site.astro";
+
+const byYear = [...PROJECTS].sort((a, b) => b.year - a.year || a.title.localeCompare(b.title));
+---
+<Site title="Work" description="Selected projects by Studio Achse: identity, wayfinding, editorial and digital.">
+  <div class="sw-container">
+    <section class="sw-section st-hero" aria-labelledby="work-title">
+      <div class="sw-grid" data-layout="hanging">
+        <p class="sw-type-label sw-text-secondary">Work</p>
+        <div class="st-stack">
+          <h1 id="work-title" class="sw-type-h1">Six recent projects, each built on a system that outlived our part in it.</h1>
+        </div>
+      </div>
+    </section>
+
+    <section class="sw-section" aria-label="Projects">
+      <ul class="st-projects">
+        {PROJECTS.map((project) => <li><ProjectCard project={project} headingLevel={2} /></li>)}
+      </ul>
+    </section>
+
+    <section class="sw-section st-section" aria-labelledby="index-title">
+      <div class="sw-grid" data-layout="hanging">
+        <h2 id="index-title" class="sw-type-label sw-text-secondary">Index</h2>
+        <div class="sw-table-wrap" role="region" aria-labelledby="index-caption" tabindex="0">
+          <table class="sw-table st-index">
+            <caption id="index-caption" class="sw-sr-only">All projects by year</caption>
+            <thead>
+              <tr>
+                <th scope="col" data-numeric>Year</th>
+                <th scope="col">Project</th>
+                <th scope="col" data-wide>Client</th>
+                <th scope="col" data-wide>Discipline</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                byYear.map((p) => (
+                  <tr>
+                    <td data-numeric>{p.year}</td>
+                    <th scope="row"><a class="sw-link" href={`/work/${p.slug}/`}>{p.title}</a></th>
+                    <td data-wide>{p.client}</td>
+                    <td data-wide>{p.disciplines.join(", ")}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</Site>

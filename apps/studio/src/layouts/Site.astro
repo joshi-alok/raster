@@ -1,0 +1,118 @@
+---
+import "@fontsource-variable/geist";
+import "@fontsource-variable/geist-mono";
+// Raster first, the site's own composition rules after it (unlayered, so they win).
+import "@raster/css/raster.css";
+import "../styles/studio.css";
+import { STUDIO } from "../data/studio";
+import { INIT_SCRIPT } from "../lib/settings";
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+const path = Astro.url.pathname;
+
+const NAV = [
+  { href: "/work/", label: "Work" },
+  { href: "/studio/", label: "Studio" },
+  { href: "/contact/", label: "Contact" },
+];
+/** "page" on the exact page, "true" inside its section (a case study is inside Work). */
+const current = (href: string) => (path === href ? "page" : path.startsWith(href) ? "true" : undefined);
+
+const SWITCH = [
+  { key: "theme", label: "Theme", options: [["alpine", "Alpine"], ["zurich", "Zürich"]] },
+  { key: "mode", label: "Mode", options: [["system", "System"], ["light", "Light"], ["dark", "Dark"]] },
+] as const;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{path === "/" ? `${STUDIO.name} · Design for orientation` : `${title} · ${STUDIO.name}`}</title>
+    <script is:inline set:html={INIT_SCRIPT} />
+  </head>
+  <body>
+    <header class="sw-header" data-sticky>
+      <a class="sw-skip-link" href="#main">Skip to content</a>
+      <div class="sw-header-inner">
+        <div class="sw-header-brand">
+          <a class="st-wordmark" href="/" aria-label={`${STUDIO.name}, home`}>
+            <span class="st-wordmark-mark" aria-hidden="true"></span>Achse
+          </a>
+        </div>
+        <nav class="sw-header-nav" aria-label="Main">
+          {NAV.map((item) => <a class="sw-link" href={item.href} aria-current={current(item.href)}>{item.label}</a>)}
+        </nav>
+        <div class="sw-header-actions st-header-cta">
+          <a class="sw-button" data-variant="primary" href="/contact/">Start a project</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+
+    <footer class="st-footer">
+      <div class="sw-container">
+        <div class="sw-section">
+          <div class="sw-grid">
+            <div class="sw-col st-footer-block" style="--span-8: 4; --span-12: 4;">
+              <p class="st-wordmark" aria-hidden="true"><span class="st-wordmark-mark"></span>Achse</p>
+              <address class="sw-text-secondary">
+                {STUDIO.name}<br />{STUDIO.street}<br />{STUDIO.city}<br />{STUDIO.country}
+              </address>
+            </div>
+            <nav class="sw-col st-footer-block" style="--span-8: 4; --span-12: 3;" aria-label="Footer">
+              <h2 class="sw-type-label sw-text-secondary">Studio</h2>
+              <ul class="st-plain-list">
+                {NAV.map((item) => <li><a class="sw-link" href={item.href}>{item.label}</a></li>)}
+                <li><a class="sw-link" href={`mailto:${STUDIO.email}`}>{STUDIO.email}</a></li>
+              </ul>
+            </nav>
+            <div class="sw-col st-footer-block" style="--span-8: 8; --span-12: 5;">
+              <h2 class="sw-type-label sw-text-secondary">Display</h2>
+              <div class="st-switch">
+                {
+                  SWITCH.map((group) => (
+                    <div class="st-switch-group" role="group" aria-labelledby={`switch-${group.key}`}>
+                      <span id={`switch-${group.key}`} class="sw-type-caption sw-text-secondary">
+                        {group.label}
+                      </span>
+                      <div class="st-segment">
+                        {group.options.map(([value, label]) => (
+                          <button type="button" class="sw-button st-toggle" data-variant="ghost" data-setting={group.key} data-value={value} aria-pressed="false">
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+          </div>
+          <hr class="sw-rule st-footer-rule" />
+          <p class="sw-type-caption sw-text-secondary">
+            © 2026 {STUDIO.name}. A fictional studio: every name, project and figure on this site is invented. Built with Raster.
+          </p>
+        </div>
+      </div>
+    </footer>
+    <script>
+      import { bindSettings } from "../lib/settings";
+      let storage: Pick<Storage, "getItem" | "setItem">;
+      try {
+        storage = window.localStorage;
+      } catch {
+        storage = { getItem: () => null, setItem: () => undefined };
+      }
+      bindSettings(document, storage);
+    </script>
+  </body>
+</html>
