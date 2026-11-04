@@ -337,3 +337,119 @@
   flex-direction: column;
   gap: var(--space-2);
 }
+
+/* Manifesto template: placeholder graphics coloured only by theme roles. */
+.mf-graphic {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+.mf-graphic[data-size="compact"] {
+  max-inline-size: 36rem;
+}
+.mf-tint { fill: var(--surface-subtle); }
+.mf-ink { fill: var(--text-primary); }
+.mf-muted { fill: var(--text-muted); }
+.mf-accent { fill: var(--accent); }
+.mf-accent-subtle { fill: var(--accent-subtle); }
+.mf-signal { fill: var(--brand-signal); }
+.mf-line { fill: var(--border); }
+.mf-line-strong { fill: var(--border-strong); }
+.mf-frame { fill: none; stroke: var(--border-strong); stroke-width: 2; }
+.mf-frame-ink { fill: none; stroke: var(--text-primary); stroke-width: 2; }
+
+.mf-masthead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.mf-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-6);
+}
+
+.mf-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-inline-size: 0;
+}
+
+.mf-section-label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.mf-refusals {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mf-refusals li {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-block: var(--space-5);
+  border-block-start: 1px solid var(--border);
+}
+
+.mf-refusals li:first-child {
+  border-block-start: 2px solid var(--brand-signal);
+}
+
+.mf-section .sw-table-wrap:focus-visible {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+/* Below 36rem the manifesto tables stack: one block per row, each cell named by its column. */
+.mf-section {
+  container-type: inline-size;
+}
+
+@container (width < 36rem) {
+  .mf-table thead {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .mf-table :is(tbody, tr, th, td) {
+    display: block;
+  }
+
+  .mf-table tr {
+    padding-block: var(--space-4);
+    border-block-end: 1px solid var(--border);
+  }
+
+  .mf-table tbody th,
+  .mf-table td {
+    padding: 0;
+    border: 0;
+  }
+
+  .mf-table td {
+    padding-block-start: var(--space-3);
+  }
+
+  .mf-table td::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--text-label-size);
+    letter-spacing: var(--text-label-tracking);
+    line-height: var(--text-label-leading);
+    text-transform: uppercase;
+  }
+}

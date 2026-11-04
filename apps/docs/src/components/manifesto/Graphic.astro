@@ -1,0 +1,156 @@
+---
+/**
+ * Placeholder graphics for the manifesto template. Every shape takes its colour from a theme role
+ * through an .mf-* class (SVG presentation attributes cannot read var()), so the drawings re-theme
+ * with data-theme and data-mode. All geometry is laid on a 12-column field: 78 wide, 24 gutter.
+ */
+type Kind = "composition-1" | "modular-page" | "formats" | "type-scale" | "baseline" | "composition-2";
+interface Props {
+  kind: Kind;
+  label: string;
+}
+const { kind, label } = Astro.props;
+
+const COL = 78;
+const GUT = 24;
+const colX = (i: number) => i * (COL + GUT);
+const span = (n: number) => n * COL + (n - 1) * GUT;
+const columns = Array.from({ length: 12 }, (_, i) => colX(i));
+
+// Modular page: a 1:√2 sheet with a 4 × 6 module grid.
+const SHEET_W = 283;
+const SHEET_H = 400;
+const M = 24;
+const MG = 8;
+const MOD_W = (SHEET_W - 2 * M - 3 * MG) / 4;
+const MOD_H = (SHEET_H - 2 * M - 5 * MG) / 6;
+const mod = (sx: number, c: number, r: number, cs = 1, rs = 1) => ({
+  x: sx + M + c * (MOD_W + MG),
+  y: 10 + M + r * (MOD_H + MG),
+  w: cs * MOD_W + (cs - 1) * MG,
+  h: rs * MOD_H + (rs - 1) * MG,
+});
+const SHEETS = [15, 312];
+const modules = SHEETS.flatMap((sx) =>
+  Array.from({ length: 24 }, (_, i) => mod(sx, i % 4, Math.floor(i / 4))),
+);
+
+// Formats: one fixed sheet, then three frames with 4, 8 and 12 columns, bottoms aligned.
+const BASE = 400;
+const frames = [
+  { x: 260, w: 150, h: 300, cols: 4 },
+  { x: 450, w: 300, h: 280, cols: 8 },
+  { x: 790, w: 410, h: 260, cols: 12 },
+].map((f) => {
+  const inner = f.w - 24;
+  const g = 6;
+  const cw = (inner - (f.cols - 1) * g) / f.cols;
+  return { ...f, y: BASE - f.h, cols: Array.from({ length: f.cols }, (_, i) => f.x + 12 + i * (cw + g)), cw };
+});
+
+// Type scale: the eight steps at their largest size (px), drawn as bars.
+const STEPS = [
+  { name: "display", size: 52, cls: "mf-accent" },
+  { name: "h1", size: 42, cls: "mf-ink" },
+  { name: "h2", size: 33, cls: "mf-ink" },
+  { name: "h3", size: 27, cls: "mf-ink" },
+  { name: "h4", size: 21, cls: "mf-ink" },
+  { name: "body", size: 17, cls: "mf-muted" },
+  { name: "caption", size: 14, cls: "mf-muted" },
+  { name: "label", size: 12, cls: "mf-signal" },
+];
+let cursor = 0;
+const bars = STEPS.map((s) => {
+  const bar = { ...s, y: cursor, w: s.size * 22 };
+  cursor += s.size + 16;
+  return bar;
+});
+const TYPE_H = cursor - 16;
+
+// Baseline: a line every 8 units (the 4px unit at 2×); text sits on multiples of 32.
+const baselines = Array.from({ length: 40 }, (_, i) => 8 + i * 8);
+const BODY = [1080, 1020, 1100, 960, 1050, 640];
+---
+{
+  kind === "composition-1" && (
+    <svg class="mf-graphic" viewBox="0 0 1200 500" role="img" aria-label={label}>
+      {columns.map((x) => <rect class="mf-tint" x={x} y="0" width={COL} height="500" />)}
+      <rect class="mf-ink" x="0" y="40" width={span(7)} height="2" />
+      <rect class="mf-accent" x={colX(7)} y="40" width={span(5)} height="240" />
+      <rect class="mf-accent-subtle" x={colX(3)} y="120" width={span(4)} height="160" />
+      <rect class="mf-signal" x={colX(3)} y="300" width={1200 - colX(3)} height="8" />
+      <rect class="mf-ink" x="0" y="320" width={span(3)} height="140" />
+    </svg>
+  )
+}
+{
+  kind === "modular-page" && (
+    <svg class="mf-graphic" data-size="compact" viewBox="0 0 610 420" role="img" aria-label={label}>
+      {SHEETS.map((sx) => <rect class="mf-frame" x={sx} y="10" width={SHEET_W} height={SHEET_H} />)}
+      {modules.map((m) => <rect class="mf-tint" x={m.x} y={m.y} width={m.w} height={m.h} />)}
+      {[mod(15, 0, 0, 3, 1)].map((m) => <rect class="mf-ink" x={m.x} y={m.y} width={m.w} height={m.h / 2} />)}
+      {[mod(15, 1, 1, 3, 3)].map((m) => <rect class="mf-accent" x={m.x} y={m.y} width={m.w} height={m.h} />)}
+      {[4, 5].flatMap((r) =>
+        [0, 1].map((c) => {
+          const m = mod(15, c, r);
+          return [0, 1, 2, 3].map((l) => <rect class="mf-ink" x={m.x} y={m.y + l * 12} width={l === 3 ? m.w * 0.6 : m.w} height="3" />);
+        }),
+      )}
+      {[mod(312, 0, 0, 2, 4)].map((m) => <rect class="mf-accent" x={m.x} y={m.y} width={m.w} height={m.h} />)}
+      {[mod(312, 2, 0, 2, 1)].map((m) => <rect class="mf-ink" x={m.x} y={m.y} width={m.w} height={m.h / 2} />)}
+      {[mod(312, 0, 4, 4, 1)].map((m) => <rect class="mf-signal" x={m.x} y={m.y} width={m.w} height="4" />)}
+      {[2, 3].flatMap((c) =>
+        [1, 2, 3].map((r) => {
+          const m = mod(312, c, r);
+          return [0, 1, 2].map((l) => <rect class="mf-ink" x={m.x} y={m.y + l * 12} width={l === 2 ? m.w * 0.5 : m.w} height="3" />);
+        }),
+      )}
+    </svg>
+  )
+}
+{
+  kind === "formats" && (
+    <svg class="mf-graphic" viewBox="0 0 1200 420" role="img" aria-label={label}>
+      <rect class="mf-tint" x="0" y={BASE - 255} width="180" height="255" />
+      <rect class="mf-frame-ink" x="0" y={BASE - 255} width="180" height="255" />
+      {[0, 1, 2].map((i) => <rect class="mf-ink" x={18 + i * 50} y={BASE - 235} width="44" height="4" />)}
+      <rect class="mf-line" x="220" y="80" width="1" height={BASE - 80} />
+      {frames.map((f) => (
+        <g>
+          <rect class="mf-frame" x={f.x} y={f.y} width={f.w} height={f.h} />
+          {f.cols.map((x) => <rect class="mf-accent-subtle" x={x} y={f.y + 12} width={f.cw} height={f.h - 24} />)}
+          <rect class="mf-accent" x={f.cols[0]} y={f.y + 12} width={f.w - 24} height="6" />
+        </g>
+      ))}
+    </svg>
+  )
+}
+{
+  kind === "type-scale" && (
+    <svg class="mf-graphic" viewBox={`0 0 1200 ${TYPE_H}`} role="img" aria-label={label}>
+      {bars.map((b) => <rect class={b.cls} x="0" y={b.y} width={b.w} height={b.size} />)}
+    </svg>
+  )
+}
+{
+  kind === "baseline" && (
+    <svg class="mf-graphic" viewBox="0 0 1200 328" role="img" aria-label={label}>
+      {baselines.map((y) => <rect class={y % 32 === 0 ? "mf-line-strong" : "mf-line"} x="0" y={y} width="1200" height="1" />)}
+      <rect class="mf-signal" x="0" y="40" width="120" height="8" />
+      <rect class="mf-ink" x="180" y="32" width="760" height="32" />
+      {BODY.map((w, i) => <rect class="mf-muted" x="180" y={112 + i * 32 - 12} width={w - 180} height="12" />)}
+    </svg>
+  )
+}
+{
+  kind === "composition-2" && (
+    <svg class="mf-graphic" viewBox="0 0 1200 400" role="img" aria-label={label}>
+      {[...columns, 1200].map((x) => <rect class="mf-line" x={x === 1200 ? 1199 : x} y="0" width="1" height="400" />)}
+      <rect class="mf-accent" x="0" y="0" width={span(4)} height={span(4) * 0.75} />
+      <rect class="mf-ink" x={colX(4)} y="200" width={span(8)} height="40" />
+      {[0, 1, 2].map((i) => <rect class="mf-ink" x={colX(4 + i)} y={80 + i * 40} width={COL} height="24" />)}
+      <circle class="mf-accent-subtle" cx={colX(9) + COL / 2} cy="320" r="70" />
+      <rect class="mf-signal" x={colX(4)} y="360" width={span(3)} height="8" />
+    </svg>
+  )
+}

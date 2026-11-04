@@ -7,6 +7,8 @@ const WIDTHS = [360, 768, 1440] as const;
 const pages = builtPages();
 const componentPages = pages.filter((p) => /^\/components\/[^/]+\/$/.test(p));
 const templatePages = pages.filter((p) => /^\/templates\/[^/]+\/$/.test(p));
+/** Long reads: the first screen plus each figure, not a full-page capture (10,000px of text is ~1.5 MB a shot). */
+const LONG_TEMPLATES = new Set(["/templates/manifesto/"]);
 const slug = (path: string) => path.split("/").filter(Boolean).at(-1) ?? "home";
 
 async function open(page: Page, path: string, combo: (typeof COMBOS)[number], width: number) {
@@ -40,7 +42,17 @@ for (const combo of COMBOS) {
       for (const path of templatePages) {
         test(`template ${slug(path)}`, async ({ page }) => {
           await open(page, path, combo, width);
-          await expect(page).toHaveScreenshot(`template-${slug(path)}-${variant}.png`, { fullPage: true });
+          if (!LONG_TEMPLATES.has(path)) {
+            await expect(page).toHaveScreenshot(`template-${slug(path)}-${variant}.png`, { fullPage: true });
+            return;
+          }
+          await expect(page).toHaveScreenshot(`template-${slug(path)}-${variant}.png`);
+          const figures = page.locator("main figure");
+          const count = await figures.count();
+          expect(count).toBeGreaterThan(0);
+          for (let i = 0; i < count; i++) {
+            await expect(figures.nth(i)).toHaveScreenshot(`template-${slug(path)}-figure-${i + 1}-${variant}.png`);
+          }
         });
       }
     });
