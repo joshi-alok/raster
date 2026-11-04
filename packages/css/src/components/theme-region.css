@@ -1,0 +1,4 @@
+/* Overlays opened inside a ThemeRegion are portalled here, inheriting its theme tokens and color-scheme. */
+.sw-portal-host {
+  display: contents;
+}

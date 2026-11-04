@@ -19,3 +19,4 @@
 @import "./components/choice.css" layer(raster.components);
 @import "./components/overlay.css" layer(raster.components);
 @import "./components/select.css" layer(raster.components);
+@import "./components/theme-region.css" layer(raster.components);
