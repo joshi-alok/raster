@@ -44,3 +44,7 @@ export {
   toastQueue,
 } from "./overlays/Toast";
 export { Tooltip, type TooltipProps, TooltipTrigger } from "./overlays/Tooltip";
+export { Reveal, type RevealProps } from "./motion/Reveal";
+export { Breadcrumb, type BreadcrumbProps, Breadcrumbs, type BreadcrumbsProps } from "./navigation/Breadcrumbs";
+export { Header, type HeaderProps } from "./navigation/Header";
+export { Tab, TabList, type TabListProps, TabPanel, type TabPanelProps, type TabProps, Tabs, type TabsProps } from "./navigation/Tabs";
