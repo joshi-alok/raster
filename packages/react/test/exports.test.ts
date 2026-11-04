@@ -10,9 +10,15 @@ describe("public API", () => {
       "Card", "Tag", "Callout", "Table",
       "FieldLabel", "FieldDescription", "FieldError",
       "TextField", "TextArea", "Checkbox", "Switch", "RadioGroup", "Radio", "Select", "SelectItem",
+      "ThemeRegion", "Dialog", "DialogTrigger", "Menu", "MenuItem", "MenuSeparator", "MenuTrigger",
+      "Tooltip", "TooltipTrigger", "ToastRegion", "createToastQueue",
       "cx",
     ];
     for (const name of expected) expect(typeof (raster as Record<string, unknown>)[name], name).toBe("function");
+  });
+
+  it("exports a shared toast queue", () => {
+    expect(typeof (raster as Record<string, unknown>).toastQueue).toBe("object");
   });
 
   it("does not export the old Label name", () => {

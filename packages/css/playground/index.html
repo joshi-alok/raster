@@ -161,6 +161,42 @@
             </div>
           </div>
         </div>
+        <p class="sw-type-label sw-text-secondary">07 / Overlays</p>
+        <div class="sw-stack" data-gap="6">
+          <div class="sw-popover" style="position: static; inline-size: 14rem">
+            <div class="sw-menu" role="menu" aria-label="Actions">
+              <div class="sw-menu-item" role="menuitem">Edit</div>
+              <div class="sw-menu-item" role="menuitem" data-focused>Duplicate</div>
+              <div class="sw-menu-separator" role="separator"></div>
+              <div class="sw-menu-item" role="menuitem" data-variant="danger">Delete</div>
+            </div>
+          </div>
+          <div class="sw-tooltip" role="tooltip" style="inline-size: max-content">Close panel (Esc)</div>
+          <div style="position: relative; block-size: 16rem; overflow: hidden">
+            <div class="sw-modal-overlay" style="position: absolute">
+              <div class="sw-modal">
+                <div class="sw-dialog" role="dialog" aria-labelledby="pg-dlg">
+                  <h2 class="sw-type-h3" id="pg-dlg">Delete this file?</h2>
+                  <p>This can't be undone.</p>
+                  <div class="sw-dialog-actions">
+                    <button type="button" class="sw-button" data-variant="secondary">Cancel</button>
+                    <button type="button" class="sw-button" data-variant="danger">Delete</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="sw-toast" data-tone="success" style="max-inline-size: 24rem">
+            <svg class="sw-toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
+            <div class="sw-toast-content">
+              <span class="sw-toast-title">File saved</span>
+              <span class="sw-toast-description">All changes synced.</span>
+            </div>
+            <button type="button" class="sw-button sw-icon-button" data-variant="ghost" aria-label="Dismiss">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+          </div>
+        </div>
       </div>
     </main>
 
