@@ -76,7 +76,7 @@ The token build script is about 50 lines of TypeScript run with `tsx`. No Style 
 ### Visible grid
 
 - **Column rules:** an optional hairline column-rule treatment (`data-grid-rules`), usable as a design element.
-- **Debug overlay:** shows tinted columns (Plan 1). The docs-header toggle arrived with the docs site (Plan 4a); the 4px baseline stripe moves to Plan 4b.
+- **Debug overlay:** shows tinted columns (Plan 1). The docs-header toggle arrived with the docs site (Plan 4a) and the 4px baseline stripe in Plan 4b.
 
 ## 4. Foundations: typography
 
@@ -112,7 +112,7 @@ The token build script is about 50 lines of TypeScript run with `tsx`. No Style 
 
 ### Token layers
 
-1. **Scales.** Per-theme hue ramps at stops 100/300/500/700/900, plus 50 for neutrals. These are design-time references: the token source stores role values directly, and the scales are added to the DTCG JSON and the docs colour page in Plan 4b.
+1. **Scales.** Per-theme hue ramps at stops 100/300/500/700/900, plus 50 for neutrals. These are design-time references: the token source stores role values directly, and the scales live in `@raster/tokens` (`SCALES`), the DTCG JSON (`themes.<name>.scales`) and the docs colour page, and a test proves each role maps onto its stop.
 2. **Roles.** The only layer components consume:
    - **Surfaces:** `surface-page`, `surface-raised`, `surface-subtle`.
    - **Text:** `text-primary`, `text-secondary`, `text-muted`.
@@ -344,7 +344,7 @@ Built entirely with Raster. Astro + MDX, React islands only where interactive.
 | CSS | No raw colour literals in component CSS; tokens only | stylelint (`color-no-hex` + custom rule allowing `var(--…)`) |
 | React behavior | Keyboard, state, focus management per component | Vitest + Testing Library |
 | React accessibility | axe structural rules on each component in jsdom; colour contrast is enforced by the token build and re-checked in real browsers by the Playwright layer | axe-core (small test helper) |
-| Visual regression | Docs component pages × 4 combos × 360 / 768 / 1440px | Playwright screenshots |
+| Visual regression | Every docs example and template × 4 combos × 360 / 768 / 1440px; baselines committed per platform (generated on macOS) | Playwright screenshots |
 | Pages | axe on every built docs page in all four theme and mode combinations; reflow at 320px; keyboard walkthroughs of Dialog and Menu | Playwright + @axe-core/playwright |
 
 ## 11. Open decisions carried into later plans
@@ -361,6 +361,10 @@ Built entirely with Raster. Astro + MDX, React islands only where interactive.
   - **Page transitions:** loading `motion.css` opts the whole site into cross-document page transitions (`@view-transition`). The `[data-motion="reduce"]` switch cannot turn these off; only the OS reduced-motion setting can.
   - **Sticky header assumption:** `:root:has(.sw-header[data-sticky])` sets `scroll-padding` assuming the header is never taller than `--header-height`.
   - **Tooling:** `astro check` does not resolve under pnpm here, so the docs type check is `tsc` over `.ts`/`.tsx` files, and the build checks `.astro` and `.mdx`. Astro 7's `preview` keeps a lock file, so Playwright starts it with `--ignore-lock`.
+- **Docs site (Plan 4b).**
+  - **Snippets:** `cleanMarkup` reduces server-rendered React Aria markup to the class contract. It turns visually hidden wrappers into `.sw-sr-only`, removes `tabindex` from native controls and collection placeholders, drops references to elements that are not rendered, and renames the generated ids it keeps. Behaviour-heavy components (Select, Dialog, Menu, Tooltip, Toast, Tabs) show only the React snippet.
+  - **Demo hygiene:** demo headings start at level 3, and landmark names inside demos differ from the site's. The axe structure rules (`heading-order`, `landmark-unique`) enforce both.
+  - **Visual baselines:** screenshots are platform-specific. A Linux CI run needs its own baselines (`--update-snapshots` once, committed as `*-linux.png`).
 - **Checkbox and Switch errors (later).** A standalone required `Checkbox` shows only a red border. React Aria's `CheckboxField` / `SwitchField` would add description and error slots.
 
 ## 12. Out of scope for version 1
