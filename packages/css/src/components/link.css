@@ -1,0 +1,23 @@
+.sw-link {
+  color: var(--accent);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.sw-link:hover {
+  text-decoration-thickness: 2px;
+}
+
+.sw-link svg {
+  display: inline-block;
+  inline-size: 0.875em;
+  block-size: 0.875em;
+  margin-inline-start: 0.125em;
+  vertical-align: -0.1em;
+  stroke-width: 1.5;
+}
+
+.sw-link svg:dir(rtl) {
+  transform: scaleX(-1);
+}

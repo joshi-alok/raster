@@ -260,7 +260,7 @@ The build-time check enforces these thresholds:
 | Group | Components |
 |---|---|
 | Layout | Container, Grid, Col, Stack, Rule, Section |
-| Type | Heading (`level` and `size` independent), Text, Label, Figure |
+| Type | Heading (`level` and `size` independent), Text, Eyebrow (mono annotation label; named to avoid clashing with form labels), Figure |
 | Actions | Button, IconButton, Link |
 | Forms | Field (label + description + error, wires `aria-describedby`), TextField, TextArea, Select, Checkbox, RadioGroup, Switch |
 | Display | Card, Table, Tag, Callout (info / success / warning / danger) |
@@ -347,7 +347,12 @@ Built entirely with Raster. Astro + MDX, React islands only where interactive.
 | Visual regression | Docs component pages × 4 combos × 360 / 768 / 1440px | Playwright screenshots |
 | Pages | axe on every docs page; keyboard walkthroughs of Dialog and Menu | Playwright + @axe-core/playwright |
 
-## 11. Out of scope for version 1
+## 11. Open decisions carried into later plans
+
+- **Button and React Aria (decide in Plan 2b, before Plan 3).** React Aria triggers (`DialogTrigger`, `MenuTrigger`, `TooltipTrigger`) need a pressable child that consumes React Aria context. `Button` is currently a native `<button>`. The recommended direction is to have `Button` wrap React Aria's `Button`, keeping the `sw-button` class and `data-variant` contract and adding `[data-pressed]` styling.
+- **Publishable ESM (before any npm release).** `tsc` emits extensionless relative imports, which work through bundlers only. Publishing needs `.js` import specifiers with `moduleResolution: "NodeNext"`, or a bundling build step.
+
+## 12. Out of scope for version 1
 
 - Publishing to npm (packages are built and consumed within the workspace).
 - Figma library or token sync (the DTCG JSON export makes it possible later).

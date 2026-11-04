@@ -8,3 +8,10 @@
 @import "./layout/stack.css" layer(raster.layout);
 @import "./layout/rule.css" layer(raster.layout);
 @import "./utilities.css" layer(raster.utilities);
+@import "./components/figure.css" layer(raster.components);
+@import "./components/button.css" layer(raster.components);
+@import "./components/link.css" layer(raster.components);
+@import "./components/card.css" layer(raster.components);
+@import "./components/tag.css" layer(raster.components);
+@import "./components/callout.css" layer(raster.components);
+@import "./components/table.css" layer(raster.components);

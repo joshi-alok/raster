@@ -1,0 +1,85 @@
+.sw-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-block-size: var(--control-height);
+  padding-block: 0;
+  padding-inline: var(--space-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background-color: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-body-size);
+  font-weight: 500;
+  line-height: 1.25;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition-property: background-color, border-color, color;
+  transition-duration: var(--dur-fast);
+  transition-timing-function: var(--ease-standard);
+}
+
+/* Extend the hit area to the 44px touch target without changing the 40px visual height. */
+.sw-button::before {
+  content: "";
+  position: absolute;
+  inset-block: calc((var(--control-height) - var(--target-min)) / 2);
+  inset-inline: 0;
+}
+
+.sw-button[data-variant="primary"] {
+  border-color: var(--accent);
+  background-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.sw-button[data-variant="ghost"] {
+  border-color: transparent;
+}
+
+.sw-button[data-variant="danger"] {
+  border-color: var(--danger);
+  background-color: var(--danger);
+  color: var(--on-danger);
+}
+
+@media (hover: hover) {
+  .sw-button:hover:not(:disabled, [aria-disabled="true"]) {
+    background-color: var(--surface-subtle);
+  }
+
+  .sw-button[data-variant="primary"]:hover:not(:disabled, [aria-disabled="true"]) {
+    background-color: color-mix(in srgb, var(--accent) 85%, var(--text-primary));
+  }
+
+  .sw-button[data-variant="danger"]:hover:not(:disabled, [aria-disabled="true"]) {
+    background-color: color-mix(in srgb, var(--danger) 85%, var(--text-primary));
+  }
+}
+
+.sw-button:is(:disabled, [aria-disabled="true"]) {
+  border-color: var(--border);
+  background-color: var(--surface-subtle);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.sw-button svg {
+  flex: none;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  stroke-width: 1.5;
+}
+
+.sw-icon-button {
+  inline-size: var(--control-height);
+  padding-inline: 0;
+}
+
+.sw-icon-button::before {
+  inset-inline: calc((var(--control-height) - var(--target-min)) / 2);
+}

@@ -60,6 +60,52 @@
           <p class="sw-type-caption" style="background: var(--danger-subtle); color: var(--on-danger-subtle); padding: var(--space-4)">danger-subtle</p>
           <p class="sw-type-caption" style="background: var(--accent); color: var(--on-accent); padding: var(--space-4)">accent</p>
         </div>
+        <p class="sw-type-label sw-text-secondary">05 / Components</p>
+        <div class="sw-stack" data-gap="6">
+          <div class="sw-stack" data-direction="row" data-gap="3">
+            <button type="button" class="sw-button" data-variant="primary">Primary</button>
+            <button type="button" class="sw-button" data-variant="secondary">Secondary</button>
+            <button type="button" class="sw-button" data-variant="ghost">Ghost</button>
+            <button type="button" class="sw-button" data-variant="danger">Delete</button>
+            <button type="button" class="sw-button" data-variant="secondary" disabled>Disabled</button>
+            <button type="button" class="sw-button sw-icon-button" data-variant="secondary" aria-label="Close">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+          </div>
+          <p>A <a class="sw-link" href="#">component link</a> inside running text.</p>
+          <div class="sw-stack" data-direction="row" data-gap="2">
+            <span class="sw-tag">Draft</span>
+            <span class="sw-tag" data-tone="accent">New</span>
+            <span class="sw-tag" data-tone="success">Live</span>
+            <span class="sw-tag" data-tone="warning">Review</span>
+            <span class="sw-tag" data-tone="danger">Blocked</span>
+          </div>
+          <div class="sw-callout" data-tone="warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M12 9v4M12 17h.01" /><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" /></svg>
+            <div class="sw-callout-body">
+              <span class="sw-sr-only">Warning:</span>
+              <p class="sw-callout-title">Check your grid</p>
+              <p>Grids must sit inside a container, never on one.</p>
+            </div>
+          </div>
+          <div class="sw-card">
+            <figure class="sw-figure">
+              <div style="block-size: 6rem; background: var(--surface-subtle)"></div>
+              <figcaption class="sw-type-caption sw-text-secondary">Figure 05 — A card holding a figure</figcaption>
+            </figure>
+          </div>
+          <div class="sw-table-wrap" role="region" aria-labelledby="pg-cap" tabindex="0">
+            <table class="sw-table" data-striped>
+              <caption id="pg-cap">Quarterly revenue</caption>
+              <thead><tr><th scope="col">Quarter</th><th scope="col" data-numeric>Revenue</th></tr></thead>
+              <tbody>
+                <tr><td>Q1</td><td data-numeric>1,200</td></tr>
+                <tr><td>Q2</td><td data-numeric>14,860</td></tr>
+                <tr><td>Q3</td><td data-numeric>9,045</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </main>
 

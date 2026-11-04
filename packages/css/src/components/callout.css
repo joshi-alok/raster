@@ -1,0 +1,46 @@
+.sw-callout {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background-color: var(--accent-subtle);
+  color: var(--on-accent-subtle);
+}
+
+.sw-callout[data-tone="success"] {
+  background-color: var(--success-subtle);
+  color: var(--on-success-subtle);
+}
+
+.sw-callout[data-tone="warning"] {
+  background-color: var(--warning-subtle);
+  color: var(--on-warning-subtle);
+}
+
+.sw-callout[data-tone="danger"] {
+  background-color: var(--danger-subtle);
+  color: var(--on-danger-subtle);
+}
+
+.sw-callout > svg {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  margin-block-start: 0.125em;
+  stroke-width: 1.5;
+}
+
+.sw-callout-title {
+  font-weight: 500;
+}
+
+.sw-callout-body > :not(:first-child, .sw-sr-only + *) {
+  margin-block-start: var(--space-2);
+}
+
+/* The accent link colour is not contrast-checked on status tints; underline carries the affordance. */
+.sw-callout a {
+  color: inherit;
+}

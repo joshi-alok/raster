@@ -1,0 +1,7 @@
+.sw-card {
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--surface-raised);
+  color: var(--text-primary);
+}

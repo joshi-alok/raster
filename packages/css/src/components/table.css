@@ -1,0 +1,44 @@
+.sw-table-wrap {
+  overflow-x: auto;
+}
+
+.sw-table {
+  inline-size: 100%;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-leading);
+}
+
+.sw-table caption {
+  padding-block-end: var(--space-3);
+  caption-side: top;
+  text-align: start;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-label-size);
+  letter-spacing: var(--text-label-tracking);
+  line-height: var(--text-label-leading);
+  text-transform: uppercase;
+}
+
+.sw-table :is(th, td) {
+  padding-block: var(--space-3);
+  padding-inline: var(--space-4);
+  border-block-end: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.sw-table thead th {
+  border-block-end-color: var(--text-primary);
+  color: var(--text-secondary);
+}
+
+.sw-table [data-numeric] {
+  text-align: end;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.sw-table[data-striped] tbody tr:nth-child(even) {
+  background-color: var(--surface-subtle);
+}
