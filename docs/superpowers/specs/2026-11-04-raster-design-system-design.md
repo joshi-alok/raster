@@ -29,7 +29,7 @@ raster/
   packages/
     tokens/   tokens.ts → build script → CSS per theme + DTCG JSON + contrast check
     css/      reset, base, grid, type, components, utilities, motion.css (Lightning CSS)
-    react/    thin components + React Aria behavior (Vite library mode)
+    react/    thin components + React Aria behavior (compiled with tsc)
   apps/
     docs/     Astro + MDX, React islands for interactive demos
 ```
@@ -44,7 +44,7 @@ raster/
 |---|---|---|
 | `@raster/tokens` | `src/` TypeScript modules (single source of truth) | `dist/tokens.css` (foundation tokens, then Alpine, then Zürich), `dist/tokens.json` (W3C DTCG format), build failure on contrast violation |
 | `@raster/css` | token CSS variables | `dist/raster.css` (all layers), `dist/motion.css` (opt-in expressive tier) |
-| `@raster/react` | `@raster/css` class contract | ESM + type declarations |
+| `@raster/react` | `@raster/css` class contract | ESM + type declarations, emitted by `tsc` (consumed through a bundler) |
 | `docs` | all three packages | static site |
 
 The token build script is about 50 lines of TypeScript run with `tsx`. No Style Dictionary.
@@ -343,7 +343,7 @@ Built entirely with Raster. Astro + MDX, React islands only where interactive.
 | Tokens | All contrast thresholds, 2 themes × 2 modes | Vitest, run in the token build |
 | CSS | No raw colour literals in component CSS; tokens only | stylelint (`color-no-hex` + custom rule allowing `var(--…)`) |
 | React behavior | Keyboard, state, focus management per component | Vitest + Testing Library |
-| React accessibility | axe on each component in 4 theme/mode combos | vitest-axe |
+| React accessibility | axe structural rules on each component in jsdom; colour contrast is enforced by the token build and re-checked in real browsers by the Playwright layer | axe-core (small test helper) |
 | Visual regression | Docs component pages × 4 combos × 360 / 768 / 1440px | Playwright screenshots |
 | Pages | axe on every docs page; keyboard walkthroughs of Dialog and Menu | Playwright + @axe-core/playwright |
 
