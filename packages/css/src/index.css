@@ -23,3 +23,4 @@
 @import "./components/modal.css" layer(raster.components);
 @import "./components/tooltip.css" layer(raster.components);
 @import "./components/toast.css" layer(raster.components);
+@import "./components/breadcrumbs.css" layer(raster.components);

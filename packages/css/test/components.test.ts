@@ -429,3 +429,24 @@ describe("link states", () => {
     expect(rule(".sw-link[data-disabled]")).toMatch(/color:\s*var\(--text-muted\)/);
   });
 });
+
+describe("breadcrumbs", () => {
+  it("sets the trail in caption size through the type variables, so li children follow", () => {
+    const r = rule(".sw-breadcrumbs");
+    expect(r).toMatch(/--_size:\s*var\(--text-caption-size\)/);
+    expect(r).toMatch(/list-style:\s*none/);
+    expect(r).toMatch(/flex-wrap:\s*wrap/);
+  });
+
+  it("mutes the separator and sets it in mono", () => {
+    const r = rule(".sw-breadcrumb-separator");
+    expect(r).toMatch(/color:\s*var\(--text-muted\)/);
+    expect(r).toMatch(/font-family:\s*var\(--font-mono\)/);
+  });
+
+  it("shows the current page as plain primary text", () => {
+    const r = rule('.sw-breadcrumb .sw-link[aria-current="page"]');
+    expect(r).toMatch(/color:\s*var\(--text-primary\)/);
+    expect(r).toMatch(/text-decoration-line:\s*none/);
+  });
+});
