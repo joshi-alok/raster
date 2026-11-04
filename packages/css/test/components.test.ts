@@ -452,9 +452,36 @@ describe("breadcrumbs", () => {
 });
 
 describe("tabs", () => {
-  it("underlines the list with a hairline and gives tabs a 44px target", () => {
-    expect(rule(".sw-tab-list")).toMatch(/border-block-end:\s*1px solid var\(--border\)/);
+  it("underlines the list with an inset hairline and gives tabs a 44px target", () => {
+    expect(rule(".sw-tab-list")).toMatch(/box-shadow:\s*inset 0 -1px 0 var\(--border\)/);
+    expect(rule(".sw-tab-list")).not.toMatch(/border-block-end/);
     expect(rule(".sw-tab")).toMatch(/min-block-size:\s*var\(--target-min\)/);
+  });
+
+  it("keeps the indicator inside the list: no negative margins on tabs", () => {
+    expect(css).not.toMatch(/\.sw-tab[^{]*\{[^}]*margin-block-end:\s*-1px/);
+    expect(css).not.toMatch(/\.sw-tab[^{]*\{[^}]*margin-inline-end:\s*-1px/);
+  });
+
+  it("draws the vertical hairline inset, mirrored in RTL", () => {
+    const v = rule('.sw-tab-list[data-orientation="vertical"]');
+    expect(v).toMatch(/box-shadow:\s*inset -1px 0 0 var\(--border\)/);
+    expect(v).not.toMatch(/border-inline-end/);
+    expect(rule('.sw-tab-list[data-orientation="vertical"]:dir(rtl)')).toMatch(
+      /box-shadow:\s*inset 1px 0 0 var\(--border\)/,
+    );
+  });
+
+  it("draws the tab focus ring inset so the scroll container cannot clip it", () => {
+    expect(rule(".sw-tab[data-focus-visible]")).toMatch(/outline-offset:\s*calc\(-1 \* var\(--focus-width\)\)/);
+  });
+
+  it("keeps selection and disabled state visible in forced colours", () => {
+    expect(css).toMatch(/forced-colors: active[\s\S]*\.sw-tab\[data-selected\]\s*\{[^}]*border-block-end-color:\s*highlight/i);
+    expect(css).toMatch(
+      /forced-colors: active[\s\S]*data-orientation="?vertical"?\] \.sw-tab\[data-selected\]\s*\{[^}]*border-inline-end-color:\s*highlight/i,
+    );
+    expect(css).toMatch(/forced-colors: active[\s\S]*\.sw-tab\[data-disabled\]\s*\{[^}]*color:\s*graytext/i);
   });
 
   it("marks the selected tab with an accent underline and weight, not colour alone", () => {
@@ -471,6 +498,12 @@ describe("tabs", () => {
 });
 
 describe("header", () => {
+  it("draws nav link focus rings inset so the scrolling nav cannot clip them", () => {
+    expect(rule(".sw-header-nav .sw-link:focus-visible")).toMatch(
+      /outline-offset:\s*calc\(-1 \* var\(--focus-width\)\)/,
+    );
+  });
+
   it("sticks to the top below modals and toasts", () => {
     const r = rule(".sw-header[data-sticky]");
     expect(r).toMatch(/position:\s*sticky/);

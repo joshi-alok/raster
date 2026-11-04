@@ -27,7 +27,7 @@ export function Breadcrumbs({ className, children, "aria-label": label = "Breadc
 }
 
 export type BreadcrumbProps = {
-  /** Omit for the current page (normally the last item). */
+  /** Link target. The last Breadcrumb is always the current page (its href is ignored); give every earlier Breadcrumb an href. */
   href?: string;
   children: ReactNode;
   className?: string;

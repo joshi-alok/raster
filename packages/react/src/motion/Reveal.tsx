@@ -5,7 +5,7 @@ import type { PolymorphicProps } from "../utils/polymorphic";
 export type RevealProps<E extends ElementType = "div"> = PolymorphicProps<
   E,
   {
-    /** Reveal direct children one after another (column by column in a grid). */
+    /** Reveal direct children one after another, in source order (row by row in a grid). */
     stagger?: boolean;
   }
 >;

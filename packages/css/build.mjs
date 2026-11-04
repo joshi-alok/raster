@@ -32,7 +32,7 @@ export async function buildCss({ minify = false } = {}) {
 
 /** The opt-in expressive motion tier, a separate output from raster.css. */
 export async function buildMotionCss({ minify = false } = {}) {
-  return bundle("src/motion.css", minify);
+  return `${LAYER_ORDER}\n${await bundle("src/motion.css", minify)}`;
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

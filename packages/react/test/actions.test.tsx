@@ -117,10 +117,10 @@ describe("Link", () => {
     const onPress = vi.fn();
     render(
       <>
-        <Link href="/a" onPress={onPress}>
+        <Link href="#a" onPress={onPress}>
           Pressable
         </Link>
-        <Link href="/b" isDisabled>
+        <Link href="#b" isDisabled>
           Disabled
         </Link>
       </>,

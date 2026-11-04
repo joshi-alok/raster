@@ -19,9 +19,10 @@
       --_reveal-timeline: view();
       animation: sw-reveal-in linear backwards;
       animation-timeline: var(--_reveal-timeline);
-      animation-range: entry calc(var(--_i, 0) * 4%) cover calc(25% + var(--_i, 0) * 4%);
+      animation-range: entry calc(var(--_i, 0) * 4%) entry 100%;
     }
 
+    .sw-reveal[data-stagger] > * { --_i: 0; }
     .sw-reveal[data-stagger] > :nth-child(2) { --_i: 1; }
     .sw-reveal[data-stagger] > :nth-child(3) { --_i: 2; }
     .sw-reveal[data-stagger] > :nth-child(4) { --_i: 3; }
@@ -33,6 +34,7 @@
     .sw-reveal[data-stagger] > :nth-child(10) { --_i: 9; }
     .sw-reveal[data-stagger] > :nth-child(11) { --_i: 10; }
     .sw-reveal[data-stagger] > :nth-child(12) { --_i: 11; }
+    .sw-reveal[data-stagger] > :nth-child(n + 13) { --_i: 11; }
   }
 
   ::view-transition-old(root),
@@ -58,6 +60,10 @@
     .sw-weight-shift {
       transition: none;
     }
+  }
+
+  [data-motion="reduce"] .sw-weight-shift {
+    transition: none;
   }
 
   [data-motion="reduce"] :is(.sw-reveal:not([data-stagger]), .sw-reveal[data-stagger] > *) {

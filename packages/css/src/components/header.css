@@ -53,6 +53,10 @@
   }
 }
 
+.sw-header-nav .sw-link:focus-visible {
+  outline-offset: calc(-1 * var(--focus-width));
+}
+
 .sw-header-nav .sw-link[aria-current="page"] {
   color: var(--text-primary);
   font-weight: 500;
