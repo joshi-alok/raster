@@ -61,6 +61,18 @@
   }
 }
 
+.sw-button[data-pressed]:not(:disabled, [aria-disabled="true"]) {
+  background-color: var(--border);
+}
+
+.sw-button[data-variant="primary"][data-pressed]:not(:disabled, [aria-disabled="true"]) {
+  background-color: color-mix(in srgb, var(--accent) 75%, var(--text-primary));
+}
+
+.sw-button[data-variant="danger"][data-pressed]:not(:disabled, [aria-disabled="true"]) {
+  background-color: color-mix(in srgb, var(--danger) 75%, var(--text-primary));
+}
+
 .sw-button:is(:disabled, [aria-disabled="true"]) {
   border-color: var(--border);
   background-color: var(--surface-subtle);

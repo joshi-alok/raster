@@ -161,3 +161,163 @@ describe("review fixes", () => {
     expect(rule(".sw-callout")).toMatch(/position:\s*relative/);
   });
 });
+
+describe("button pressed state", () => {
+  it("darkens filled and outline buttons while pressed, never when disabled", () => {
+    expect(css).toMatch(
+      /\.sw-button\[data-pressed\]:not\(:disabled,\s*\[aria-disabled="?true"?\]\)\s*\{[^}]*background-color:\s*var\(--border\)/,
+    );
+    expect(css).toMatch(
+      /\.sw-button\[data-variant="?primary"?\]\[data-pressed\]:not\(:disabled[^{]*\{[^}]*color-mix\(in srgb,\s*var\(--accent\) 75%/,
+    );
+    expect(css).toMatch(
+      /\.sw-button\[data-variant="?danger"?\]\[data-pressed\]:not\(:disabled[^{]*\{[^}]*color-mix\(in srgb,\s*var\(--danger\) 75%/,
+    );
+  });
+});
+
+describe("disabled selected states", () => {
+  it("keeps disabled unselected boxes subtle", () => {
+    expect(css).toMatch(
+      /\.sw-checkbox\[data-disabled\]:not\(\[data-selected\],\s*\[data-indeterminate\]\)\s+\.sw-checkbox-box\s*\{[^}]*background-color:\s*var\(--surface-subtle\)/,
+    );
+    expect(css).toMatch(
+      /\.sw-radio\[data-disabled\]:not\(\[data-selected\]\)\s+\.sw-radio-dot\s*\{[^}]*background-color:\s*var\(--surface-subtle\)/,
+    );
+  });
+  it("keeps disabled selected controls visible", () => {
+    expect(css).toMatch(
+      /\.sw-checkbox\[data-disabled\]:is\(\[data-selected\],\s*\[data-indeterminate\]\)\s+\.sw-checkbox-box\s*\{[^}]*border-color:\s*var\(--text-muted\)[^}]*background-color:\s*var\(--text-muted\)/,
+    );
+    expect(css).toMatch(
+      /\.sw-radio\[data-disabled\]\[data-selected\]\s+\.sw-radio-dot\s*\{[^}]*border-color:\s*var\(--text-muted\)/,
+    );
+    expect(css).toMatch(
+      /\.sw-switch\[data-disabled\]\[data-selected\]\s+\.sw-switch-track\s*\{[^}]*border-color:\s*var\(--text-muted\)[^}]*background-color:\s*var\(--text-muted\)/,
+    );
+  });
+});
+
+describe("switch forced colours", () => {
+  it("uses system colours for thumb and selected track", () => {
+    const m = css.match(/@media\s*\(forced-colors:\s*active\)\s*\{(?:(?!@media)[\s\S])*?\.sw-switch-thumb[\s\S]*?\n\}/);
+    expect(m).not.toBeNull();
+    const block = m?.[0] ?? "";
+    expect(block).toMatch(/\.sw-switch-thumb\s*\{[^}]*forced-color-adjust:\s*none[^}]*canvastext/i);
+    expect(block).toMatch(/\.sw-switch\[data-selected\]\s+\.sw-switch-track\s*\{[^}]*forced-color-adjust:\s*none[^}]*highlight\s*;/i);
+    expect(block).toMatch(/\.sw-switch\[data-selected\]\s+\.sw-switch-thumb\s*\{[^}]*highlighttext/i);
+  });
+});
+
+describe("invalid select", () => {
+  it("marks the trigger with danger border and a thicker leading edge", () => {
+    const r = rule(".sw-select[data-invalid] .sw-select-trigger");
+    expect(r).toMatch(/border-color:\s*var\(--danger\)/);
+    expect(r).toMatch(/border-inline-start-width:\s*4px/);
+  });
+  it("keeps the danger border on hover", () => {
+    expect(css).toMatch(
+      /\.sw-select\[data-invalid\]\s+\.sw-select-trigger:hover\s*\{[^}]*border-color:\s*var\(--danger\)/,
+    );
+  });
+});
+
+describe("field", () => {
+  it("stacks label, control, description and error", () => {
+    expect(rule(".sw-field")).toMatch(/display:\s*grid/);
+    expect(rule(".sw-field-label")).toMatch(/font-weight:\s*500/);
+    expect(rule(".sw-field-description")).toMatch(/color:\s*var\(--text-secondary\)/);
+    expect(rule(".sw-field-error")).toMatch(/color:\s*var\(--danger\)/);
+  });
+
+  it("makes inputs 40px controls with a control-strength border", () => {
+    const r = rule(".sw-input");
+    expect(r).toMatch(/min-block-size:\s*var\(--control-height\)/);
+    expect(r).toMatch(/border:\s*1px solid var\(--border-strong\)/);
+    expect(r).toMatch(/background-color:\s*var\(--surface-raised\)/);
+  });
+
+  it("marks invalid inputs with colour and a thicker leading edge", () => {
+    expect(css).toMatch(/\.sw-input\[aria-invalid="?true"?\]\s*\{[^}]*border-color:\s*var\(--danger\)/);
+    expect(css).toMatch(/\.sw-input\[aria-invalid="?true"?\]\s*\{[^}]*border-inline-start-width:\s*4px/);
+  });
+
+  it("lets text areas grow vertically", () => {
+    expect(rule(".sw-textarea")).toMatch(/resize:\s*vertical/);
+  });
+
+  it("keeps single-line inputs at exactly the 40px control height", () => {
+    // 8px + 8px padding + 2px border + 1.25 × 16–17px text stays under 40px, so min-block-size wins.
+    expect(rule(".sw-input")).toMatch(/line-height:\s*1\.25/);
+    expect(rule(".sw-textarea")).toMatch(/line-height:\s*1\.5/);
+  });
+});
+
+describe("checkbox", () => {
+  it("gives the whole label a 44px target", () => {
+    expect(css).toMatch(/\.sw-checkbox[^{]*\{[^}]*min-block-size:\s*var\(--target-min\)/);
+  });
+
+  it("fills the box with the accent when selected or indeterminate", () => {
+    expect(css).toMatch(
+      /\.sw-checkbox\[data-selected\] \.sw-checkbox-box,\s*\.sw-checkbox\[data-indeterminate\] \.sw-checkbox-box\s*\{[^}]*background-color:\s*var\(--accent\)/,
+    );
+  });
+
+  it("draws the focus ring on the box", () => {
+    expect(css).toMatch(/\.sw-checkbox\[data-focus-visible\] \.sw-checkbox-box[^{]*\{[^}]*outline:\s*var\(--focus-width\) solid var\(--accent\)/);
+  });
+});
+
+describe("switch", () => {
+  it("uses a pill track and moves the thumb when selected", () => {
+    expect(rule(".sw-switch-track")).toMatch(/border-radius:\s*var\(--radius-full\)/);
+    expect(rule(".sw-switch[data-selected] .sw-switch-track")).toMatch(/background-color:\s*var\(--accent\)/);
+    expect(rule(".sw-switch[data-selected] .sw-switch-thumb")).toMatch(/translateX\(1rem\)/);
+  });
+
+  it("mirrors the thumb in right-to-left text", () => {
+    expect(css).toMatch(/\.sw-switch\[data-selected\]:dir\(rtl\) \.sw-switch-thumb\s*\{[^}]*translateX\(-1rem\)/);
+  });
+
+  it("does not animate the thumb when reduced motion is requested", () => {
+    expect(css).toMatch(/prefers-reduced-motion: reduce[^{]*\{[^@]*\.sw-switch-thumb\s*\{[^}]*transition:\s*none/);
+    expect(css).toMatch(/\[data-motion="?reduce"?\] \.sw-switch-thumb\s*\{[^}]*transition:\s*none/);
+  });
+});
+
+describe("radio", () => {
+  it("draws a round dot that becomes a thick accent ring when selected", () => {
+    expect(rule(".sw-radio-dot")).toMatch(/border-radius:\s*var\(--radius-full\)/);
+    expect(rule(".sw-radio[data-selected] .sw-radio-dot")).toMatch(/border:\s*6px solid var\(--accent\)/);
+  });
+
+  it("lays options out vertically, or in a row when horizontal", () => {
+    expect(rule(".sw-radio-list")).toMatch(/display:\s*grid/);
+    expect(rule('.sw-radio-group[data-orientation="horizontal"] .sw-radio-list')).toMatch(/display:\s*flex/);
+  });
+});
+
+describe("select", () => {
+  it("lays the trigger out as value plus chevron", () => {
+    const r = rule(".sw-select-trigger");
+    expect(r).toMatch(/display:\s*flex/);
+    expect(r).toMatch(/justify-content:\s*space-between/);
+  });
+
+  it("mutes the placeholder value", () => {
+    expect(rule(".sw-select-value[data-placeholder]")).toMatch(/color:\s*var\(--text-muted\)/);
+  });
+
+  it("floats the popover with the single overlay shadow at the trigger's width", () => {
+    const r = rule(".sw-popover");
+    expect(r).toMatch(/box-shadow:\s*var\(--shadow-overlay\)/);
+    expect(r).toMatch(/min-inline-size:\s*var\(--trigger-width\)/);
+    expect(r).toMatch(/background-color:\s*var\(--surface-raised\)/);
+  });
+
+  it("highlights focused options on the subtle surface", () => {
+    expect(rule(".sw-listbox-item[data-focused]")).toMatch(/background-color:\s*var\(--surface-subtle\)/);
+    expect(rule(".sw-listbox-item")).toMatch(/min-block-size:\s*var\(--control-height\)/);
+  });
+});

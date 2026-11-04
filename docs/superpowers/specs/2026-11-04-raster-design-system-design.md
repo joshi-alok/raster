@@ -349,8 +349,11 @@ Built entirely with Raster. Astro + MDX, React islands only where interactive.
 
 ## 11. Open decisions carried into later plans
 
-- **Button and React Aria (decide in Plan 2b, before Plan 3).** React Aria triggers (`DialogTrigger`, `MenuTrigger`, `TooltipTrigger`) need a pressable child that consumes React Aria context. `Button` is currently a native `<button>`. The recommended direction is to have `Button` wrap React Aria's `Button`, keeping the `sw-button` class and `data-variant` contract and adding `[data-pressed]` styling.
+- **Button and React Aria (done in Plan 2b).** `Button` wraps React Aria's `Button` (`onPress`, `isDisabled`, `[data-pressed]`), so it works as the trigger child of React Aria dialogs, menus and tooltips.
 - **Publishable ESM (before any npm release).** `tsc` emits extensionless relative imports, which work through bundlers only. Publishing needs `.js` import specifiers with `moduleResolution: "NodeNext"`, or a bundling build step.
+- **Shared overlay styles (Plan 3).** `.sw-popover`, `.sw-listbox` and `.sw-listbox-item` currently live in `select.css`. Plan 3 moves them to a shared overlay stylesheet reused by Menu and Popover, adds `[data-entering]` / `[data-exiting]` motion with reduced-motion handling, and adds a theme-aware portal container so overlays inherit the theme and mode of the region that opened them.
+- **Link and React Aria (Plan 3).** `Link` is a native `<a>`. Breadcrumbs and in-menu links need a decision on wrapping React Aria's `Link`.
+- **Checkbox and Switch errors (later).** A standalone required `Checkbox` shows only a red border. React Aria's `CheckboxField` / `SwitchField` would add description and error slots.
 
 ## 12. Out of scope for version 1
 

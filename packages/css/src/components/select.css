@@ -1,0 +1,93 @@
+.sw-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  text-align: start;
+  cursor: pointer;
+}
+
+/* Invalid: danger border plus a thicker leading edge. The :hover rule outranks the generic input hover. */
+.sw-select[data-invalid] .sw-select-trigger {
+  border-color: var(--danger);
+  border-inline-start-width: 4px;
+}
+
+.sw-select[data-invalid] .sw-select-trigger:hover {
+  border-color: var(--danger);
+}
+
+.sw-select-trigger svg {
+  flex: none;
+  inline-size: 1rem;
+  block-size: 1rem;
+  color: var(--text-secondary);
+  stroke-width: 1.5;
+}
+
+.sw-select-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sw-select-value[data-placeholder] {
+  color: var(--text-muted);
+}
+
+.sw-popover {
+  min-inline-size: var(--trigger-width);
+  max-block-size: 20rem;
+  padding: var(--space-1);
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-overlay);
+}
+
+.sw-listbox {
+  display: grid;
+  outline: none;
+}
+
+.sw-listbox-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-block-size: var(--control-height);
+  padding-inline: var(--space-3);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-size: var(--text-body-size);
+  line-height: 1.25;
+  cursor: pointer;
+  outline: none;
+}
+
+.sw-listbox-item[data-focused] {
+  background-color: var(--surface-subtle);
+}
+
+.sw-listbox-item[data-focus-visible] {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: calc(-1 * var(--focus-width));
+}
+
+/* Selected: weight plus a check icon, never colour alone. */
+.sw-listbox-item[data-selected] {
+  font-weight: 500;
+}
+
+.sw-listbox-item svg {
+  flex: none;
+  inline-size: 1rem;
+  block-size: 1rem;
+  stroke-width: 1.5;
+}
+
+.sw-listbox-item[data-disabled] {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
