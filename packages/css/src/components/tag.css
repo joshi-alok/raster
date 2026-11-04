@@ -1,0 +1,42 @@
+.sw-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-block-size: 1.5rem;
+  padding-inline: var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background-color: var(--surface-subtle);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-label-size);
+  letter-spacing: var(--text-label-tracking);
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Tinted tones keep a transparent border so the shape survives forced-colours mode. */
+.sw-tag[data-tone="accent"] {
+  border-color: transparent;
+  background-color: var(--accent-subtle);
+  color: var(--on-accent-subtle);
+}
+
+.sw-tag[data-tone="success"] {
+  border-color: transparent;
+  background-color: var(--success-subtle);
+  color: var(--on-success-subtle);
+}
+
+.sw-tag[data-tone="warning"] {
+  border-color: transparent;
+  background-color: var(--warning-subtle);
+  color: var(--on-warning-subtle);
+}
+
+.sw-tag[data-tone="danger"] {
+  border-color: transparent;
+  background-color: var(--danger-subtle);
+  color: var(--on-danger-subtle);
+}

@@ -71,3 +71,30 @@ describe("link", () => {
     expect(css).toMatch(/\.sw-link svg:dir\(rtl\)\s*\{[^}]*scaleX\(-1\)/);
   });
 });
+
+describe("card", () => {
+  it("is a flat raised surface with a hairline border and no shadow", () => {
+    const r = rule(".sw-card");
+    expect(r).toMatch(/background-color:\s*var\(--surface-raised\)/);
+    expect(r).toMatch(/border:\s*1px solid var\(--border\)/);
+    expect(r).toMatch(/border-radius:\s*var\(--radius\)/);
+    expect(r).not.toMatch(/box-shadow/);
+  });
+});
+
+describe("tag", () => {
+  it("is a mono pill on the subtle surface", () => {
+    const r = rule(".sw-tag");
+    expect(r).toMatch(/border-radius:\s*var\(--radius-full\)/);
+    expect(r).toMatch(/font-family:\s*var\(--font-mono\)/);
+    expect(r).toMatch(/background-color:\s*var\(--surface-subtle\)/);
+  });
+
+  it("pairs each tone's tint with its text-on-tint role", () => {
+    for (const tone of ["accent", "success", "warning", "danger"]) {
+      const r = rule(`.sw-tag[data-tone="${tone}"]`);
+      expect(r).toMatch(new RegExp(`background-color:\\s*var\\(--${tone}-subtle\\)`));
+      expect(r).toMatch(new RegExp(`color:\\s*var\\(--on-${tone}-subtle\\)`));
+    }
+  });
+});
