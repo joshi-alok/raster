@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { Callout } from "../src/display/Callout";
 import { Card } from "../src/display/Card";
 import { Tag } from "../src/display/Tag";
 import { expectAccessible } from "./axe";
@@ -41,6 +42,50 @@ describe("card and tag accessibility", () => {
         <h2>Release</h2>
         <Tag tone="accent">New</Tag>
       </Card>,
+    );
+    await expectAccessible(container);
+  });
+});
+
+describe("Callout", () => {
+  it("defaults to the info tone and announces it", () => {
+    render(<Callout>Saved drafts sync every minute.</Callout>);
+    const body = screen.getByText("Saved drafts sync every minute.").closest(".sw-callout");
+    expect(body).toHaveAttribute("data-tone", "info");
+    expect(screen.getByText("Note:")).toHaveClass("sw-sr-only");
+  });
+
+  it("renders a title, a tone word and a hidden icon per tone", () => {
+    const { container } = render(
+      <Callout tone="warning" title="Check your grid">
+        <p>Grids must sit inside a container.</p>
+      </Callout>,
+    );
+    expect(screen.getByText("Warning:")).toBeInTheDocument();
+    expect(screen.getByText("Check your grid")).toHaveClass("sw-callout-title");
+    expect(container.querySelector(".sw-callout > svg")).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("uses a distinct icon for each tone", () => {
+    const { container } = render(
+      <>
+        <Callout tone="info">a</Callout>
+        <Callout tone="success">b</Callout>
+        <Callout tone="warning">c</Callout>
+        <Callout tone="danger">d</Callout>
+      </>,
+    );
+    const icons = [...container.querySelectorAll(".sw-callout > svg")].map((svg) => svg.getAttribute("class"));
+    expect(new Set(icons).size).toBe(4);
+  });
+
+  it("has no structural violations", async () => {
+    const { container } = render(
+      <Callout tone="danger" title="Build failed">
+        <p>
+          Contrast check failed. <a href="/colour">See colour rules</a>.
+        </p>
+      </Callout>,
     );
     await expectAccessible(container);
   });

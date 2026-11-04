@@ -13,3 +13,4 @@
 @import "./components/link.css" layer(raster.components);
 @import "./components/card.css" layer(raster.components);
 @import "./components/tag.css" layer(raster.components);
+@import "./components/callout.css" layer(raster.components);

@@ -98,3 +98,24 @@ describe("tag", () => {
     }
   });
 });
+
+describe("callout", () => {
+  it("lays out icon and body in two columns on the accent tint by default", () => {
+    const r = rule(".sw-callout");
+    expect(r).toMatch(/grid-template-columns:\s*auto minmax\(0,\s*1fr\)/);
+    expect(r).toMatch(/background-color:\s*var\(--accent-subtle\)/);
+    expect(r).toMatch(/color:\s*var\(--on-accent-subtle\)/);
+  });
+
+  it("maps success, warning and danger tones to their tints", () => {
+    for (const tone of ["success", "warning", "danger"]) {
+      expect(rule(`.sw-callout[data-tone="${tone}"]`)).toMatch(
+        new RegExp(`background-color:\\s*var\\(--${tone}-subtle\\)`),
+      );
+    }
+  });
+
+  it("keeps links inside callouts in the callout's text colour", () => {
+    expect(rule(".sw-callout a")).toMatch(/color:\s*inherit/);
+  });
+});
