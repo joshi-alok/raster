@@ -7,6 +7,16 @@
   cursor: pointer;
 }
 
+/* Invalid: danger border plus a thicker leading edge. The :hover rule outranks the generic input hover. */
+.sw-select[data-invalid] .sw-select-trigger {
+  border-color: var(--danger);
+  border-inline-start-width: 4px;
+}
+
+.sw-select[data-invalid] .sw-select-trigger:hover {
+  border-color: var(--danger);
+}
+
 .sw-select-trigger svg {
   flex: none;
   inline-size: 1rem;

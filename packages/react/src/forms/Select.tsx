@@ -4,6 +4,7 @@ import {
   Button as AriaButton,
   ListBox,
   ListBoxItem,
+  type Key,
   type ListBoxItemProps,
   Popover,
   Select as AriaSelect,
@@ -55,8 +56,9 @@ export function Select<T extends object>({
   );
 }
 
-export type SelectItemProps = Omit<ListBoxItemProps, "className" | "children"> &
+export type SelectItemProps = Omit<ListBoxItemProps, "className" | "children" | "id"> &
   RefAttributes<HTMLDivElement> & {
+    id: Key;
     className?: string;
     children: ReactNode;
   };

@@ -168,6 +168,24 @@ describe("Select", () => {
     </>
   );
 
+  it("flags an invalid select on the root", () => {
+    const { container } = render(
+      <Select label="Theme" isInvalid errorMessage="Pick one">
+        {options}
+      </Select>,
+    );
+    expect(container.querySelector(".sw-select")).toHaveAttribute("data-invalid");
+  });
+
+  it("requires an id on SelectItem", () => {
+    // Type-level only; never rendered.
+    const unused = () => (
+      // @ts-expect-error SelectItem requires an id
+      <SelectItem>No id</SelectItem>
+    );
+    expect(unused).toBeTypeOf("function");
+  });
+
   it("labels the trigger and shows the placeholder", () => {
     render(
       <Select label="Theme" placeholder="Choose a theme">

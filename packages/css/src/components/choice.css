@@ -50,9 +50,14 @@
   border-width: 2px;
 }
 
-.sw-checkbox[data-disabled] .sw-checkbox-box {
+.sw-checkbox[data-disabled]:not([data-selected], [data-indeterminate]) .sw-checkbox-box {
   border-color: var(--border);
   background-color: var(--surface-subtle);
+}
+
+.sw-checkbox[data-disabled]:is([data-selected], [data-indeterminate]) .sw-checkbox-box {
+  border-color: var(--text-muted);
+  background-color: var(--text-muted);
 }
 
 .sw-checkbox[data-focus-visible] .sw-checkbox-box {
@@ -100,9 +105,31 @@
   border-color: var(--border);
 }
 
+.sw-switch[data-disabled][data-selected] .sw-switch-track {
+  border-color: var(--text-muted);
+  background-color: var(--text-muted);
+}
+
 .sw-switch[data-focus-visible] .sw-switch-track {
   outline: var(--focus-width) solid var(--accent);
   outline-offset: var(--focus-offset);
+}
+
+/* Forced colours drop backgrounds, so restate the switch with system colours. */
+@media (forced-colors: active) {
+  .sw-switch-thumb {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
+
+  .sw-switch[data-selected] .sw-switch-track {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  .sw-switch[data-selected] .sw-switch-thumb {
+    background-color: HighlightText;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -146,9 +173,13 @@
   border-color: var(--danger);
 }
 
-.sw-radio[data-disabled] .sw-radio-dot {
+.sw-radio[data-disabled]:not([data-selected]) .sw-radio-dot {
   border-color: var(--border);
   background-color: var(--surface-subtle);
+}
+
+.sw-radio[data-disabled][data-selected] .sw-radio-dot {
+  border-color: var(--text-muted);
 }
 
 .sw-radio[data-focus-visible] .sw-radio-dot {

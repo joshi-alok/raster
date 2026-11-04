@@ -163,10 +163,61 @@ describe("review fixes", () => {
 });
 
 describe("button pressed state", () => {
-  it("darkens filled and outline buttons while pressed", () => {
-    expect(css).toMatch(/\.sw-button\[data-pressed\]\s*\{[^}]*background-color:\s*var\(--border\)/);
+  it("darkens filled and outline buttons while pressed, never when disabled", () => {
     expect(css).toMatch(
-      /\.sw-button\[data-variant="?primary"?\]\[data-pressed\]\s*\{[^}]*color-mix\(in srgb,\s*var\(--accent\) 75%/,
+      /\.sw-button\[data-pressed\]:not\(:disabled,\s*\[aria-disabled="?true"?\]\)\s*\{[^}]*background-color:\s*var\(--border\)/,
+    );
+    expect(css).toMatch(
+      /\.sw-button\[data-variant="?primary"?\]\[data-pressed\]:not\(:disabled[^{]*\{[^}]*color-mix\(in srgb,\s*var\(--accent\) 75%/,
+    );
+    expect(css).toMatch(
+      /\.sw-button\[data-variant="?danger"?\]\[data-pressed\]:not\(:disabled[^{]*\{[^}]*color-mix\(in srgb,\s*var\(--danger\) 75%/,
+    );
+  });
+});
+
+describe("disabled selected states", () => {
+  it("keeps disabled unselected boxes subtle", () => {
+    expect(css).toMatch(
+      /\.sw-checkbox\[data-disabled\]:not\(\[data-selected\],\s*\[data-indeterminate\]\)\s+\.sw-checkbox-box\s*\{[^}]*background-color:\s*var\(--surface-subtle\)/,
+    );
+    expect(css).toMatch(
+      /\.sw-radio\[data-disabled\]:not\(\[data-selected\]\)\s+\.sw-radio-dot\s*\{[^}]*background-color:\s*var\(--surface-subtle\)/,
+    );
+  });
+  it("keeps disabled selected controls visible", () => {
+    expect(css).toMatch(
+      /\.sw-checkbox\[data-disabled\]:is\(\[data-selected\],\s*\[data-indeterminate\]\)\s+\.sw-checkbox-box\s*\{[^}]*border-color:\s*var\(--text-muted\)[^}]*background-color:\s*var\(--text-muted\)/,
+    );
+    expect(css).toMatch(
+      /\.sw-radio\[data-disabled\]\[data-selected\]\s+\.sw-radio-dot\s*\{[^}]*border-color:\s*var\(--text-muted\)/,
+    );
+    expect(css).toMatch(
+      /\.sw-switch\[data-disabled\]\[data-selected\]\s+\.sw-switch-track\s*\{[^}]*border-color:\s*var\(--text-muted\)[^}]*background-color:\s*var\(--text-muted\)/,
+    );
+  });
+});
+
+describe("switch forced colours", () => {
+  it("uses system colours for thumb and selected track", () => {
+    const m = css.match(/@media\s*\(forced-colors:\s*active\)\s*\{(?:(?!@media)[\s\S])*?\.sw-switch-thumb[\s\S]*?\n\}/);
+    expect(m).not.toBeNull();
+    const block = m?.[0] ?? "";
+    expect(block).toMatch(/\.sw-switch-thumb\s*\{[^}]*forced-color-adjust:\s*none[^}]*canvastext/i);
+    expect(block).toMatch(/\.sw-switch\[data-selected\]\s+\.sw-switch-track\s*\{[^}]*forced-color-adjust:\s*none[^}]*highlight\s*;/i);
+    expect(block).toMatch(/\.sw-switch\[data-selected\]\s+\.sw-switch-thumb\s*\{[^}]*highlighttext/i);
+  });
+});
+
+describe("invalid select", () => {
+  it("marks the trigger with danger border and a thicker leading edge", () => {
+    const r = rule(".sw-select[data-invalid] .sw-select-trigger");
+    expect(r).toMatch(/border-color:\s*var\(--danger\)/);
+    expect(r).toMatch(/border-inline-start-width:\s*4px/);
+  });
+  it("keeps the danger border on hover", () => {
+    expect(css).toMatch(
+      /\.sw-select\[data-invalid\]\s+\.sw-select-trigger:hover\s*\{[^}]*border-color:\s*var\(--danger\)/,
     );
   });
 });
