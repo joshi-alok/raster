@@ -40,6 +40,37 @@ describe("ThemeRegion", () => {
     expect(listbox.closest(".sw-portal-host")).not.toBeNull();
   });
 
+  it("renders the portal host at the end of document.body, outside the region element", async () => {
+    render(
+      <ThemeRegion theme="zurich" data-testid="r">
+        <p>Inside</p>
+      </ThemeRegion>,
+    );
+    await waitFor(() => expect(document.querySelector(".sw-portal-host")).not.toBeNull());
+    const host = document.querySelector(".sw-portal-host")!;
+    expect(host.parentElement).toBe(document.body);
+    expect(screen.getByTestId("r").contains(host)).toBe(false);
+    expect(host).toHaveAttribute("data-theme", "zurich");
+  });
+
+  it("nested regions inherit the effective theme and mode on the host", async () => {
+    const user = userEvent.setup();
+    render(
+      <ThemeRegion theme="zurich">
+        <ThemeRegion mode="dark">
+          <Select label="Theme">
+            <SelectItem id="a">Alpine</SelectItem>
+          </Select>
+        </ThemeRegion>
+      </ThemeRegion>,
+    );
+    await user.click(screen.getByRole("button", { name: /Theme/ }));
+    const listbox = await screen.findByRole("listbox");
+    const host = listbox.closest(".sw-portal-host")!;
+    expect(host).toHaveAttribute("data-theme", "zurich");
+    expect(host).toHaveAttribute("data-mode", "dark");
+  });
+
   it("leaves overlays outside any region portalled to the body", async () => {
     const user = userEvent.setup();
     render(
@@ -117,6 +148,44 @@ describe("Dialog", () => {
     );
     await user.click(screen.getByRole("button", { name: "Open" }));
     expect(await screen.findByRole("alertdialog", { name: "Session expired" })).toBeInTheDocument();
+  });
+
+  it("does not dismiss an alertdialog on backdrop click", async () => {
+    const user = userEvent.setup();
+    render(
+      <DialogTrigger>
+        <Button>Open</Button>
+        <Dialog title="Session expired" role="alertdialog">
+          <p>Sign in again.</p>
+        </Dialog>
+      </DialogTrigger>,
+    );
+    await user.click(screen.getByRole("button", { name: "Open" }));
+    const dialog = await screen.findByRole("alertdialog");
+    await user.click(dialog.closest(".sw-modal-overlay")!);
+    expect(screen.getByRole("alertdialog")).toBeInTheDocument();
+  });
+
+  it("dismisses a regular dialog on backdrop click", async () => {
+    const user = userEvent.setup();
+    render(<Example />);
+    await user.click(screen.getByRole("button", { name: "Delete file" }));
+    const dialog = await screen.findByRole("dialog");
+    await user.click(dialog.closest(".sw-modal-overlay")!);
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+  });
+
+  it("can be controlled without a trigger", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <Dialog isOpen onOpenChange={onOpenChange} title="Confirm">
+        <p>Sure?</p>
+      </Dialog>,
+    );
+    expect(await screen.findByRole("dialog", { name: "Confirm" })).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
   it("has no structural violations when open", async () => {
@@ -224,6 +293,19 @@ describe("Toast", () => {
     expect(toast.querySelector(".sw-toast-icon")).toHaveAttribute("aria-hidden", "true");
     await user.click(screen.getByRole("button", { name: "Dismiss" }));
     expect(screen.queryByText("File saved")).toBeNull();
+  });
+
+  it("prefixes the title with a visually hidden tone word", async () => {
+    const queue = createToastQueue();
+    render(<ToastRegion queue={queue} />);
+    act(() => {
+      queue.add({ title: "Upload failed", tone: "danger" });
+    });
+    const title = (await screen.findByText("Upload failed")).closest(".sw-toast-title")!;
+    const sr = title.querySelector(".sw-sr-only")!;
+    expect(sr.tagName).toBe("SPAN");
+    expect(sr.textContent).toBe("Error: ");
+    expect(title.firstChild).toBe(sr);
   });
 
   it("names the region for assistive tech", () => {

@@ -67,9 +67,16 @@
 }
 
 .sw-menu-separator {
-  block-size: 1px;
+  block-size: 0;
   margin-block: var(--space-1);
-  background-color: var(--border);
+  border-block-start: 1px solid var(--border);
+}
+
+@media (forced-colors: active) {
+  .sw-listbox-item[data-focused],
+  .sw-menu-item[data-focused] {
+    outline: 1px solid Highlight;
+  }
 }
 
 /* Core motion tier: fade plus a short slide away from the trigger. */

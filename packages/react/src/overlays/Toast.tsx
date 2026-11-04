@@ -27,6 +27,13 @@ export function createToastQueue(maxVisibleToasts = 5): ToastQueue {
 /** A shared app-wide queue for the common case of one ToastRegion. */
 export const toastQueue: ToastQueue = createToastQueue();
 
+const TONE_WORDS: Record<ToastTone, string> = {
+  info: "Note",
+  success: "Success",
+  warning: "Warning",
+  danger: "Error",
+};
+
 const ICONS = {
   info: Info,
   success: CircleCheck,
@@ -51,6 +58,7 @@ export function ToastRegion({ queue = toastQueue, className }: ToastRegionProps)
             <Icon className="sw-toast-icon" aria-hidden="true" />
             <AriaToastContent className="sw-toast-content">
               <Text slot="title" className="sw-toast-title">
+                <span className="sw-sr-only">{TONE_WORDS[tone]}: </span>
                 {toast.content.title}
               </Text>
               {toast.content.description && (

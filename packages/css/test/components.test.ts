@@ -352,6 +352,7 @@ describe("modal dialog", () => {
     expect(r).toMatch(/position:\s*fixed/);
     expect(r).toMatch(/background-color:\s*var\(--scrim\)/);
     expect(r).toMatch(/place-items:\s*center/);
+    expect(r).toMatch(/z-index:\s*var\(--z-modal\)/);
   });
 
   it("is a raised surface with the overlay shadow that scrolls when tall", () => {
@@ -387,6 +388,7 @@ describe("toast", () => {
     expect(r).toMatch(/position:\s*fixed/);
     expect(r).toMatch(/inset-inline-end:\s*var\(--space-5\)/);
     expect(r).toMatch(/inset-block-end:\s*var\(--space-5\)/);
+    expect(r).toMatch(/z-index:\s*var\(--z-toast\)/);
   });
 
   it("is a raised surface with icon, content and close button in a row", () => {
@@ -398,5 +400,20 @@ describe("toast", () => {
   it("colours the tone icon from role tokens", () => {
     expect(rule('.sw-toast[data-tone="danger"] .sw-toast-icon')).toMatch(/color:\s*var\(--danger\)/);
     expect(rule('.sw-toast[data-tone="success"] .sw-toast-icon')).toMatch(/color:\s*var\(--success\)/);
+  });
+});
+
+describe("overlay review fixes", () => {
+  it("draws the menu separator as a zero-height border", () => {
+    const r = rule(".sw-menu-separator");
+    expect(r).toMatch(/block-size:\s*0/);
+    expect(r).toMatch(/border-block-start:\s*1px solid var\(--border\)/);
+    expect(r).not.toMatch(/background-color/);
+  });
+
+  it("outlines focused listbox and menu items in forced-colors mode", () => {
+    expect(css).toMatch(
+      /@media \(forced-colors:\s*active\)\s*\{\s*\.sw-listbox-item\[data-focused\],\s*\.sw-menu-item\[data-focused\]\s*\{[^}]*outline:\s*1px solid highlight/i,
+    );
   });
 });
