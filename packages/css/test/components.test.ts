@@ -161,3 +161,12 @@ describe("review fixes", () => {
     expect(rule(".sw-callout")).toMatch(/position:\s*relative/);
   });
 });
+
+describe("button pressed state", () => {
+  it("darkens filled and outline buttons while pressed", () => {
+    expect(css).toMatch(/\.sw-button\[data-pressed\]\s*\{[^}]*background-color:\s*var\(--border\)/);
+    expect(css).toMatch(
+      /\.sw-button\[data-variant="?primary"?\]\[data-pressed\]\s*\{[^}]*color-mix\(in srgb,\s*var\(--accent\) 75%/,
+    );
+  });
+});

@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { X } from "lucide-react";
 import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
@@ -27,18 +28,27 @@ describe("Button", () => {
     expect(b).toHaveAttribute("type", "submit");
   });
 
-  it("calls onClick, but not when disabled", () => {
-    const onClick = vi.fn();
-    const { rerender } = render(<Button onClick={onClick}>Go</Button>);
-    fireEvent.click(screen.getByRole("button"));
-    expect(onClick).toHaveBeenCalledTimes(1);
+  it("calls onPress, but not when disabled", async () => {
+    const user = userEvent.setup();
+    const onPress = vi.fn();
+    const { rerender } = render(<Button onPress={onPress}>Go</Button>);
+    await user.click(screen.getByRole("button"));
+    expect(onPress).toHaveBeenCalledTimes(1);
     rerender(
-      <Button onClick={onClick} disabled>
+      <Button onPress={onPress} isDisabled>
         Go
       </Button>,
     );
-    fireEvent.click(screen.getByRole("button"));
-    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("button")).toBeDisabled();
+    await user.click(screen.getByRole("button"));
+    expect(onPress).toHaveBeenCalledTimes(1);
+  });
+
+  it("exposes pressed and focus-visible state for styling", async () => {
+    const user = userEvent.setup();
+    render(<Button>State</Button>);
+    await user.tab();
+    expect(screen.getByRole("button")).toHaveAttribute("data-focus-visible");
   });
 
   it("forwards its ref", () => {
