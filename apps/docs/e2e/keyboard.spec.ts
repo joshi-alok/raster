@@ -70,3 +70,18 @@ test("toast: an action announces a toast that can be dismissed", async ({ page }
   await toast.getByRole("button", { name: "Dismiss" }).click();
   await expect(toast).toHaveCount(0);
 });
+
+test("tabs: one tab stop, arrows select, disabled tabs are skipped", async ({ page }) => {
+  await page.goto("/components/tabs/");
+  await waitForIslands(page);
+  const list = page.getByRole("tablist", { name: "Foundations" });
+  await tabTo(page, list.getByRole("tab", { name: "Grid" }));
+  await page.keyboard.press("ArrowRight");
+  await expect(list.getByRole("tab", { name: "Type" })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("tabpanel", { name: "Type" })).toContainText("Geist");
+  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("ArrowRight");
+  await expect(list.getByRole("tab", { name: "Motion" })).not.toHaveAttribute("aria-selected", "true");
+  await page.keyboard.press("Tab");
+  expect(await list.evaluate((l) => l.contains(document.activeElement))).toBe(false);
+});

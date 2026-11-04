@@ -13,7 +13,7 @@ for (const path of componentPages) {
   test(`${path} has examples with code, props, accessibility notes and breadcrumbs`, async ({ page }) => {
     await page.goto(path);
     const title = (await page.locator("h1").textContent())?.trim() ?? "";
-    const crumbs = page.getByRole("navigation", { name: "Breadcrumbs" });
+    const crumbs = page.getByRole("navigation", { name: "Breadcrumbs", exact: true });
     await expect(crumbs.locator('[aria-current="page"]')).toHaveText(title);
 
     const examples = page.locator("figure.docs-example");

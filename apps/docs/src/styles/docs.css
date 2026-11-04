@@ -274,3 +274,8 @@
   flex-direction: column;
   gap: var(--space-1);
 }
+
+/* Positioned demo content (the Header demo's skip link) stays inside its frame. */
+.docs-example-demo {
+  position: relative;
+}
