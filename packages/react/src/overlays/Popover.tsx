@@ -18,8 +18,12 @@ export type PopoverProps = {
 };
 
 /**
- * A non-modal panel anchored to its trigger. Place inside DialogTrigger after the trigger Button.
+ * A panel anchored to its trigger. Place inside DialogTrigger after the trigger Button.
+ * On this route it is modal, as React Aria recommends: focus moves in, the rest of the page is
+ * hidden from assistive technology while it is open, and an outside click lands on an underlay
+ * that closes it.
  * Native twin: an element with the popover attribute and class "sw-popover sw-popover-content".
+ * That one is non-modal: it light-dismisses and the page stays exposed to assistive technology.
  */
 export function Popover({ title, children, placement = "bottom start", className, "aria-label": ariaLabel }: PopoverProps) {
   return (
