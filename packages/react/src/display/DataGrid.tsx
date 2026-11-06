@@ -116,6 +116,7 @@ export type DataGridColumnProps = Omit<ColumnProps, "className" | "children"> & 
 
 /** A column header: its label, the sort chevrons when sortable, and a resize handle when resizable. */
 export function DataGridColumn({ children, numeric, sticky, allowsResizing, className, ...rest }: DataGridColumnProps) {
+  const labelId = useId();
   return (
     <Column
       className={cx("sw-data-grid-column", numeric && "sw-data-grid-numeric", sticky && "sw-data-grid-sticky", className)}
@@ -123,13 +124,24 @@ export function DataGridColumn({ children, numeric, sticky, allowsResizing, clas
     >
       {({ allowsSorting, sortDirection }) => (
         <div className="sw-data-grid-head">
-          <span className="sw-data-grid-label">{children}</span>
+          <span className="sw-data-grid-label" id={labelId} ref={nameHeaderByLabel}>
+            {children}
+          </span>
           {allowsSorting && <span className="sw-data-grid-sort-icon" data-direction={sortDirection} aria-hidden="true" />}
           {allowsResizing && <ColumnResizer className="sw-data-grid-resizer" />}
         </div>
       )}
     </Column>
   );
+}
+
+/**
+ * Names the header by its label alone: the resize handle's hidden input would otherwise join the
+ * name ("Project Resizer"). Column filters aria-labelledby out of its props, so it is set on the
+ * header element itself, which only exists in the rendered tree (not the collection builder).
+ */
+function nameHeaderByLabel(label: HTMLSpanElement | null) {
+  label?.closest('[role="columnheader"]')?.setAttribute("aria-labelledby", label.id);
 }
 
 export type DataGridBodyProps<T extends object> = Omit<TableBodyProps<T>, "className" | "renderEmptyState"> & {

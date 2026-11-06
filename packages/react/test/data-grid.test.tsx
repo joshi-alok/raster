@@ -62,12 +62,8 @@ function Projects({
   );
 }
 
-/**
- * React Aria's ColumnResizer renders a visually hidden range input labelled "Resizer" inside the header,
- * and its aria-label joins the header's name from content. So the resizable Project column is named
- * "Project Resizer" (Year, which has no resizer, is just "Year").
- */
-const PROJECT_HEADER = "Project Resizer";
+/** A resizable header is named by its label alone, not by the resize handle inside it. */
+const PROJECT_HEADER = "Project";
 
 const rowHeaders = () => screen.getAllByRole("rowheader").map((cell) => cell.textContent);
 
