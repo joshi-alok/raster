@@ -898,3 +898,22 @@ describe("avatar and badge", () => {
     expect(css).toMatch(/@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-avatar,\s*\.sw-badge\s*\{[^}]*border:\s*1px solid canvastext/i);
   });
 });
+
+describe("description list and stat", () => {
+  it("lays out facts as hairline-topped cells with mono terms", () => {
+    expect(rule(".sw-dl-item")).toMatch(/border-block-start:\s*1px solid var\(--border\)/);
+    expect(rule(".sw-dl dt")).toMatch(/font-family:\s*var\(--font-mono\)/);
+  });
+
+  it("sets the stat value large and light over a signal rule", () => {
+    expect(rule(".sw-stat")).toMatch(/border-block-start:\s*2px solid var\(--brand-signal\)/);
+    const value = rule(".sw-stat-value");
+    expect(value).toMatch(/font-size:\s*var\(--text-h1-size\)/);
+    expect(value).toMatch(/font-weight:\s*300/);
+  });
+
+  it("keeps the change neutral in colour and mirrors its arrow in RTL", () => {
+    expect(rule(".sw-stat-change")).toMatch(/color:\s*var\(--text-secondary\)/);
+    expect(css).toMatch(/\.sw-stat-change svg:dir\(rtl\)\s*\{[^}]*transform:\s*scaleX\(-1\)/);
+  });
+});

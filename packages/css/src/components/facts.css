@@ -1,0 +1,77 @@
+/* DescriptionList: facts as hairline-topped cells, mono terms over values. */
+.sw-dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  gap: var(--space-5) var(--grid-gutter);
+  margin: 0;
+}
+
+.sw-dl-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-block-start: var(--space-3);
+  border-block-start: 1px solid var(--border);
+}
+
+.sw-dl dt {
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-label-size);
+  letter-spacing: var(--text-label-tracking);
+  line-height: var(--text-label-leading);
+  text-transform: uppercase;
+}
+
+.sw-dl dd {
+  margin: 0;
+}
+
+/*
+ * Stat: one figure with its label, over a signal rule. A change shows a sign, an arrow and a phrase;
+ * its colour stays neutral, because "down" is not always bad.
+ */
+.sw-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-block-start: var(--space-4);
+  border-block-start: 2px solid var(--brand-signal);
+}
+
+.sw-stat-value {
+  font-size: var(--text-h1-size);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: var(--text-h1-tracking);
+  font-variant-numeric: tabular-nums;
+}
+
+.sw-stat-label {
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-label-size);
+  letter-spacing: var(--text-label-tracking);
+  line-height: var(--text-label-leading);
+  text-transform: uppercase;
+}
+
+.sw-stat-change {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--text-secondary);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-leading);
+}
+
+.sw-stat-change svg {
+  flex: none;
+  inline-size: 1rem;
+  block-size: 1rem;
+  stroke-width: 1.5;
+}
+
+.sw-stat-change svg:dir(rtl) {
+  transform: scaleX(-1);
+}

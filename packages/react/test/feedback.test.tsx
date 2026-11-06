@@ -3,7 +3,9 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { Avatar, initials } from "../src/display/Avatar";
 import { Badge } from "../src/display/Badge";
+import { DescriptionItem, DescriptionList } from "../src/display/DescriptionList";
 import { Media } from "../src/display/Media";
+import { Stat } from "../src/display/Stat";
 import { Banner } from "../src/feedback/Banner";
 import { EmptyState } from "../src/feedback/EmptyState";
 import { Meter, meterRegion, meterState } from "../src/feedback/Meter";
@@ -229,5 +231,51 @@ describe("Badge", () => {
     const { container } = render(<Badge tone="danger">New</Badge>);
     expect(container.firstElementChild).toHaveAttribute("data-tone", "danger");
     expect(container.querySelector('[aria-hidden="true"]')).toBeNull();
+  });
+});
+
+describe("DescriptionList", () => {
+  it("renders terms and details grouped in hairline cells", () => {
+    const { container } = render(
+      <DescriptionList>
+        <DescriptionItem term="Client">Seetal Regional Rail</DescriptionItem>
+        <DescriptionItem term="Stations">14</DescriptionItem>
+      </DescriptionList>,
+    );
+    const list = container.firstElementChild as HTMLElement;
+    expect(list.tagName).toBe("DL");
+    expect(list).toHaveClass("sw-dl");
+    const items = list.querySelectorAll(":scope > .sw-dl-item");
+    expect(items).toHaveLength(2);
+    expect(items[0].querySelector("dt")).toHaveTextContent("Client");
+    expect(items[0].querySelector("dd")).toHaveTextContent("Seetal Regional Rail");
+  });
+
+  it("has no structural accessibility violations", async () => {
+    const { container } = render(
+      <DescriptionList>
+        <DescriptionItem term="Client">Seetal Regional Rail</DescriptionItem>
+      </DescriptionList>,
+    );
+    await expectAccessible(container);
+  });
+});
+
+describe("Stat", () => {
+  it("shows a value, its label and a change with an arrow, sign and phrase", () => {
+    const { container } = render(<Stat value="2,400" label="Members" change="+12% on last year" trend="up" />);
+    const stat = container.firstElementChild as HTMLElement;
+    expect(stat).toHaveClass("sw-stat");
+    expect(stat.querySelector(".sw-stat-value")).toHaveTextContent("2,400");
+    expect(stat.querySelector(".sw-stat-label")).toHaveTextContent("Members");
+    const change = stat.querySelector(".sw-stat-change") as HTMLElement;
+    expect(change).toHaveAttribute("data-trend", "up");
+    expect(change).toHaveTextContent("+12% on last year");
+    expect(change.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("leaves out the change when none is given", () => {
+    const { container } = render(<Stat value="14" label="Stations" />);
+    expect(container.querySelector(".sw-stat-change")).toBeNull();
   });
 });

@@ -42,3 +42,4 @@
 @import "./components/empty.css" layer(raster.components);
 @import "./components/media.css" layer(raster.components);
 @import "./components/avatar.css" layer(raster.components);
+@import "./components/facts.css" layer(raster.components);
