@@ -1,0 +1,41 @@
+---
+title: DatePicker
+group: Forms
+order: 14
+summary: A date typed into day, month and year segments, or chosen from a calendar.
+interactive: true
+props:
+  - name: label
+    type: ReactNode
+    description: Required. The visible label.
+  - name: value / defaultValue / onChange
+    type: DateValue / DateValue / (value) => void
+    description: The date, controlled or starting, and its change handler. Build dates with parseDate from @internationalized/date.
+  - name: minValue / maxValue
+    type: DateValue
+    description: The earliest and latest dates allowed.
+  - name: isDateUnavailable
+    type: (date) => boolean
+    description: Days that cannot be chosen, such as weekends; they are struck through in the calendar.
+  - name: description / errorMessage
+    type: ReactNode
+    description: Help text, and the message shown when the date is invalid.
+a11y:
+  - The field is a labelled group of spin buttons, one per segment; arrow keys step a segment and typing replaces it.
+  - The calendar button opens a dialog. Focus moves to the chosen day; arrow keys move by day, Page Up and Page Down by month, Enter chooses and Escape closes, returning focus to the button.
+  - Segments follow the reader's locale, so 12 March 2026 reads 3/12/2026 in American English and 12.3.2026 in Swiss German.
+  - Without React, use a date input. Its calendar is the browser's own; min and max limit it, but unavailable days cannot be marked.
+---
+import Example from "../../components/Example.astro";
+import NativeExample from "../../components/NativeExample.astro";
+import Delivery from "../../demos/date-picker/Delivery";
+import deliverySource from "../../demos/date-picker/Delivery.tsx?raw";
+import deliveryHtml from "../../demos/date-picker/delivery.html?raw";
+
+<Example title="Delivery date" source={deliverySource}>
+  <Delivery client:load />
+</Example>
+
+<NativeExample title="Delivery date without React" html={deliveryHtml} />
+
+For a period with a start and an end, use DateRangePicker. To show a month on the page itself, use Calendar.

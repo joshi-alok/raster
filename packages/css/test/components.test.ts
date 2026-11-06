@@ -1024,6 +1024,10 @@ describe("date picker", () => {
     );
   });
 
+  it("widens one-digit segments so neighbouring targets sit 24px apart", () => {
+    expect(css).toMatch(/\.sw-date-segment:not\(\[data-type="?literal"?\]\)\s*\{[^}]*min-inline-size:\s*1\.125rem/);
+  });
+
   it("puts the calendar button behind a hairline at the inline end", () => {
     const r = rule(".sw-date-button");
     expect(r).toMatch(/inline-size:\s*var\(--control-height\)/);

@@ -1,0 +1,35 @@
+---
+title: DateRangePicker
+group: Forms
+order: 15
+summary: A start and an end date in one field, with a range calendar.
+interactive: true
+props:
+  - name: label
+    type: ReactNode
+    description: Required. Names the whole range.
+  - name: value / defaultValue / onChange
+    type: "{ start, end } of DateValue / … / (range) => void"
+    description: The range, controlled or starting, and its change handler.
+  - name: minValue / maxValue / isDateUnavailable
+    type: DateValue / DateValue / (date) => boolean
+    description: Limits, as for DatePicker.
+  - name: description / errorMessage
+    type: ReactNode
+    description: Help text, and the message shown when the range is invalid.
+a11y:
+  - The start and end segments sit in one labelled group, so the label is announced for both.
+  - In the calendar, Enter on a day starts the range and Enter on a second day ends it; the start and end are solid, the days between have a subtle fill.
+  - Without React, use two date inputs, From and To, in a fieldset whose legend names the range. Set the To field's min to the From date if the form must enforce the order.
+---
+import Example from "../../components/Example.astro";
+import NativeExample from "../../components/NativeExample.astro";
+import Period from "../../demos/date-range-picker/Period";
+import periodSource from "../../demos/date-range-picker/Period.tsx?raw";
+import periodHtml from "../../demos/date-range-picker/period.html?raw";
+
+<Example title="Project period" source={periodSource}>
+  <Period client:load />
+</Example>
+
+<NativeExample title="Project period without React" html={periodHtml} />

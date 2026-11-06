@@ -23,11 +23,11 @@
   border-inline-start-width: 4px;
 }
 
+/* No shrinking below the segments: in a range, the end date would wrap mid-number. */
 .sw-date-input {
   display: flex;
   flex: 1;
   align-items: center;
-  min-inline-size: 0;
   font-variant-numeric: tabular-nums;
 }
 
@@ -37,6 +37,16 @@
   color: var(--text-primary);
   caret-color: transparent;
   outline: none;
+}
+
+/*
+ * A one-digit month or day is a 12px target beside another (WCAG 2.5.8). At 18px wide, with the
+ * 8px literal between them, their centres sit 26px apart, past the 24px minimum; much wider and
+ * a range field no longer fits a 320px screen.
+ */
+.sw-date-segment:not([data-type="literal"]) {
+  min-inline-size: 1.125rem;
+  text-align: center;
 }
 
 .sw-date-segment[data-type="literal"] {
