@@ -490,6 +490,8 @@ test("calendar: arrows move by day; an unavailable weekend day cannot be chosen"
   const selected = calendar.locator(".sw-calendar-cell[data-selected]");
   await expect(selected).toHaveText("12");
   await selected.focus();
+  // Under load React Aria can register focus a beat late; arrows before then move nothing.
+  await expect(selected).toHaveAttribute("data-focused", "true");
   await page.keyboard.press("ArrowRight");
   await page.keyboard.press("Enter");
   await expect(selected).toHaveText("13");
