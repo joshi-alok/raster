@@ -362,6 +362,8 @@ for (const route of ["React", "native"] as const) {
     const field = example(page, route === "React" ? "Gutter" : "Gutter without React");
     const slider = field.getByRole("slider", { name: "Gutter (px)" });
     const output = field.locator(".sw-slider-output");
+    // The slider announces its own value; a live output would announce it a second time.
+    await expect(output).toHaveAttribute("aria-live", "off");
     await tabTo(page, slider);
     await page.keyboard.press("ArrowRight");
     await expect(slider).toHaveValue("25");

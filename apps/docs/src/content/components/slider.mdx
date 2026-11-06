@@ -25,6 +25,8 @@ a11y:
   - Each thumb has the slider role; arrow keys step, Page Up and Page Down take bigger steps, Home and End go to the limits.
   - The value is shown as text beside the label, so position is never the only cue.
   - The thumb is drawn 20px square with a 44px hit area. In forced-colours mode, on both routes, the thumb takes the system highlight colour and the track the system text colour.
+  - A range needs thumbLabels, such as Minimum and Maximum, so each thumb has its own name.
+  - The output beside the label is not a live region (aria-live="off"), because the slider already announces its value.
   - Without React, a range input does the same with one thumb; a two-thumb range needs React. Its output follows the input with the short script below.
 ---
 import CodeBlock from "../../components/CodeBlock.astro";
