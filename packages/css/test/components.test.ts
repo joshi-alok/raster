@@ -952,3 +952,49 @@ describe("combobox", () => {
     expect(rule(".sw-combobox-input[list]")).toMatch(/padding-inline-end:\s*var\(--space-3\)/);
   });
 });
+
+describe("calendar", () => {
+  it("is at most seven 44px cells wide", () => {
+    expect(rule(".sw-calendar")).toMatch(/inline-size:\s*min\(100%,\s*calc\(7 \* var\(--target-min\)\)\)/);
+  });
+
+  it("draws square day cells in mono", () => {
+    const r = rule(".sw-calendar-cell");
+    expect(r).toMatch(/aspect-ratio:\s*1/);
+    expect(r).toMatch(/font-family:\s*var\(--font-mono\)/);
+  });
+
+  it("marks today with a 2px underline, not colour", () => {
+    const r = rule(".sw-calendar-cell[data-today]");
+    expect(r).toMatch(/text-decoration-line:\s*underline/);
+    expect(r).toMatch(/text-decoration-thickness:\s*2px/);
+  });
+
+  it("fills a selected day with the accent and sets it in weight 500", () => {
+    const r = rule(".sw-calendar-cell[data-selected]");
+    expect(r).toMatch(/background-color:\s*var\(--accent\)/);
+    expect(r).toMatch(/color:\s*var\(--on-accent\)/);
+    expect(r).toMatch(/font-weight:\s*500/);
+  });
+
+  it("gives the middle of a range a subtle fill, keeping the ends solid", () => {
+    expect(css).toMatch(
+      /\.sw-range-calendar \.sw-calendar-cell\[data-selected\]:not\(\[data-selection-start\],\s*\[data-selection-end\]\)\s*\{[^}]*background-color:\s*var\(--accent-subtle\)/,
+    );
+  });
+
+  it("strikes through unavailable days and hides days outside the month", () => {
+    expect(rule(".sw-calendar-cell[data-unavailable]")).toMatch(/text-decoration-line:\s*line-through/);
+    expect(rule(".sw-calendar-cell[data-outside-month]")).toMatch(/visibility:\s*hidden/);
+  });
+
+  it("mirrors the month arrows in right-to-left text", () => {
+    expect(css).toMatch(/\.sw-calendar-nav svg:dir\(rtl\)\s*\{[^}]*transform:\s*scaleX\(-1\)/);
+  });
+
+  it("keeps selected days visible in forced colours", () => {
+    expect(css).toMatch(
+      /@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-calendar-cell\[data-selected\]\s*\{[^}]*forced-color-adjust:\s*none[^}]*background-color:\s*highlight/i,
+    );
+  });
+});

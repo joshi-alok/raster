@@ -1,3 +1,6 @@
+import { isWeekend, parseDate } from "@internationalized/date";
+import { act } from "react";
+import { Calendar, RangeCalendar } from "../src/forms/Calendar";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
@@ -46,5 +49,77 @@ describe("ComboBox", () => {
   it("has no structural accessibility violations", async () => {
     const { container } = render(<City />);
     await expectAccessible(container);
+  });
+});
+
+/** Moves focus onto a calendar day, as a click or Tab would, without selecting it. */
+function focusDay(container: HTMLElement, selector: string) {
+  const cell = container.querySelector<HTMLElement>(selector);
+  if (!cell) throw new Error(`No day matches ${selector}`);
+  act(() => cell.focus());
+}
+
+describe("Calendar", () => {
+  it("shows the month of its value, with previous and next buttons", () => {
+    const { container } = render(<Calendar aria-label="Delivery day" defaultValue={parseDate("2026-03-12")} />);
+    expect(container.querySelector(".sw-calendar")).not.toBeNull();
+    expect(screen.getByRole("heading")).toHaveTextContent("March 2026");
+    // React Aria adds a visually hidden "Next" button after the grid for screen readers, so look in the header.
+    const header = container.querySelector<HTMLElement>(".sw-calendar-header")!;
+    expect(within(header).getByRole("button", { name: "Previous" })).toHaveClass("sw-calendar-nav");
+    expect(within(header).getByRole("button", { name: "Next" })).toHaveClass("sw-calendar-nav");
+    expect(screen.getByRole("grid")).toHaveClass("sw-calendar-grid");
+    expect(container.querySelector(".sw-calendar-cell[data-selected]")).toHaveTextContent("12");
+  });
+
+  it("moves by day with arrows and by month with Page Down, and selects with Enter", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const { container } = render(
+      <Calendar aria-label="Delivery day" defaultValue={parseDate("2026-03-12")} onChange={onChange} />,
+    );
+    focusDay(container, ".sw-calendar-cell[data-selected]");
+    await user.keyboard("{ArrowRight}");
+    expect(document.activeElement).toHaveTextContent("13");
+    await user.keyboard("{PageDown}");
+    expect(screen.getByRole("heading")).toHaveTextContent("April 2026");
+    await user.keyboard("{Enter}");
+    expect(String(onChange.mock.calls.at(-1)?.[0])).toBe("2026-04-13");
+  });
+
+  it("marks unavailable days and will not select them", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const { container } = render(
+      <Calendar
+        aria-label="Delivery day"
+        defaultValue={parseDate("2026-03-13")}
+        isDateUnavailable={(date) => isWeekend(date, "de-CH")}
+        onChange={onChange}
+      />,
+    );
+    focusDay(container, ".sw-calendar-cell[data-selected]");
+    await user.keyboard("{ArrowRight}");
+    expect(document.activeElement).toHaveTextContent("14");
+    expect(document.activeElement).toHaveAttribute("data-unavailable");
+    await user.keyboard("{Enter}");
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("has no structural accessibility violations", async () => {
+    const { container } = render(<Calendar aria-label="Delivery day" defaultValue={parseDate("2026-03-12")} />);
+    await expectAccessible(container);
+  });
+});
+
+describe("RangeCalendar", () => {
+  it("marks the start, the end and the days between", () => {
+    const { container } = render(
+      <RangeCalendar aria-label="Booking" defaultValue={{ start: parseDate("2026-03-09"), end: parseDate("2026-03-13") }} />,
+    );
+    expect(container.querySelector(".sw-calendar.sw-range-calendar")).not.toBeNull();
+    expect(container.querySelector(".sw-calendar-cell[data-selection-start]")).toHaveTextContent("9");
+    expect(container.querySelector(".sw-calendar-cell[data-selection-end]")).toHaveTextContent("13");
+    expect(container.querySelectorAll(".sw-calendar-cell[data-selected]")).toHaveLength(5);
   });
 });

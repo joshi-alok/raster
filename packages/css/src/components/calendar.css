@@ -1,0 +1,172 @@
+/*
+ * Calendar and RangeCalendar (React route only: there is no native calendar element).
+ * A 7-column grid of 44px cells. States are never colour alone: today is underlined, a selected
+ * day is filled and set in weight 500, an unavailable day is struck through.
+ */
+.sw-calendar {
+  display: grid;
+  gap: var(--space-2);
+  inline-size: min(100%, calc(7 * var(--target-min)));
+}
+
+.sw-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.sw-calendar-heading {
+  margin: 0;
+  font-size: var(--text-body-size);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.sw-calendar-nav {
+  display: grid;
+  place-items: center;
+  inline-size: var(--target-min);
+  block-size: var(--target-min);
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .sw-calendar-nav:hover {
+    background-color: var(--surface-subtle);
+  }
+}
+
+.sw-calendar-nav[data-disabled] {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.sw-calendar-nav svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+  stroke-width: 1.5;
+}
+
+.sw-calendar-nav svg:dir(rtl) {
+  transform: scaleX(-1);
+}
+
+.sw-calendar-grid {
+  inline-size: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.sw-calendar-grid td {
+  padding: 0;
+}
+
+.sw-calendar-weekday {
+  padding-block: var(--space-1);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-label-size);
+  font-weight: 400;
+  text-align: center;
+}
+
+.sw-calendar-cell {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-body-size);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  outline: none;
+}
+
+@media (hover: hover) {
+  .sw-calendar-cell[data-hovered]:not([data-selected], [data-unavailable], [data-disabled]) {
+    background-color: var(--surface-subtle);
+  }
+}
+
+.sw-calendar-cell[data-focus-visible] {
+  position: relative;
+  z-index: 1;
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+.sw-calendar-cell[data-today] {
+  text-decoration-line: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.3em;
+}
+
+.sw-calendar-cell[data-selected] {
+  border-color: var(--accent);
+  background-color: var(--accent);
+  color: var(--on-accent);
+  font-weight: 500;
+}
+
+/* A range: solid start and end, a subtle fill between. */
+.sw-range-calendar .sw-calendar-cell[data-selected]:not([data-selection-start], [data-selection-end]) {
+  border-color: transparent;
+  border-radius: 0;
+  background-color: var(--accent-subtle);
+  color: var(--on-accent-subtle);
+  font-weight: 400;
+}
+
+.sw-calendar-cell[data-unavailable] {
+  color: var(--text-muted);
+  text-decoration-line: line-through;
+  cursor: not-allowed;
+}
+
+.sw-calendar-cell[data-today][data-unavailable] {
+  text-decoration-line: underline line-through;
+}
+
+.sw-calendar-cell[data-disabled] {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.sw-calendar-cell[data-outside-month] {
+  visibility: hidden;
+}
+
+/* The popover a DatePicker opens: as tall and as wide as the calendar needs. */
+.sw-calendar-popover {
+  min-inline-size: 0;
+  max-block-size: none;
+  padding: var(--space-3);
+}
+
+.sw-calendar-dialog {
+  outline: none;
+}
+
+@media (forced-colors: active) {
+  .sw-calendar-cell[data-selected] {
+    forced-color-adjust: none;
+    border-color: Highlight;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+
+  .sw-range-calendar .sw-calendar-cell[data-selected]:not([data-selection-start], [data-selection-end]) {
+    forced-color-adjust: none;
+    border-color: Highlight;
+    background-color: Canvas;
+    color: CanvasText;
+  }
+}

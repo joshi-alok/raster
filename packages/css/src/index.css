@@ -44,3 +44,4 @@
 @import "./components/avatar.css" layer(raster.components);
 @import "./components/facts.css" layer(raster.components);
 @import "./components/combobox.css" layer(raster.components);
+@import "./components/calendar.css" layer(raster.components);
