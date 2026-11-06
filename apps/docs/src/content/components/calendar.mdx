@@ -1,0 +1,39 @@
+---
+title: Calendar
+group: Forms
+order: 16
+summary: A month of days on the page, to choose one day or a range.
+interactive: true
+props:
+  - name: aria-label
+    type: string
+    description: Required when the calendar stands alone. The grid is named with it and the month.
+  - name: value / defaultValue / onChange
+    type: DateValue / DateValue / (value) => void
+    description: The chosen day, controlled or starting, and its change handler. RangeCalendar takes { start, end }.
+  - name: minValue / maxValue / isDateUnavailable
+    type: DateValue / DateValue / (date) => boolean
+    description: Limits. Unavailable days stay focusable but cannot be chosen.
+a11y:
+  - The month is a grid; arrow keys move by day, Page Up and Page Down by month, Home and End to the start and end of the week, Enter chooses.
+  - Today is underlined; the chosen day is filled and set in weight 500; unavailable days are struck through. None of these relies on colour alone, and in forced-colours mode the chosen day uses the system highlight.
+  - The previous and next buttons are named Previous and Next and mirror in right-to-left text.
+  - There is no native calendar element. Without React, use a date input, whose calendar is the browser's own (see DatePicker).
+---
+import Example from "../../components/Example.astro";
+import Booking from "../../demos/calendar/Booking";
+import bookingSource from "../../demos/calendar/Booking.tsx?raw";
+import DeliveryDay from "../../demos/calendar/DeliveryDay";
+import deliveryDaySource from "../../demos/calendar/DeliveryDay.tsx?raw";
+
+<Example title="Delivery day" source={deliveryDaySource}>
+  <DeliveryDay client:load />
+</Example>
+
+Weekends are unavailable in this example.
+
+<Example title="Booking" source={bookingSource}>
+  <Booking client:load />
+</Example>
+
+A Calendar on the page suits choosing among a few weeks, such as a booking. For a date inside a form, use DatePicker, which keeps the calendar in a popover.
