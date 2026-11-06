@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { NumberField } from "../src/forms/NumberField";
 import { SearchField } from "../src/forms/SearchField";
 import { Segment, SegmentedControl } from "../src/forms/SegmentedControl";
 import { Chip, TagGroup } from "../src/forms/TagGroup";
@@ -144,6 +145,39 @@ describe("SearchField", () => {
 
   it("has no structural accessibility violations", async () => {
     const { container } = render(<SearchField label="Search projects" description="Titles and clients." />);
+    await expectAccessible(container);
+  });
+});
+
+describe("NumberField", () => {
+  it("renders a labelled numeric input between decrease and increase buttons", () => {
+    const { container } = render(<NumberField label="Copies" defaultValue={2} minValue={1} maxValue={20} />);
+    expect(container.firstElementChild).toHaveClass("sw-field", "sw-number");
+    const input = screen.getByRole("textbox", { name: "Copies" });
+    expect(input).toHaveClass("sw-input", "sw-number-input");
+    expect(input).toHaveValue("2");
+    const steps = container.querySelectorAll(".sw-number-step");
+    expect(steps).toHaveLength(2);
+    expect(steps[0].querySelector('[data-sign="minus"]')).not.toBeNull();
+    expect(steps[1].querySelector('[data-sign="plus"]')).not.toBeNull();
+  });
+
+  it("steps with the buttons and the arrow keys, within its limits", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<NumberField label="Copies" defaultValue={2} minValue={1} maxValue={3} onChange={onChange} />);
+    const input = screen.getByRole("textbox", { name: "Copies" });
+    await user.click(screen.getByRole("button", { name: /Increase/ }));
+    expect(input).toHaveValue("3");
+    expect(screen.getByRole("button", { name: /Increase/ })).toBeDisabled();
+    await user.click(input);
+    await user.keyboard("{ArrowDown}{ArrowDown}{ArrowDown}");
+    expect(input).toHaveValue("1");
+    expect(onChange).toHaveBeenLastCalledWith(1);
+  });
+
+  it("has no structural accessibility violations", async () => {
+    const { container } = render(<NumberField label="Copies" defaultValue={2} />);
     await expectAccessible(container);
   });
 });

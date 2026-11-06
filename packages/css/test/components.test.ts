@@ -741,3 +741,22 @@ describe("search field", () => {
     );
   });
 });
+
+describe("number field", () => {
+  it("sets the value in tabular figures, centred", () => {
+    const r = rule(".sw-number-input");
+    expect(r).toMatch(/font-variant-numeric:\s*tabular-nums/);
+    expect(r).toMatch(/text-align:\s*center/);
+  });
+
+  it("gives the steppers a 44px-wide control with a 44px-tall hit area", () => {
+    const r = rule(".sw-number-step");
+    expect(r).toMatch(/inline-size:\s*var\(--target-min\)/);
+    expect(r).toMatch(/border:\s*1px solid var\(--border-strong\)/);
+    expect(css).toMatch(/\.sw-number-step::?before\s*\{[^}]*inset-block:\s*calc\(\(var\(--control-height\) - var\(--target-min\)\) \/ 2\)/);
+  });
+
+  it("draws plus and minus with borders, so they survive forced colours", () => {
+    expect(css).toMatch(/\.sw-number-sign::?before,\s*\.sw-number-sign\[data-sign="?plus"?\]::?after\s*\{[^}]*border-block-start:\s*1\.5px solid/);
+  });
+});

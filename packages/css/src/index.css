@@ -34,3 +34,4 @@
 @import "./components/chip.css" layer(raster.components);
 @import "./components/segmented.css" layer(raster.components);
 @import "./components/search.css" layer(raster.components);
+@import "./components/number.css" layer(raster.components);

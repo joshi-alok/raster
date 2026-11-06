@@ -1,0 +1,74 @@
+/*
+ * NumberField. Native route: <input type="number" class="sw-input sw-number-input"> with the
+ * browser's own steppers. React route: React Aria NumberField, with − and + buttons either side.
+ */
+.sw-number-control {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sw-number-input {
+  inline-size: 6rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.sw-number-step {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: var(--target-min);
+  block-size: var(--control-height);
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background-color: var(--surface-raised);
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+}
+
+.sw-number-step::before {
+  content: "";
+  position: absolute;
+  inset-block: calc((var(--control-height) - var(--target-min)) / 2);
+  inset-inline: 0;
+}
+
+@media (hover: hover) {
+  .sw-number-step:hover:not([data-disabled]) {
+    border-color: var(--text-secondary);
+  }
+}
+
+.sw-number-step[data-focus-visible] {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+.sw-number-step[data-disabled] {
+  border-color: var(--border);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.sw-number-sign {
+  position: relative;
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
+}
+
+.sw-number-sign::before,
+.sw-number-sign[data-sign="plus"]::after {
+  content: "";
+  position: absolute;
+  inset-block-start: calc(50% - 0.75px);
+  inset-inline: 0;
+  border-block-start: 1.5px solid currentColor;
+}
+
+.sw-number-sign[data-sign="plus"]::after {
+  transform: rotate(90deg);
+}
