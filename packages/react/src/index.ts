@@ -34,6 +34,7 @@ export { Switch, type SwitchProps } from "./forms/Switch";
 export { TextArea, type TextAreaProps, TextField, type TextFieldProps } from "./forms/TextField";
 export { Dialog, type DialogProps, DialogTrigger } from "./overlays/Dialog";
 export { Popover, type PopoverProps } from "./overlays/Popover";
+export { Drawer, type DrawerProps } from "./overlays/Drawer";
 export { Menu, MenuItem, type MenuItemProps, type MenuProps, MenuSeparator, MenuTrigger } from "./overlays/Menu";
 export { ThemeRegion, type ThemeRegionProps } from "./overlays/ThemeRegion";
 export {

@@ -570,3 +570,30 @@ describe("popover (content)", () => {
     expect(css).toMatch(/@starting-style\s*\{[\s\S]*?\[popover\]\.sw-popover:popover-open/);
   });
 });
+
+describe("drawer", () => {
+  it("docks a full-height panel to the inline end with the overlay shadow", () => {
+    const r = rule(".sw-drawer");
+    expect(r).toMatch(/position:\s*fixed/);
+    expect(r).toMatch(/inset-inline:\s*auto 0/);
+    expect(r).toMatch(/inline-size:\s*min\(100%,\s*28rem\)/);
+    expect(r).toMatch(/box-shadow:\s*var\(--shadow-overlay\)/);
+    expect(r).toMatch(/margin:\s*0/);
+  });
+
+  it("docks to the bottom as a sheet", () => {
+    const r = rule('.sw-drawer[data-placement="bottom"]');
+    expect(r).toMatch(/inset-block:\s*auto 0/);
+    expect(r).toMatch(/max-block-size:\s*85dvh/);
+  });
+
+  it("dims the page behind on both routes", () => {
+    expect(rule(".sw-drawer-overlay")).toMatch(/background-color:\s*var\(--scrim\)/);
+    expect(css).toMatch(/dialog\.sw-drawer::backdrop\s*\{[^}]*background-color:\s*var\(--scrim\)/);
+  });
+
+  it("slides along one axis, mirrored in RTL, and only fades under reduced motion", () => {
+    expect(css).toMatch(/\.sw-drawer:dir\(rtl\)\s*\{[^}]*--_drawer-from:\s*translateX\(-100%\)/);
+    expect(css).toMatch(/\[data-motion="?reduce"?\] \.sw-drawer\s*\{[^}]*--_drawer-from:\s*none/);
+  });
+});
