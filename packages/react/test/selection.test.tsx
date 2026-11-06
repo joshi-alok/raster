@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { SearchField } from "../src/forms/SearchField";
 import { Segment, SegmentedControl } from "../src/forms/SegmentedControl";
 import { Chip, TagGroup } from "../src/forms/TagGroup";
 import { expectAccessible } from "./axe";
@@ -103,6 +104,46 @@ describe("SegmentedControl", () => {
 
   it("has no structural accessibility violations", async () => {
     const { container } = render(<View />);
+    await expectAccessible(container);
+  });
+});
+
+describe("SearchField", () => {
+  it("renders a labelled search input with a clear button", () => {
+    const { container } = render(<SearchField label="Search projects" placeholder="Name or client" />);
+    expect(container.firstElementChild).toHaveClass("sw-field", "sw-search");
+    const input = screen.getByRole("searchbox", { name: "Search projects" });
+    expect(input).toHaveClass("sw-input", "sw-search-input");
+    expect(input).toHaveAttribute("placeholder", "Name or client");
+    expect(container.querySelector(".sw-search-clear .sw-search-clear-icon")).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("marks itself empty, and clears from the button and from Escape", async () => {
+    const user = userEvent.setup();
+    const onClear = vi.fn();
+    const { container } = render(<SearchField label="Search projects" onClear={onClear} />);
+    const root = container.firstElementChild as HTMLElement;
+    const input = screen.getByRole("searchbox");
+    expect(root).toHaveAttribute("data-empty");
+    await user.type(input, "Linie");
+    expect(root).not.toHaveAttribute("data-empty");
+    await user.click(screen.getByRole("button", { name: "Clear search" }));
+    expect(input).toHaveValue("");
+    expect(onClear).toHaveBeenCalledTimes(1);
+    await user.type(input, "Atlas{Escape}");
+    expect(input).toHaveValue("");
+  });
+
+  it("submits the value on Enter", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<SearchField label="Search projects" onSubmit={onSubmit} />);
+    await user.type(screen.getByRole("searchbox"), "Velo{Enter}");
+    expect(onSubmit).toHaveBeenCalledWith("Velo");
+  });
+
+  it("has no structural accessibility violations", async () => {
+    const { container } = render(<SearchField label="Search projects" description="Titles and clients." />);
     await expectAccessible(container);
   });
 });

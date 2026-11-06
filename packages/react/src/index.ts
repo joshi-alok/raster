@@ -34,6 +34,7 @@ export { Switch, type SwitchProps } from "./forms/Switch";
 export { TextArea, type TextAreaProps, TextField, type TextFieldProps } from "./forms/TextField";
 export { Chip, type ChipProps, TagGroup, type TagGroupProps } from "./forms/TagGroup";
 export { Segment, SegmentedControl, type SegmentedControlProps, type SegmentProps } from "./forms/SegmentedControl";
+export { SearchField, type SearchFieldProps } from "./forms/SearchField";
 export { Dialog, type DialogProps, DialogTrigger } from "./overlays/Dialog";
 export { Popover, type PopoverProps } from "./overlays/Popover";
 export { Drawer, type DrawerProps } from "./overlays/Drawer";

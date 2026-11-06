@@ -719,3 +719,25 @@ describe("segmented control", () => {
     expect(body).toMatch(/text-decoration-line:\s*underline/);
   });
 });
+
+describe("search field", () => {
+  it("reserves room for the clear button inside the input and hides the browser's own", () => {
+    expect(rule(".sw-search-input")).toMatch(/padding-inline-end:\s*var\(--control-height\)/);
+    // Lightning CSS prints the grouped selector on one line, so allow the rest of the group before `{`.
+    expect(css).toMatch(/\.sw-search-input::-webkit-search-cancel-button(?:,[^{]*)?\s*\{[^}]*display:\s*none/);
+  });
+
+  it("places a square clear button at the inline end", () => {
+    const r = rule(".sw-search-clear");
+    expect(r).toMatch(/position:\s*absolute/);
+    expect(r).toMatch(/inset-inline-end:\s*0/);
+    expect(r).toMatch(/inline-size:\s*var\(--control-height\)/);
+  });
+
+  it("hides the clear button while the field is empty, on both routes", () => {
+    // Lightning CSS prints `:has(> x)` as `:has( > x)`, hence the optional space.
+    expect(css).toMatch(
+      /\.sw-search\[data-empty\] \.sw-search-clear,\s*\.sw-search-control:has\( ?> \.sw-search-input:placeholder-shown\) \.sw-search-clear\s*\{[^}]*display:\s*none/,
+    );
+  });
+});
