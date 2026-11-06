@@ -37,7 +37,7 @@ props:
 a11y:
   - The skip link is the first tab stop and appears when focused.
   - The current page is marked with aria-current and shown by weight and underline.
-  - On narrow screens the navigation scrolls sideways inside the header rather than wrapping.
+  - With compact={false}, narrow screens scroll the navigation sideways inside the header rather than wrapping it.
   - The compact menu is a modal dialog named "Menu". Focus moves inside, Escape closes it, and focus returns to the Menu button.
   - Menu links are numbered in mono as decoration; the numbers are left out of each link's accessible name.
   - Without React, the Menu button opens a native dialog with invoker commands (commandfor and command), so no script is needed in browsers from December 2025 on.
