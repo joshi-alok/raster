@@ -1,0 +1,94 @@
+/*
+ * Disclosure: native <details>/<summary>, or React Aria's Disclosure (a heading wrapping a trigger
+ * button, then a panel). Both routes share these classes. Accordion is a group of disclosures.
+ */
+.sw-disclosure {
+  border-block-end: 1px solid var(--border);
+  interpolate-size: allow-keywords;
+}
+
+.sw-accordion {
+  border-block-start: 1px solid var(--border);
+}
+
+/* React route: the heading only carries semantics; the trigger inside it does the styling. */
+.sw-disclosure-heading {
+  margin: 0;
+  font: inherit;
+}
+
+.sw-disclosure-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  inline-size: 100%;
+  min-block-size: var(--target-min);
+  padding-block: var(--space-4);
+  padding-inline: 0;
+  border: 0;
+  background: none;
+  color: var(--text-primary);
+  font: inherit;
+  font-weight: 500;
+  text-align: start;
+  list-style: none;
+  cursor: pointer;
+}
+
+summary.sw-disclosure-trigger::-webkit-details-marker {
+  display: none;
+}
+
+/* Plus that becomes minus: borders, so the bars survive forced-colours mode. */
+.sw-disclosure-icon {
+  position: relative;
+  flex: none;
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+.sw-disclosure-icon::before,
+.sw-disclosure-icon::after {
+  content: "";
+  position: absolute;
+  inset-block-start: calc(50% - 0.75px);
+  inset-inline: 0;
+  border-block-start: 1.5px solid currentColor;
+}
+
+.sw-disclosure-icon::after {
+  transform: rotate(90deg);
+}
+
+:is(details[open] > summary, [aria-expanded="true"]) > .sw-disclosure-icon::after {
+  display: none;
+}
+
+.sw-disclosure-panel {
+  padding-block-end: var(--space-5);
+}
+
+/* Native route: animate the panel's height where the browser can. React Aria hides its panel
+   with the hidden attribute, so the React route opens instantly. */
+.sw-disclosure::details-content {
+  block-size: 0;
+  overflow: clip;
+  transition:
+    block-size var(--dur-base) var(--ease-standard),
+    content-visibility var(--dur-base) allow-discrete;
+}
+
+.sw-disclosure[open]::details-content {
+  block-size: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sw-disclosure::details-content {
+    transition: none;
+  }
+}
+
+[data-motion="reduce"] .sw-disclosure::details-content {
+  transition: none;
+}

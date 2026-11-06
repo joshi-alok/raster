@@ -527,3 +527,30 @@ describe("header", () => {
     expect(r).toMatch(/text-decoration-line:\s*underline/);
   });
 });
+
+describe("disclosure", () => {
+  it("separates rows with hairlines; an accordion adds one above the first row", () => {
+    expect(rule(".sw-disclosure")).toMatch(/border-block-end:\s*1px solid var\(--border\)/);
+    expect(rule(".sw-accordion")).toMatch(/border-block-start:\s*1px solid var\(--border\)/);
+  });
+
+  it("makes the trigger a full-width 44px row on both routes", () => {
+    const r = rule(".sw-disclosure-trigger");
+    expect(r).toMatch(/inline-size:\s*100%/);
+    expect(r).toMatch(/min-block-size:\s*var\(--target-min\)/);
+    expect(r).toMatch(/list-style:\s*none/);
+    expect(css).toMatch(/summary\.sw-disclosure-trigger::?-webkit-details-marker\s*\{[^}]*display:\s*none/);
+  });
+
+  it("draws the plus with borders (visible in forced colours) and drops the vertical bar when open", () => {
+    // Lightning CSS drops currentColor from the border shorthand, since it is the default.
+    expect(css).toMatch(/\.sw-disclosure-icon::?before,\s*\.sw-disclosure-icon::?after\s*\{[^}]*border-block-start:\s*1\.5px solid(?:\s+currentColor)?\s*;/i);
+    expect(css).toMatch(/:is\(details\[open\] > summary,\s*\[aria-expanded="?true"?\]\) > \.sw-disclosure-icon::?after\s*\{[^}]*display:\s*none/);
+  });
+
+  it("animates the native panel's height, and not under reduced motion", () => {
+    expect(css).toMatch(/\.sw-disclosure::details-content\s*\{[^}]*transition:[^}]*block-size var\(--dur-base\)/);
+    expect(css).toMatch(/\.sw-disclosure\[open\]::details-content\s*\{[^}]*block-size:\s*auto/);
+    expect(css).toMatch(/\[data-motion="?reduce"?\] \.sw-disclosure::details-content\s*\{[^}]*transition:\s*none/);
+  });
+});
