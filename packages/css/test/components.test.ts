@@ -1050,6 +1050,13 @@ describe("date picker", () => {
     expect(rule(".sw-date-range-fields")).toMatch(/flex-wrap:\s*wrap/);
     expect(rule(".sw-date-range-native")).toMatch(/border:\s*0/);
   });
+
+  it("aligns the native range's legend with its fields and spaces it like a field label", () => {
+    // A rendered legend is not a grid item, so .sw-field's gap misses it, and browsers pad it 2px.
+    const r = rule(".sw-date-range-native > legend");
+    expect(r).toMatch(/padding:\s*0/);
+    expect(r).toMatch(/margin-block-end:\s*var\(--space-2\)/);
+  });
 });
 
 describe("file upload", () => {

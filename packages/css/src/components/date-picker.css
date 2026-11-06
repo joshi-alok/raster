@@ -128,6 +128,12 @@
   border: 0;
 }
 
+/* A rendered legend is not a grid item, so .sw-field's gap misses it; browsers also pad it 2px. */
+.sw-date-range-native > legend {
+  margin-block-end: var(--space-2);
+  padding: 0;
+}
+
 .sw-date-range-fields {
   display: flex;
   flex-wrap: wrap;
