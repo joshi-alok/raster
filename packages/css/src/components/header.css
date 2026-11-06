@@ -212,6 +212,13 @@ dialog.sw-header-menu::backdrop {
   font-weight: 500;
 }
 
+/* Forced colours replace --brand-signal; keep the current-page bar in a system colour. */
+@media (forced-colors: active) {
+  .sw-header-menu-nav .sw-link[aria-current]:not([aria-current="false"]) {
+    border-inline-start-color: Highlight;
+  }
+}
+
 /* Motion: a short slide down with a fade, over --dur-slow. */
 @keyframes sw-menu-in {
   from {

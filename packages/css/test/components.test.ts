@@ -628,6 +628,12 @@ describe("header compact mode", () => {
       /\.sw-header-menu-nav \.sw-link\[aria-current\]:not\(\[aria-current="?false"?\]\)\s*\{[^}]*border-inline-start-color:\s*var\(--brand-signal\)/,
     );
   });
+
+  it("keeps the current-page bar visible in forced colours, which replace --brand-signal", () => {
+    expect(css).toMatch(
+      /@media \(forced-colors:\s*active\)\s*\{\s*\.sw-header-menu-nav \.sw-link\[aria-current\]:not\(\[aria-current="?false"?\]\)\s*\{[^}]*border-inline-start-color:\s*highlight/i,
+    );
+  });
 });
 
 describe("pagination", () => {
