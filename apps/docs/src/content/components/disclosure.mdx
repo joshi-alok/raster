@@ -15,6 +15,9 @@ props:
   - name: defaultExpanded / isExpanded / onExpandedChange
     type: boolean / boolean / (isExpanded) => void
     description: Starting state, or controlled state and its change handler.
+  - name: isDisabled
+    type: boolean
+    description: Prevents the row from opening or closing.
   - name: id
     type: Key
     description: The row's key inside an Accordion.
