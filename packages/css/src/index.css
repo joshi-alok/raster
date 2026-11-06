@@ -26,3 +26,8 @@
 @import "./components/breadcrumbs.css" layer(raster.components);
 @import "./components/tabs.css" layer(raster.components);
 @import "./components/header.css" layer(raster.components);
+@import "./components/disclosure.css" layer(raster.components);
+@import "./components/popover.css" layer(raster.components);
+@import "./components/drawer.css" layer(raster.components);
+@import "./components/pagination.css" layer(raster.components);
+@import "./components/sidenav.css" layer(raster.components);

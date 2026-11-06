@@ -1,0 +1,112 @@
+/*
+ * Drawer: a modal panel docked to the inline end (default) or the bottom (a sheet).
+ * Native route: <dialog class="sw-drawer"> opened with command="show-modal".
+ * React route: ModalOverlay (.sw-drawer-overlay) > Modal (.sw-drawer) > Dialog.
+ */
+.sw-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background-color: var(--scrim);
+}
+
+.sw-drawer {
+  --_drawer-from: translateX(100%);
+  position: fixed;
+  inset-block: 0;
+  inset-inline: auto 0;
+  z-index: var(--z-modal);
+  inline-size: min(100%, 28rem);
+  max-inline-size: none;
+  block-size: 100dvh;
+  max-block-size: none;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  border: 0;
+  border-inline-start: 1px solid var(--border);
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-overlay);
+  color: var(--text-primary);
+}
+
+.sw-drawer:dir(rtl) {
+  --_drawer-from: translateX(-100%);
+}
+
+.sw-drawer[data-placement="bottom"] {
+  --_drawer-from: translateY(100%);
+  inset-block: auto 0;
+  inset-inline: 0;
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: 85dvh;
+  border-inline-start: 0;
+  border-block-start: 1px solid var(--border);
+}
+
+dialog.sw-drawer::backdrop {
+  background-color: var(--scrim);
+}
+
+.sw-drawer-dialog {
+  display: grid;
+  align-content: start;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  outline: none;
+}
+
+.sw-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.sw-drawer-head h2 {
+  margin: 0;
+}
+
+/* Motion: slide in along one axis over --dur-slow. */
+@keyframes sw-drawer-in {
+  from {
+    transform: var(--_drawer-from);
+  }
+}
+
+.sw-drawer[data-entering] {
+  animation: sw-drawer-in var(--dur-slow) var(--ease-standard);
+}
+
+.sw-drawer-overlay[data-entering] {
+  animation: sw-fade-in var(--dur-slow) var(--ease-linear);
+}
+
+:is(.sw-drawer, .sw-drawer-overlay)[data-exiting] {
+  animation: sw-overlay-out var(--dur-fast) var(--ease-linear);
+}
+
+dialog.sw-drawer {
+  transition:
+    transform var(--dur-slow) var(--ease-standard),
+    display var(--dur-slow) allow-discrete,
+    overlay var(--dur-slow) allow-discrete;
+}
+
+@starting-style {
+  dialog.sw-drawer[open] {
+    transform: var(--_drawer-from);
+  }
+}
+
+/* Reduced motion: no slide; the overlay's fade remains. */
+@media (prefers-reduced-motion: reduce) {
+  .sw-drawer {
+    --_drawer-from: none;
+  }
+}
+
+[data-motion="reduce"] .sw-drawer {
+  --_drawer-from: none;
+}

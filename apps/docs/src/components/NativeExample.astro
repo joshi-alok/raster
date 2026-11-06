@@ -1,0 +1,21 @@
+---
+import CodeBlock from "./CodeBlock.astro";
+
+interface Props {
+  /** Caption, unique on the page; it also names the code region. Convention: "<React title> without React". */
+  title: string;
+  /** The example's HTML, imported from a demo .html file with ?raw. Rendered as is and shown as code. */
+  html: string;
+}
+
+const { title, html } = Astro.props;
+const code = html.trim();
+---
+<figure class="docs-example" data-native>
+  <figcaption class="docs-example-title sw-type-label sw-text-secondary">{title}</figcaption>
+  <div class="docs-example-demo"><Fragment set:html={code} /></div>
+  <div class="docs-example-code">
+    <p class="sw-type-label sw-text-secondary">HTML</p>
+    <CodeBlock code={code} label={`HTML code: ${title}`} />
+  </div>
+</figure>

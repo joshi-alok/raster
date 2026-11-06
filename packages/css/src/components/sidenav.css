@@ -1,0 +1,74 @@
+/*
+ * SideNav: section navigation for documentation and app layouts. Groups are <details> on the native
+ * route and React Aria Disclosures on the React route; both reuse .sw-disclosure-icon.
+ */
+.sw-sidenav-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-inline-start: 1px solid var(--border);
+}
+
+.sw-sidenav-list .sw-sidenav-list {
+  padding-inline-start: var(--space-4);
+  border-inline-start: 0;
+}
+
+.sw-sidenav-link,
+.sw-sidenav-group-title {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--target-min);
+  margin-inline-start: -1px;
+  padding-inline-start: var(--space-4);
+  border-inline-start: 2px solid transparent;
+}
+
+.sw-sidenav-link {
+  color: var(--text-secondary);
+  text-decoration-line: none;
+}
+
+@media (hover: hover) {
+  .sw-sidenav-link:hover {
+    color: var(--text-primary);
+  }
+}
+
+.sw-sidenav-link[aria-current]:not([aria-current="false"]) {
+  border-inline-start-color: var(--accent);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.sw-sidenav-group-title {
+  justify-content: space-between;
+  gap: var(--space-3);
+  inline-size: calc(100% + 1px);
+  padding-inline-end: 0;
+  border-block: 0;
+  border-inline-end: 0;
+  background: none;
+  color: var(--text-primary);
+  font: inherit;
+  font-weight: 500;
+  text-align: start;
+  list-style: none;
+  cursor: pointer;
+}
+
+summary.sw-sidenav-group-title::-webkit-details-marker {
+  display: none;
+}
+
+:is(.sw-sidenav-link, .sw-sidenav-group-title):focus-visible {
+  outline-offset: calc(-1 * var(--focus-width));
+}
+
+@media (forced-colors: active) {
+  .sw-sidenav-link[aria-current]:not([aria-current="false"]) {
+    border-inline-start-color: Highlight;
+  }
+}

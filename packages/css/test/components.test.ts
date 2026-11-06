@@ -527,3 +527,150 @@ describe("header", () => {
     expect(r).toMatch(/text-decoration-line:\s*underline/);
   });
 });
+
+describe("disclosure", () => {
+  it("separates rows with hairlines; an accordion adds one above the first row", () => {
+    expect(rule(".sw-disclosure")).toMatch(/border-block-end:\s*1px solid var\(--border\)/);
+    expect(rule(".sw-accordion")).toMatch(/border-block-start:\s*1px solid var\(--border\)/);
+  });
+
+  it("makes the trigger a full-width 44px row on both routes", () => {
+    const r = rule(".sw-disclosure-trigger");
+    expect(r).toMatch(/inline-size:\s*100%/);
+    expect(r).toMatch(/min-block-size:\s*var\(--target-min\)/);
+    expect(r).toMatch(/list-style:\s*none/);
+    expect(css).toMatch(/summary\.sw-disclosure-trigger::?-webkit-details-marker\s*\{[^}]*display:\s*none/);
+  });
+
+  it("draws the plus with borders (visible in forced colours) and drops the vertical bar when open", () => {
+    // Lightning CSS drops currentColor from the border shorthand, since it is the default.
+    expect(css).toMatch(/\.sw-disclosure-icon::?before,\s*\.sw-disclosure-icon::?after\s*\{[^}]*border-block-start:\s*1\.5px solid(?:\s+currentColor)?\s*;/i);
+    expect(css).toMatch(/:is\(details\[open\] > summary,\s*\[aria-expanded="?true"?\]\) > \.sw-disclosure-icon::?after\s*\{[^}]*display:\s*none/);
+  });
+
+  it("animates the native panel's height, and not under reduced motion", () => {
+    expect(css).toMatch(/\.sw-disclosure::details-content\s*\{[^}]*transition:[^}]*block-size var\(--dur-base\)/);
+    expect(css).toMatch(/\.sw-disclosure\[open\]::details-content\s*\{[^}]*block-size:\s*auto/);
+    expect(css).toMatch(/\[data-motion="?reduce"?\] \.sw-disclosure::details-content\s*\{[^}]*transition:\s*none/);
+  });
+});
+
+describe("popover (content)", () => {
+  it("holds content in a padded dialog with a capped width", () => {
+    expect(rule(".sw-popover-content")).toMatch(/max-inline-size:\s*min\(20rem/);
+    expect(rule(".sw-popover-content")).toMatch(/padding:\s*0/);
+    expect(rule(".sw-popover-dialog")).toMatch(/padding:\s*var\(--space-4\)/);
+  });
+
+  it("anchors native popovers below their trigger only where anchor positioning exists", () => {
+    expect(css).toMatch(/@supports \(position-anchor:\s*--a\)\s*\{[\s\S]*?\[popover\]\.sw-popover\s*\{[^}]*position-area:\s*block-end span-inline-end/);
+  });
+
+  it("fades native popovers in with a short slide, from a starting style", () => {
+    expect(css).toMatch(/@starting-style\s*\{[\s\S]*?\[popover\]\.sw-popover:popover-open/);
+  });
+});
+
+describe("drawer", () => {
+  it("docks a full-height panel to the inline end with the overlay shadow", () => {
+    const r = rule(".sw-drawer");
+    expect(r).toMatch(/position:\s*fixed/);
+    expect(r).toMatch(/inset-inline:\s*auto 0/);
+    expect(r).toMatch(/inline-size:\s*min\(100%,\s*28rem\)/);
+    expect(r).toMatch(/box-shadow:\s*var\(--shadow-overlay\)/);
+    expect(r).toMatch(/margin:\s*0/);
+  });
+
+  it("docks to the bottom as a sheet", () => {
+    const r = rule('.sw-drawer[data-placement="bottom"]');
+    expect(r).toMatch(/inset-block:\s*auto 0/);
+    expect(r).toMatch(/max-block-size:\s*85dvh/);
+  });
+
+  it("dims the page behind on both routes", () => {
+    expect(rule(".sw-drawer-overlay")).toMatch(/background-color:\s*var\(--scrim\)/);
+    expect(css).toMatch(/dialog\.sw-drawer::backdrop\s*\{[^}]*background-color:\s*var\(--scrim\)/);
+  });
+
+  it("slides along one axis, mirrored in RTL, and only fades under reduced motion", () => {
+    expect(css).toMatch(/\.sw-drawer:dir\(rtl\)\s*\{[^}]*--_drawer-from:\s*translateX\(-100%\)/);
+    expect(css).toMatch(/\[data-motion="?reduce"?\] \.sw-drawer\s*\{[^}]*--_drawer-from:\s*none/);
+  });
+});
+
+describe("header compact mode", () => {
+  it("makes a compact header a named inline-size container", () => {
+    expect(rule(".sw-header[data-compact]")).toMatch(/container:\s*sw-header\s*\/\s*inline-size/);
+  });
+
+  it("swaps the links for the menu button below 600px of header width", () => {
+    expect(rule(".sw-header-menu-button")).toMatch(/display:\s*none/);
+    expect(css).toMatch(
+      /@container sw-header \(width < 600px\)\s*\{[\s\S]*?\.sw-header-nav\s*\{[^}]*display:\s*none[\s\S]*?\.sw-header-menu-button\s*\{[^}]*display:\s*inline-flex/,
+    );
+  });
+
+  it("opens a full-screen menu on the page surface, on both routes", () => {
+    const r = rule(".sw-header-menu");
+    expect(r).toMatch(/position:\s*fixed/);
+    expect(r).toMatch(/inset:\s*0/);
+    expect(r).toMatch(/max-inline-size:\s*none/);
+    expect(r).toMatch(/background-color:\s*var\(--surface-page\)/);
+    expect(rule(".sw-header-menu-overlay")).toMatch(/z-index:\s*var\(--z-modal\)/);
+  });
+
+  it("sets links large, numbered in mono without announcing the numbers, with a signal bar on the current one", () => {
+    const link = rule(".sw-header-menu-nav .sw-link");
+    expect(link).toMatch(/font-size:\s*var\(--text-h2-size\)/);
+    expect(link).toMatch(/border-block-end:\s*1px solid var\(--border\)/);
+    expect(css).toMatch(/\.sw-header-menu-nav \.sw-link::?before\s*\{[^}]*content:\s*counter\(sw-menu,\s*decimal-leading-zero\)\s*\/\s*""/);
+    expect(css).toMatch(
+      /\.sw-header-menu-nav \.sw-link\[aria-current\]:not\(\[aria-current="?false"?\]\)\s*\{[^}]*border-inline-start-color:\s*var\(--brand-signal\)/,
+    );
+  });
+
+  it("keeps the current-page bar visible in forced colours, which replace --brand-signal", () => {
+    expect(css).toMatch(
+      /@media \(forced-colors:\s*active\)\s*\{\s*\.sw-header-menu-nav \.sw-link\[aria-current\]:not\(\[aria-current="?false"?\]\)\s*\{[^}]*border-inline-start-color:\s*highlight/i,
+    );
+  });
+});
+
+describe("pagination", () => {
+  it("gives every page link a 44px target in tabular mono figures", () => {
+    const r = rule(".sw-pagination-link");
+    expect(r).toMatch(/min-inline-size:\s*var\(--target-min\)/);
+    expect(r).toMatch(/min-block-size:\s*var\(--target-min\)/);
+    expect(r).toMatch(/font-family:\s*var\(--font-mono\)/);
+    expect(r).toMatch(/font-variant-numeric:\s*tabular-nums/);
+  });
+
+  it("marks the current page with weight and a 2px underline, not colour alone", () => {
+    const r = rule('.sw-pagination-link[aria-current="page"]');
+    expect(r).toMatch(/font-weight:\s*500/);
+    expect(r).toMatch(/text-decoration-thickness:\s*2px/);
+  });
+
+  it("mirrors the step arrows in RTL", () => {
+    expect(css).toMatch(/\.sw-pagination-step svg:dir\(rtl\)\s*\{[^}]*transform:\s*scaleX\(-1\)/);
+  });
+});
+
+describe("sidenav", () => {
+  it("hangs the list from a hairline on the inline-start edge", () => {
+    const r = rule(".sw-sidenav-list");
+    expect(r).toMatch(/border-inline-start:\s*1px solid var\(--border\)/);
+    expect(r).toMatch(/list-style:\s*none/);
+  });
+
+  it("gives links and group titles a 44px row with room for the current-item bar", () => {
+    // Lightning CSS prints transparent as #0000.
+    expect(css).toMatch(/\.sw-sidenav-link,\s*\.sw-sidenav-group-title\s*\{[^}]*min-block-size:\s*var\(--target-min\)[^}]*border-inline-start:\s*2px solid (?:transparent|#0000)\b/);
+  });
+
+  it("marks the current item with an accent bar and weight, not colour alone", () => {
+    const r = rule('.sw-sidenav-link[aria-current]:not([aria-current="false"])');
+    expect(r).toMatch(/border-inline-start-color:\s*var\(--accent\)/);
+    expect(r).toMatch(/font-weight:\s*500/);
+  });
+});

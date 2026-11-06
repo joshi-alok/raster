@@ -1,0 +1,73 @@
+/*
+ * Content popovers. The floating surface (.sw-popover: border, radius, shadow) is shared with
+ * Select and Menu in overlay.css; .sw-popover-content adapts it for text and controls.
+ * React route: React Aria Popover + Dialog. Native route: an element with the popover attribute,
+ * anchored to its trigger with anchor-name / position-anchor.
+ */
+.sw-popover-content {
+  max-inline-size: min(20rem, calc(100vw - 2 * var(--page-margin)));
+  max-block-size: none;
+  padding: 0;
+  color: var(--text-primary);
+}
+
+.sw-popover-dialog {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  outline: none;
+}
+
+.sw-popover-title {
+  margin: 0;
+  font-size: var(--text-body-size);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+/* Native route. Without anchor positioning the browser's own centring is kept. */
+@supports (position-anchor: --a) {
+  [popover].sw-popover {
+    inset: auto;
+    margin: 0;
+    margin-block-start: var(--space-2);
+    position-area: block-end span-inline-end;
+    position-try-fallbacks: flip-block, flip-inline;
+  }
+}
+
+[popover].sw-popover {
+  transition:
+    opacity var(--dur-base) var(--ease-standard),
+    transform var(--dur-base) var(--ease-standard),
+    display var(--dur-base) allow-discrete,
+    overlay var(--dur-base) allow-discrete;
+}
+
+[popover].sw-popover:not(:popover-open) {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+@starting-style {
+  [popover].sw-popover:popover-open {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [popover].sw-popover:not(:popover-open) {
+    transform: none;
+  }
+
+  @starting-style {
+    [popover].sw-popover:popover-open {
+      transform: none;
+    }
+  }
+}
+
+[data-motion="reduce"] [popover].sw-popover:not(:popover-open) {
+  transform: none;
+}

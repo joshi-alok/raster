@@ -1,0 +1,45 @@
+---
+title: Disclosure
+group: Overlay and navigation
+order: 8
+summary: Rows that show or hide their content; grouped, they make an accordion that opens one row at a time.
+interactive: true
+props:
+  - name: title
+    type: ReactNode
+    description: Required. The row's label and the trigger's accessible name.
+  - name: headingLevel
+    type: 2 | 3 | 4 | 5 | 6
+    default: "3"
+    description: Level of the heading that wraps the trigger.
+  - name: defaultExpanded / isExpanded / onExpandedChange
+    type: boolean / boolean / (isExpanded) => void
+    description: Starting state, or controlled state and its change handler.
+  - name: isDisabled
+    type: boolean
+    description: Prevents the row from opening or closing.
+  - name: id
+    type: Key
+    description: The row's key inside an Accordion.
+  - name: Accordion allowsMultipleExpanded
+    type: boolean
+    default: "false"
+    description: Lets several rows stay open; by default opening one closes the others.
+a11y:
+  - The trigger is a button with aria-expanded, wrapped in a heading so each row appears in the page outline.
+  - Without React, details and summary give the same keyboard behaviour (Enter and Space toggle). The summary is the button, so put a heading above the group if the outline needs one.
+  - A shared name attribute on the details elements makes a native group open one row at a time.
+  - The plus and minus are drawn with borders, so they stay visible in forced-colours mode.
+  - Native panels animate their height where the browser supports it; under reduced motion they open at once.
+---
+import Example from "../../components/Example.astro";
+import NativeExample from "../../components/NativeExample.astro";
+import Faq from "../../demos/disclosure/Faq";
+import faqSource from "../../demos/disclosure/Faq.tsx?raw";
+import faqHtml from "../../demos/disclosure/faq.html?raw";
+
+<Example title="Questions" source={faqSource}>
+  <Faq client:load />
+</Example>
+
+<NativeExample title="Questions without React" html={faqHtml} />

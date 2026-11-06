@@ -31,7 +31,10 @@ const { title, description } = Astro.props;
     </main>
     <SiteFooter />
     <script>
+      import { installInvokerFallback } from "../lib/invokers";
       import { bindSettings } from "../lib/settings";
+      // The phone menu opens with invoker commands; older browsers need this to open it at all.
+      installInvokerFallback(document);
       // Reading localStorage throws when storage is blocked; the toggles still work for this page.
       let storage: Pick<Storage, "getItem" | "setItem">;
       try {

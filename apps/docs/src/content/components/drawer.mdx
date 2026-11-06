@@ -1,0 +1,51 @@
+---
+title: Drawer
+group: Overlay and navigation
+order: 10
+summary: A modal panel docked to the inline end or the bottom edge, for details and filters beside the current page.
+interactive: true
+props:
+  - name: title
+    type: ReactNode
+    description: Required. The heading that names the drawer.
+  - name: children
+    type: "ReactNode | ({ close }) => ReactNode"
+    description: The content; the function form receives close.
+  - name: placement
+    type: '"end" | "bottom"'
+    default: '"end"'
+    description: The edge it docks to; "bottom" makes a sheet.
+  - name: isDismissable
+    type: boolean
+    default: "true"
+    description: Closes on a click outside the panel. Escape always closes.
+  - name: isOpen / defaultOpen / onOpenChange
+    type: boolean / boolean / (isOpen) => void
+    description: Controlled or starting state, for opening without a DialogTrigger.
+  - name: closeLabel
+    type: string
+    default: '"Close"'
+    description: Text of the close button.
+a11y:
+  - A modal dialog named by its title. Focus moves inside, stays there, and returns to the trigger when the drawer closes.
+  - Escape closes it on both routes. Without React, closedby="any" adds closing on an outside click where browsers support it.
+  - The page behind is dimmed and inert while the drawer is open.
+  - Under reduced motion the drawer appears without sliding.
+---
+import Example from "../../components/Example.astro";
+import NativeExample from "../../components/NativeExample.astro";
+import Filters from "../../demos/drawer/Filters";
+import filtersSource from "../../demos/drawer/Filters.tsx?raw";
+import ProjectDetails from "../../demos/drawer/ProjectDetails";
+import projectDetailsSource from "../../demos/drawer/ProjectDetails.tsx?raw";
+import projectDetailsHtml from "../../demos/drawer/project-details.html?raw";
+
+<Example title="Project details" source={projectDetailsSource}>
+  <ProjectDetails client:load />
+</Example>
+
+<NativeExample title="Project details without React" html={projectDetailsHtml} />
+
+<Example title="Bottom sheet" source={filtersSource}>
+  <Filters client:load />
+</Example>

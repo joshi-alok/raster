@@ -5,6 +5,8 @@ import { X } from "lucide-react";
 import { Button } from "../src/actions/Button";
 import { IconButton } from "../src/actions/IconButton";
 import { Dialog, DialogTrigger } from "../src/overlays/Dialog";
+import { Popover } from "../src/overlays/Popover";
+import { Drawer } from "../src/overlays/Drawer";
 import { Menu, MenuItem, MenuSeparator, MenuTrigger } from "../src/overlays/Menu";
 import { expectAccessible } from "./axe";
 import { Select, SelectItem } from "../src/forms/Select";
@@ -335,5 +337,104 @@ describe("Toast", () => {
       queue.add({ title: "Hello" });
     });
     expect(screen.getByRole("region", { name: /notifications?/i })).toHaveClass("sw-toast-region");
+  });
+});
+
+describe("Popover", () => {
+  function Example() {
+    return (
+      <DialogTrigger>
+        <Button>Grid units</Button>
+        <Popover title="Grid units">
+          <p>One unit is 4px.</p>
+        </Popover>
+      </DialogTrigger>
+    );
+  }
+
+  it("opens a dialog named by its title on the content popover surface", async () => {
+    const user = userEvent.setup();
+    render(<Example />);
+    await user.click(screen.getByRole("button", { name: "Grid units" }));
+    const dialog = await screen.findByRole("dialog", { name: "Grid units" });
+    expect(dialog).toHaveClass("sw-popover-dialog");
+    expect(dialog.closest(".sw-popover")).toHaveClass("sw-popover-content");
+    expect(screen.getByRole("heading", { level: 3, name: "Grid units" })).toHaveClass("sw-popover-title");
+  });
+
+  it("closes on Escape and returns focus to the trigger", async () => {
+    const user = userEvent.setup();
+    render(<Example />);
+    const trigger = screen.getByRole("button", { name: "Grid units" });
+    await user.click(trigger);
+    await screen.findByRole("dialog");
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    // React Aria restores focus in a later frame (as in the Dialog test above).
+    await waitFor(() => expect(trigger).toHaveFocus());
+  });
+
+  it("can be named with aria-label when it has no title", async () => {
+    const user = userEvent.setup();
+    render(
+      <DialogTrigger>
+        <Button>More</Button>
+        <Popover aria-label="More options">
+          <p>Body</p>
+        </Popover>
+      </DialogTrigger>,
+    );
+    await user.click(screen.getByRole("button", { name: "More" }));
+    expect(await screen.findByRole("dialog", { name: "More options" })).toBeInTheDocument();
+  });
+});
+
+describe("Drawer", () => {
+  function Example({ placement }: { placement?: "end" | "bottom" }) {
+    return (
+      <DialogTrigger>
+        <Button>Project details</Button>
+        <Drawer title="Project details" placement={placement}>
+          <p>Fourteen stations.</p>
+        </Drawer>
+      </DialogTrigger>
+    );
+  }
+
+  it("opens a modal dialog named by its title in a docked panel", async () => {
+    const user = userEvent.setup();
+    render(<Example />);
+    await user.click(screen.getByRole("button", { name: "Project details" }));
+    const dialog = await screen.findByRole("dialog", { name: "Project details" });
+    expect(dialog).toHaveClass("sw-dialog", "sw-drawer-dialog");
+    const panel = dialog.closest(".sw-drawer");
+    expect(panel).toHaveAttribute("data-placement", "end");
+    expect(panel?.parentElement).toHaveClass("sw-drawer-overlay");
+  });
+
+  it("supports the bottom placement", async () => {
+    const user = userEvent.setup();
+    render(<Example placement="bottom" />);
+    await user.click(screen.getByRole("button", { name: "Project details" }));
+    const dialog = await screen.findByRole("dialog");
+    expect(dialog.closest(".sw-drawer")).toHaveAttribute("data-placement", "bottom");
+  });
+
+  it("closes from its Close button and returns focus to the trigger", async () => {
+    const user = userEvent.setup();
+    render(<Example />);
+    const trigger = screen.getByRole("button", { name: "Project details" });
+    await user.click(trigger);
+    await user.click(await screen.findByRole("button", { name: "Close" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    // React Aria restores focus in a later frame (as in the Dialog test above).
+    await waitFor(() => expect(trigger).toHaveFocus());
+  });
+
+  it("has no structural accessibility violations when open", async () => {
+    const user = userEvent.setup();
+    render(<Example />);
+    await user.click(screen.getByRole("button", { name: "Project details" }));
+    await expectAccessible(await screen.findByRole("dialog"));
   });
 });
