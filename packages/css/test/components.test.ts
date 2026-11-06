@@ -1175,6 +1175,8 @@ describe("data grid", () => {
     const head = rule(".sw-data-grid-virtualized .sw-data-grid-column");
     expect(head).toMatch(/border-block-end-color:\s*var\(--text-primary\)/);
     expect(head).toMatch(/color:\s*var\(--text-secondary\)/);
+    // Divs miss base.css's th weight; restore it.
+    expect(head).toMatch(/font-weight:\s*500/);
     expect(css).not.toMatch(/\.sw-data-grid-virtualized :is\(th, td\)/);
   });
 
@@ -1191,6 +1193,21 @@ describe("data grid", () => {
 
   it("rings a header's label when it holds the keyboard focus", () => {
     expect(rule(".sw-data-grid-label:focus-visible")).toMatch(/outline:\s*var\(--focus-width\) solid var\(--accent\)/);
+  });
+
+  // Virtualised, each cell sits in its own positioned wrapper (the row's direct child, which takes the
+  // selected fill and bar). Sticky can't pin inside a wrapper its own size, and an opaque sticky cell
+  // would hide the fill, so the select and sticky cells stay in flow and clear.
+  it("lets a virtualised row's selected fill show through its select and sticky cells", () => {
+    const r = rule(".sw-data-grid-virtualized :is(.sw-data-grid-select, .sw-data-grid-sticky)");
+    expect(r).toMatch(/position:\s*static/);
+    expect(r).toMatch(/background-color:\s*(?:transparent|#0000)/);
+  });
+
+  // React Aria sizes the select column in pixels (44), so the sticky column's offset is 44px there,
+  // whatever the root font size; the native select column is var(--target-min), and so is its offset.
+  it("offsets the sticky column by the React select column's pixel width", () => {
+    expect(rule(".sw-data-grid-selectable[data-rac] .sw-data-grid-sticky")).toMatch(/inset-inline-start:\s*44px/);
   });
 
   it("keeps selected rows visible in forced colours", () => {

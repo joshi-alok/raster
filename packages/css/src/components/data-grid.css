@@ -74,6 +74,11 @@ table.sw-data-grid {
   inset-inline-start: var(--target-min);
 }
 
+/* React Aria sizes its select column in pixels (44), whatever the root font size. */
+.sw-data-grid-selectable[data-rac] .sw-data-grid-sticky {
+  inset-inline-start: 44px;
+}
+
 /* The sticky column's edge, drawn as a border so it moves with the cell and survives forced colours. */
 .sw-data-grid .sw-data-grid-sticky::after {
   content: "";
@@ -83,7 +88,10 @@ table.sw-data-grid {
   border-inline-end: 1px solid var(--border);
 }
 
-/* No block padding: the 44px checkbox target sets the row height, centred on the row's text. */
+/*
+ * No block padding: on the React route the checkbox's 44px label target sets the row height, centred
+ * on the row's text. The native route's bare input is an 18px target, spaced a row apart.
+ */
 .sw-data-grid .sw-data-grid-select {
   inline-size: var(--target-min);
   padding: 0;
@@ -262,8 +270,21 @@ table.sw-data-grid {
   border-block-end: 1px solid var(--border);
 }
 
+/*
+ * Each virtualised cell sits in its own positioned wrapper, the row's direct child, which takes the
+ * selected fill and bar. Sticky can't pin inside a wrapper its own size, and an opaque cell would
+ * hide the fill, so the select and sticky cells stay in flow and clear. Sticky columns are not
+ * supported when virtualised.
+ */
+.sw-data-grid-virtualized :is(.sw-data-grid-select, .sw-data-grid-sticky) {
+  position: static;
+  background-color: transparent;
+  will-change: auto;
+}
+
 .sw-data-grid-virtualized .sw-data-grid-column {
   border-block-end-color: var(--text-primary);
+  font-weight: 500;
   font-family: inherit;
   background-color: var(--surface-page);
   color: var(--text-secondary);

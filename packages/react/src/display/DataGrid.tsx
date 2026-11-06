@@ -26,7 +26,10 @@ export type DataGridProps = Omit<TableProps, "className" | "children" | "aria-la
   caption: ReactNode;
   /** A CSS length. The grid scrolls inside this height and its header row sticks. */
   maxHeight?: string;
-  /** Draw only the rows in view. Rows must all be rowHeight pixels tall. */
+  /**
+   * Draw only the rows in view. Rows must all be rowHeight pixels tall. Sticky columns don't pin when
+   * virtualised; render large grids on the client only, as hydrating thousands of rows is slow.
+   */
   virtualized?: { rowHeight: number; headingHeight?: number };
   className?: string;
   /** A DataGridHeader and a DataGridBody. */
@@ -76,7 +79,10 @@ export function DataGrid({ caption, maxHeight, virtualized, selectionMode = "non
   );
 }
 
-/** Whether the grid shows checkboxes: multiple selection with React Aria's default toggle behaviour. */
+/**
+ * Whether the grid shows checkboxes: multiple selection with React Aria's default toggle behaviour.
+ * With selectionBehavior="replace" (click selects one, modifier keys extend) there are none.
+ */
 function useCheckboxes() {
   const { selectionMode, selectionBehavior } = useTableOptions();
   return selectionMode === "multiple" && selectionBehavior === "toggle";
@@ -163,7 +169,7 @@ export function DataGridBody<T extends object>({ emptyState, className, ...rest 
   );
 }
 
-export type DataGridRowProps<T extends object> = Omit<RowProps<T>, "className" | "children"> & {
+export type DataGridRowProps<T extends object> = Omit<RowProps<T>, "className" | "children" | "columns"> & {
   /** DataGridCell elements, one per column. */
   children: ReactNode;
   className?: string;
