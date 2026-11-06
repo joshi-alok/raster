@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from "vitest";
-import { installSearchClear, installSliderOutputs } from "../src/lib/native-controls";
+import { installSearchClear, installSelectAll, installSliderOutputs } from "../src/lib/native-controls";
 
 let uninstall: () => void = () => undefined;
 afterEach(() => {
@@ -106,5 +106,47 @@ describe("installSliderOutputs", () => {
     input.value = "30";
     input.dispatchEvent(new Event("input", { bubbles: true }));
     expect(document.querySelector("output")?.value).toBe("30");
+  });
+});
+
+describe("installSelectAll", () => {
+  function grid() {
+    document.body.innerHTML = `
+      <table class="sw-table sw-data-grid">
+        <thead><tr><th><input type="checkbox" data-select-all aria-label="Select all projects" /></th><th>Project</th></tr></thead>
+        <tbody>
+          <tr><td><input type="checkbox" name="project" value="a" /></td><td>A</td></tr>
+          <tr><td><input type="checkbox" name="project" value="b" /></td><td>B</td></tr>
+        </tbody>
+      </table>`;
+    uninstall = installSelectAll(document);
+    const all = document.querySelector<HTMLInputElement>("[data-select-all]") as HTMLInputElement;
+    const rows = [...document.querySelectorAll<HTMLInputElement>("tbody input")];
+    return { all, rows };
+  }
+
+  it("checks and clears every row from the header checkbox", () => {
+    const { all, rows } = grid();
+    all.click();
+    expect(rows.every((box) => box.checked)).toBe(true);
+    all.click();
+    expect(rows.some((box) => box.checked)).toBe(false);
+  });
+
+  it("shows a partial selection as indeterminate and a full one as checked", () => {
+    const { all, rows } = grid();
+    rows[0].click();
+    expect(all.indeterminate).toBe(true);
+    expect(all.checked).toBe(false);
+    rows[1].click();
+    expect(all.indeterminate).toBe(false);
+    expect(all.checked).toBe(true);
+  });
+
+  it("leaves React Aria's grids alone", () => {
+    const { all, rows } = grid();
+    document.querySelector("table")?.setAttribute("data-rac", "");
+    all.click();
+    expect(rows.some((box) => box.checked)).toBe(false);
   });
 });

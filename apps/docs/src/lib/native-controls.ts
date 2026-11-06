@@ -50,3 +50,30 @@ export function installSliderOutputs(doc: Document): () => void {
   doc.addEventListener("input", onInput);
   return () => doc.removeEventListener("input", onInput);
 }
+
+/**
+ * Data grids: a header checkbox with data-select-all checks or clears every row checkbox in its
+ * table, and shows a partial selection as indeterminate. Rows still submit as plain checkboxes.
+ */
+export function installSelectAll(doc: Document): () => void {
+  const onChange = (event: Event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || input.type !== "checkbox") return;
+    const table = input.closest("table.sw-data-grid");
+    // React Aria's grids manage their own selection; their elements carry data-rac.
+    if (!table || table.closest("[data-rac]")) return;
+    const all = table.querySelector<HTMLInputElement>("thead input[data-select-all]");
+    if (!all) return;
+    const rows = [...table.querySelectorAll<HTMLInputElement>('tbody input[type="checkbox"]')];
+    if (input === all) {
+      for (const box of rows) box.checked = all.checked;
+      all.indeterminate = false;
+      return;
+    }
+    const checked = rows.filter((box) => box.checked).length;
+    all.checked = checked === rows.length;
+    all.indeterminate = checked > 0 && checked < rows.length;
+  };
+  doc.addEventListener("change", onChange);
+  return () => doc.removeEventListener("change", onChange);
+}
