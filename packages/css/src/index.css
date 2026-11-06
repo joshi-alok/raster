@@ -32,3 +32,4 @@
 @import "./components/pagination.css" layer(raster.components);
 @import "./components/sidenav.css" layer(raster.components);
 @import "./components/chip.css" layer(raster.components);
+@import "./components/segmented.css" layer(raster.components);

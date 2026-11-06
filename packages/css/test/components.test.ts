@@ -699,3 +699,23 @@ describe("chips (TagGroup)", () => {
     expect(css).toMatch(/:is\(\.sw-chip:has\( ?> \.sw-chip-input:focus-visible\),\s*\.sw-chip\[data-focus-visible\]\)\s*\{[^}]*outline:\s*var\(--focus-width\) solid var\(--accent\)/);
   });
 });
+
+describe("segmented control", () => {
+  it("joins the segments inside one border", () => {
+    expect(rule(".sw-segmented-list")).toMatch(/border:\s*1px solid var\(--border-strong\)/);
+    expect(css).toMatch(/\.sw-segment \+ \.sw-segment\s*\{[^}]*border-inline-start:\s*1px solid var\(--border-strong\)/);
+  });
+
+  it("gives each segment a 40px control with a 44px hit area", () => {
+    expect(rule(".sw-segment")).toMatch(/min-block-size:\s*var\(--control-height\)/);
+    expect(css).toMatch(/\.sw-segment::?before\s*\{[^}]*inset-block:\s*calc\(\(var\(--control-height\) - var\(--target-min\)\) \/ 2\)/);
+  });
+
+  it("marks the selected segment like a pressed toggle: inset accent line and underline", () => {
+    // Lightning CSS prints `:has(> x)` as `:has( > x)`, hence the optional space.
+    const sel = /:is\(\.sw-segment:has\( ?> \.sw-segment-input:checked\),\s*\.sw-segment\[data-selected\]\)\s*\{([^}]*)\}/;
+    const body = css.match(sel)?.[1] ?? "";
+    expect(body).toMatch(/box-shadow:\s*inset 0 0 0 1px var\(--accent\)/);
+    expect(body).toMatch(/text-decoration-line:\s*underline/);
+  });
+});

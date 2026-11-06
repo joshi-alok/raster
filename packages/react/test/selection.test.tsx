@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { Segment, SegmentedControl } from "../src/forms/SegmentedControl";
 import { Chip, TagGroup } from "../src/forms/TagGroup";
 import { expectAccessible } from "./axe";
 
@@ -58,6 +59,50 @@ describe("TagGroup", () => {
 
   it("has no structural accessibility violations", async () => {
     const { container } = render(<Disciplines />);
+    await expectAccessible(container);
+  });
+});
+
+describe("SegmentedControl", () => {
+  function View(props: { onSelectionChange?: (key: unknown) => void }) {
+    return (
+      <SegmentedControl label="View" defaultSelectedKey="grid" {...props}>
+        <Segment id="grid">Grid</Segment>
+        <Segment id="list">List</Segment>
+        <Segment id="map">Map</Segment>
+      </SegmentedControl>
+    );
+  }
+
+  it("is a labelled radio group of segments", () => {
+    const { container } = render(<View />);
+    expect(container.firstElementChild).toHaveClass("sw-field", "sw-segmented");
+    const group = screen.getByRole("radiogroup", { name: "View" });
+    expect(group).toHaveClass("sw-segmented-list");
+    expect(screen.getAllByRole("radio")).toHaveLength(3);
+    expect(screen.getByRole("radio", { name: "Grid" })).toHaveClass("sw-segment");
+  });
+
+  it("selects exactly one segment and reports the new key", async () => {
+    const user = userEvent.setup();
+    const onSelectionChange = vi.fn();
+    render(<View onSelectionChange={onSelectionChange} />);
+    expect(screen.getByRole("radio", { name: "Grid" })).toBeChecked();
+    await user.click(screen.getByRole("radio", { name: "List" }));
+    expect(screen.getByRole("radio", { name: "List" })).toBeChecked();
+    expect(screen.getByRole("radio", { name: "Grid" })).not.toBeChecked();
+    expect(onSelectionChange).toHaveBeenLastCalledWith("list");
+  });
+
+  it("does not let the selection become empty", async () => {
+    const user = userEvent.setup();
+    render(<View />);
+    await user.click(screen.getByRole("radio", { name: "Grid" }));
+    expect(screen.getByRole("radio", { name: "Grid" })).toBeChecked();
+  });
+
+  it("has no structural accessibility violations", async () => {
+    const { container } = render(<View />);
     await expectAccessible(container);
   });
 });
