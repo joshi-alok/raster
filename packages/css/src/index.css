@@ -43,3 +43,7 @@
 @import "./components/media.css" layer(raster.components);
 @import "./components/avatar.css" layer(raster.components);
 @import "./components/facts.css" layer(raster.components);
+@import "./components/combobox.css" layer(raster.components);
+@import "./components/calendar.css" layer(raster.components);
+@import "./components/date-picker.css" layer(raster.components);
+@import "./components/file-upload.css" layer(raster.components);

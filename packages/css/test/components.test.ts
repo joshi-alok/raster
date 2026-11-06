@@ -931,3 +931,159 @@ describe("description list and stat", () => {
     expect(css).toMatch(/\.sw-stat-change svg:dir\(rtl\)\s*\{[^}]*transform:\s*scaleX\(-1\)/);
   });
 });
+
+describe("combobox", () => {
+  it("reserves room for the suggestions button inside the input", () => {
+    expect(rule(".sw-combobox-input")).toMatch(/padding-inline-end:\s*var\(--control-height\)/);
+  });
+
+  it("places a square suggestions button at the inline end", () => {
+    const r = rule(".sw-combobox-button");
+    expect(r).toMatch(/position:\s*absolute/);
+    expect(r).toMatch(/inset-inline-end:\s*0/);
+    expect(r).toMatch(/inline-size:\s*var\(--control-height\)/);
+  });
+
+  it("extends the button's hit area to the 44px target", () => {
+    expect(rule(".sw-combobox-button:before")).toMatch(/inset-block:\s*calc\(\(var\(--control-height\) - var\(--target-min\)\) \/ 2\)/);
+  });
+
+  it("gives the native list input back its normal padding, since the browser draws its own indicator", () => {
+    expect(rule(".sw-combobox-input[list]")).toMatch(/padding-inline-end:\s*var\(--space-3\)/);
+  });
+});
+
+describe("calendar", () => {
+  it("is at most seven 44px cells wide", () => {
+    expect(rule(".sw-calendar")).toMatch(/inline-size:\s*min\(100%,\s*calc\(7 \* var\(--target-min\)\)\)/);
+  });
+
+  it("draws square day cells in mono", () => {
+    const r = rule(".sw-calendar-cell");
+    expect(r).toMatch(/aspect-ratio:\s*1/);
+    expect(r).toMatch(/font-family:\s*var\(--font-mono\)/);
+  });
+
+  it("marks today with a 2px underline, not colour", () => {
+    const r = rule(".sw-calendar-cell[data-today]");
+    expect(r).toMatch(/text-decoration-line:\s*underline/);
+    expect(r).toMatch(/text-decoration-thickness:\s*2px/);
+  });
+
+  it("fills a selected day with the accent and sets it in weight 500", () => {
+    const r = rule(".sw-calendar-cell[data-selected]");
+    expect(r).toMatch(/background-color:\s*var\(--accent\)/);
+    expect(r).toMatch(/color:\s*var\(--on-accent\)/);
+    expect(r).toMatch(/font-weight:\s*500/);
+  });
+
+  it("gives the middle of a range a subtle fill, keeping the ends solid", () => {
+    expect(css).toMatch(
+      /\.sw-range-calendar \.sw-calendar-cell\[data-selected\]:not\(\[data-selection-start\],\s*\[data-selection-end\]\)\s*\{[^}]*background-color:\s*var\(--accent-subtle\)/,
+    );
+  });
+
+  it("strikes through unavailable days and hides days outside the month", () => {
+    expect(rule(".sw-calendar-cell[data-unavailable]")).toMatch(/text-decoration-line:\s*line-through/);
+    expect(rule(".sw-calendar-cell[data-outside-month]")).toMatch(/visibility:\s*hidden/);
+  });
+
+  it("mirrors the month arrows in right-to-left text", () => {
+    expect(css).toMatch(/\.sw-calendar-nav svg:dir\(rtl\)\s*\{[^}]*transform:\s*scaleX\(-1\)/);
+  });
+
+  it("keeps selected days visible in forced colours", () => {
+    expect(css).toMatch(
+      /@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-calendar-cell\[data-selected\]\s*\{[^}]*forced-color-adjust:\s*none[^}]*background-color:\s*highlight/i,
+    );
+  });
+});
+
+describe("date picker", () => {
+  it("keeps a wide range field's two dates together, with the button at the end", () => {
+    expect(rule(".sw-date-range-picker .sw-date-input")).toMatch(/flex:\s*none/);
+    expect(rule(".sw-date-range-picker .sw-date-button")).toMatch(/margin-inline-start:\s*auto/);
+  });
+
+  it("stacks a narrow range field: start over end, the calendar button beside both", () => {
+    expect(rule(".sw-date-range-picker")).toMatch(/container:\s*sw-date-range \/ inline-size/);
+    expect(css).toMatch(
+      /@container sw-date-range \(width < 18rem\)\s*\{[\s\S]*?\.sw-date-range-picker \.sw-date-field\s*\{[^}]*display:\s*grid[\s\S]*?\.sw-date-input-end\s*\{[^}]*grid-row:\s*2[\s\S]*?\.sw-date-range-dash\s*\{[^}]*display:\s*none/,
+    );
+  });
+
+  it("lays the segments and the calendar button out in one input", () => {
+    const r = rule(".sw-date-field");
+    expect(r).toMatch(/display:\s*flex/);
+    expect(r).toMatch(/padding-block:\s*0/);
+    expect(r).toMatch(/padding-inline-end:\s*0/);
+  });
+
+  it("rings the whole field while a segment has keyboard focus", () => {
+    expect(rule(".sw-date-field[data-focus-visible]")).toMatch(/outline:\s*var\(--focus-width\) solid var\(--accent\)/);
+  });
+
+  it("marks an invalid field with a thicker leading edge as well as colour", () => {
+    const r = rule(".sw-date-field[data-invalid]");
+    expect(r).toMatch(/border-color:\s*var\(--danger\)/);
+    expect(r).toMatch(/border-inline-start-width:\s*4px/);
+  });
+
+  it("fills the focused segment with the accent, and keeps it visible in forced colours", () => {
+    expect(rule(".sw-date-segment[data-focused]")).toMatch(/background-color:\s*var\(--accent\)/);
+    expect(css).toMatch(
+      /@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-date-segment\[data-focused\]\s*\{[^}]*forced-color-adjust:\s*none[^}]*background-color:\s*highlight/i,
+    );
+  });
+
+  it("widens one-digit segments so neighbouring targets sit 24px apart", () => {
+    expect(css).toMatch(/\.sw-date-segment:not\(\[data-type="?literal"?\]\)\s*\{[^}]*min-inline-size:\s*1\.125rem/);
+  });
+
+  it("puts the calendar button behind a hairline at the inline end", () => {
+    const r = rule(".sw-date-button");
+    expect(r).toMatch(/inline-size:\s*var\(--control-height\)/);
+    expect(r).toMatch(/border-inline-start:\s*1px solid var\(--border\)/);
+  });
+
+  it("sets a native date range as two fields side by side that wrap", () => {
+    expect(rule(".sw-date-range-fields")).toMatch(/flex-wrap:\s*wrap/);
+    expect(rule(".sw-date-range-native")).toMatch(/border:\s*0/);
+  });
+
+  it("aligns the native range's legend with its fields and spaces it like a field label", () => {
+    // A rendered legend is not a grid item, so .sw-field's gap misses it, and browsers pad it 2px.
+    const r = rule(".sw-date-range-native > legend");
+    expect(r).toMatch(/padding:\s*0/);
+    expect(r).toMatch(/margin-block-end:\s*var\(--space-2\)/);
+  });
+});
+
+describe("file upload", () => {
+  it("draws the drop zone with a dashed hairline", () => {
+    expect(rule(".sw-file-drop")).toMatch(/border:\s*1px dashed var\(--border-strong\)/);
+  });
+
+  it("shows a drag-over by a solid border and a fill, not colour alone", () => {
+    const r = rule(".sw-file-drop[data-drop-target]");
+    expect(r).toMatch(/border-style:\s*solid/);
+    expect(r).toMatch(/background-color:\s*var\(--accent-subtle\)/);
+  });
+
+  it("makes the native file input itself the drop zone", () => {
+    const r = rule(".sw-file-input");
+    expect(r).toMatch(/inline-size:\s*100%/);
+    expect(r).toMatch(/border:\s*1px dashed var\(--border-strong\)/);
+  });
+
+  it("styles the native choose button as a Raster button", () => {
+    // Lightning CSS may also print a -webkit-file-upload-button copy; the standard one must exist.
+    expect(css).toMatch(/\.sw-file-input::file-selector-button\s*\{[^}]*border:\s*1px solid var\(--border-strong\)/);
+  });
+
+  it("lists files between hairlines, with the size in mono", () => {
+    expect(rule(".sw-file-item")).toMatch(/border-block-end:\s*1px solid var\(--border\)/);
+    expect(rule(".sw-file-size")).toMatch(/font-family:\s*var\(--font-mono\)/);
+    expect(rule(".sw-file-name")).toMatch(/text-overflow:\s*ellipsis/);
+  });
+});

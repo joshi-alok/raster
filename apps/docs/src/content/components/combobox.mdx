@@ -1,0 +1,45 @@
+---
+title: ComboBox
+group: Forms
+order: 13
+summary: Type to filter a list of suggestions, then choose one with the arrow keys and Enter.
+interactive: true
+props:
+  - name: label
+    type: ReactNode
+    description: Required. The visible label.
+  - name: children
+    type: ComboBoxItem elements, or (item) => ReactNode
+    description: The suggestions. With a render function, pass the data as defaultItems or items.
+  - name: placeholder / description / errorMessage
+    type: string / ReactNode / ReactNode
+    description: A hint inside the input, help text, and the message shown when the field is invalid.
+  - name: selectedKey / defaultSelectedKey / onSelectionChange
+    type: Key / Key / (key) => void
+    description: The chosen suggestion, controlled or starting, and its change handler.
+  - name: inputValue / onInputChange
+    type: string / (value) => void
+    description: The typed text, controlled, and its change handler.
+  - name: allowsCustomValue
+    type: boolean
+    default: "false"
+    description: Keep text that matches no suggestion, as the native route always does.
+a11y:
+  - The input has the combobox role and its label; the open list is a listbox, and arrow keys move through it while focus stays in the input.
+  - Escape closes the list; Enter chooses the highlighted suggestion.
+  - The chosen suggestion is set in weight 500 with a check mark, not colour alone.
+  - Without React, the suggestion list belongs to the browser. It cannot be styled, it is announced differently by each browser, and it accepts any text, so validate the value when the form is sent.
+---
+import Example from "../../components/Example.astro";
+import NativeExample from "../../components/NativeExample.astro";
+import City from "../../demos/combobox/City";
+import citySource from "../../demos/combobox/City.tsx?raw";
+import cityHtml from "../../demos/combobox/city.html?raw";
+
+<Example title="City" source={citySource}>
+  <City client:load />
+</Example>
+
+<NativeExample title="City without React" html={cityHtml} />
+
+Use a ComboBox when the list is too long to scan in a Select, roughly more than fifteen items, or when people know what they are looking for. For a short list, use Select or RadioGroup.

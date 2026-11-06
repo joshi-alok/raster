@@ -16,6 +16,10 @@ const CASES = [
   { path: "/components/tag-group/", title: "Disciplines without React", name: "tag-group-native" },
   { path: "/components/avatar/", title: "Sizes", name: "avatar" },
   { path: "/components/badge/", title: "Counts", name: "badge" },
+  { path: "/components/calendar/", title: "Delivery day", name: "calendar" },
+  { path: "/components/calendar/", title: "Booking", name: "range-calendar" },
+  { path: "/components/date-picker/", title: "Delivery date", name: "date-picker" },
+  { path: "/components/file-upload/", title: "Proofs", name: "file-upload" },
 ];
 
 for (const c of CASES) {

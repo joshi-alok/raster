@@ -1,0 +1,44 @@
+---
+title: FileUpload
+group: Forms
+order: 17
+summary: A drop zone with a Choose files button, and the list of chosen files.
+interactive: true
+props:
+  - name: label
+    type: ReactNode
+    description: Required. Names the Choose files button and the list.
+  - name: files
+    type: "{ id, name, size, progress? }[]"
+    description: Required. The files to list; the app owns them and sets progress while uploading.
+  - name: onAdd / onRemove
+    type: (files) => void / (id) => void
+    description: Required. Called with accepted files from the button or a drop, and when Remove is pressed.
+  - name: acceptedFileTypes / maxSize / allowsMultiple
+    type: string[] / number / boolean
+    description: Limits. Refused files are named in an alert.
+  - name: description
+    type: ReactNode
+    description: The limits in words; it describes the Choose files button.
+  - name: buttonLabel / dropLabel / dropActiveLabel
+    type: string
+    default: '"Choose files" / "Drop files here, or" / "Drop to add"'
+    description: The zone's words.
+a11y:
+  - Choose files is a button named with the field label, and described by the limits. Dropping is never the only way to add a file.
+  - While files are dragged over, the border turns solid, the zone fills and its text changes to "Drop to add", so the state is not colour alone.
+  - Each Remove button is named with its file. Removing one moves focus to the next Remove button, or to Choose files when the list is empty.
+  - Refused files are named in an alert, with the reason.
+  - Without React, the file input is itself the drop zone. Browsers accept dropped files on it and announce the chosen files; there is no drag-over state, and size limits must be checked when the form is sent.
+---
+import Example from "../../components/Example.astro";
+import NativeExample from "../../components/NativeExample.astro";
+import Proofs from "../../demos/file-upload/Proofs";
+import proofsSource from "../../demos/file-upload/Proofs.tsx?raw";
+import proofsHtml from "../../demos/file-upload/proofs.html?raw";
+
+<Example title="Proofs" source={proofsSource}>
+  <Proofs client:load />
+</Example>
+
+<NativeExample title="Proofs without React" html={proofsHtml} />
