@@ -1,7 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { Media } from "../src/display/Media";
 import { Banner } from "../src/feedback/Banner";
+import { EmptyState } from "../src/feedback/EmptyState";
 import { Meter, meterRegion, meterState } from "../src/feedback/Meter";
 import { ProgressBar } from "../src/feedback/ProgressBar";
 import { Skeleton } from "../src/feedback/Skeleton";
@@ -131,5 +133,52 @@ describe("Banner", () => {
   it("has no structural accessibility violations", async () => {
     const { container } = render(<Banner title="Scheduled maintenance">Read-only on Sunday.</Banner>);
     await expectAccessible(container);
+  });
+});
+
+describe("EmptyState", () => {
+  it("renders a label, a heading at the chosen level, a sentence and an action", () => {
+    const { container } = render(
+      <EmptyState label="Projects" title="No projects match" headingLevel={3} action={<a href="/work/">Clear filters</a>}>
+        Try fewer disciplines, or show every year.
+      </EmptyState>,
+    );
+    const root = container.firstElementChild as HTMLElement;
+    expect(root).toHaveClass("sw-empty");
+    expect(root.querySelector(".sw-empty-label")).toHaveTextContent("Projects");
+    expect(screen.getByRole("heading", { level: 3, name: "No projects match" })).toHaveClass("sw-empty-title");
+    expect(root.querySelector(".sw-empty-text")).toHaveTextContent("Try fewer disciplines");
+    expect(root.querySelector(".sw-empty-actions")).toContainElement(screen.getByRole("link", { name: "Clear filters" }));
+  });
+
+  it("has no structural accessibility violations", async () => {
+    const { container } = render(<EmptyState title="No projects match">Try fewer filters.</EmptyState>);
+    await expectAccessible(container);
+  });
+});
+
+describe("Media", () => {
+  it("frames its child at the chosen ratio with a caption", () => {
+    const { container } = render(
+      <Media ratio="4:3" caption="Linie 7, platform signs.">
+        <img src="/sign.jpg" alt="A platform sign" />
+      </Media>,
+    );
+    const figure = container.firstElementChild as HTMLElement;
+    expect(figure.tagName).toBe("FIGURE");
+    expect(figure).toHaveClass("sw-figure", "sw-media");
+    expect(figure).toHaveAttribute("data-ratio", "4:3");
+    expect(figure.querySelector(".sw-media-frame > img")).toHaveAttribute("alt", "A platform sign");
+    expect(figure.querySelector("figcaption")).toHaveTextContent("Linie 7, platform signs.");
+  });
+
+  it("defaults to 16:9 and leaves out the caption when none is given", () => {
+    const { container } = render(
+      <Media>
+        <img src="/a.jpg" alt="" />
+      </Media>,
+    );
+    expect(container.firstElementChild).toHaveAttribute("data-ratio", "16:9");
+    expect(container.querySelector("figcaption")).toBeNull();
   });
 });

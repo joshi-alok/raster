@@ -855,3 +855,26 @@ describe("banner", () => {
     expect(rule(".sw-banner-inner")).toMatch(/max-inline-size:\s*calc\(var\(--content-max\) \+ 2 \* var\(--page-margin\)\)/);
   });
 });
+
+describe("empty state", () => {
+  it("hangs its label in a narrow column once its container is 600px wide", () => {
+    // Lightning CSS prints (min-width: 600px) in range syntax, as (width >= 600px).
+    expect(css).toMatch(/@container \(width >= 600px\)\s*\{[\s\S]*?\.sw-empty\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\) minmax\(0,\s*3fr\)/);
+  });
+
+  it("caps its text at the reading measure", () => {
+    expect(rule(".sw-empty-text")).toMatch(/max-inline-size:\s*66ch/);
+  });
+});
+
+describe("media", () => {
+  it("frames media at a fixed ratio so the page does not shift as it loads", () => {
+    expect(rule(".sw-media-frame")).toMatch(/aspect-ratio:\s*var\(--_ratio,\s*16 \/ 9\)/);
+    expect(rule('.sw-media[data-ratio="4:3"]')).toMatch(/--_ratio:\s*4 \/ 3/);
+    expect(rule('.sw-media[data-ratio="21:9"]')).toMatch(/--_ratio:\s*21 \/ 9/);
+  });
+
+  it("covers the frame with the image, video or drawing", () => {
+    expect(css).toMatch(/\.sw-media-frame > :is\(img,\s*video,\s*svg,\s*iframe\)\s*\{[^}]*object-fit:\s*cover/);
+  });
+});

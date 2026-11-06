@@ -41,6 +41,8 @@ export { Meter, type MeterProps, type MeterRegion, meterRegion, type MeterState,
 export { ProgressBar, type ProgressBarProps } from "./feedback/ProgressBar";
 export { Banner, type BannerProps } from "./feedback/Banner";
 export { Skeleton, type SkeletonProps } from "./feedback/Skeleton";
+export { EmptyState, type EmptyStateProps } from "./feedback/EmptyState";
+export { Media, type MediaProps, type MediaRatio } from "./display/Media";
 export type { Tone } from "./display/tones";
 export { Dialog, type DialogProps, DialogTrigger } from "./overlays/Dialog";
 export { Popover, type PopoverProps } from "./overlays/Popover";

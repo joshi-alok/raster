@@ -1,0 +1,36 @@
+/* Media: an image, video or drawing in a frame of fixed ratio, with an optional caption below. */
+.sw-media-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background-color: var(--surface-subtle);
+  aspect-ratio: var(--_ratio, 16 / 9);
+}
+
+.sw-media[data-ratio="1:1"] {
+  --_ratio: 1 / 1;
+}
+
+.sw-media[data-ratio="4:3"] {
+  --_ratio: 4 / 3;
+}
+
+.sw-media[data-ratio="3:2"] {
+  --_ratio: 3 / 2;
+}
+
+.sw-media[data-ratio="16:9"] {
+  --_ratio: 16 / 9;
+}
+
+.sw-media[data-ratio="21:9"] {
+  --_ratio: 21 / 9;
+}
+
+.sw-media-frame > :is(img, video, svg, iframe) {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  border: 0;
+  object-fit: cover;
+}

@@ -1,0 +1,51 @@
+/*
+ * EmptyState: what to do when there is nothing to show. A mono label, a short heading, one sentence
+ * and one action. On a container of 600px or more the label hangs in its own column.
+ */
+.sw-empty {
+  display: grid;
+  gap: var(--space-4) var(--grid-gutter);
+  align-items: start;
+  padding-block: var(--space-8);
+}
+
+.sw-empty-label {
+  margin: 0;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-label-size);
+  letter-spacing: var(--text-label-tracking);
+  line-height: var(--text-label-leading);
+  text-transform: uppercase;
+}
+
+.sw-empty-title {
+  margin: 0;
+}
+
+.sw-empty-text {
+  max-inline-size: 66ch;
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.sw-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-block-start: var(--space-2);
+}
+
+@container (min-width: 600px) {
+  .sw-empty {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+  }
+
+  .sw-empty-label {
+    grid-row: 1 / span 3;
+  }
+
+  .sw-empty > :not(.sw-empty-label) {
+    grid-column: 2;
+  }
+}
