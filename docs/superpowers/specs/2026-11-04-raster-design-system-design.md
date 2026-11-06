@@ -268,6 +268,8 @@ The build-time check enforces these thresholds:
 
 **Deferred to version 2:** DatePicker, Combobox, DataGrid, Charts, SideNav, Pagination, FileUpload.
 
+Version 2 is specified in [Raster version 2: components for real products](2026-11-06-raster-v2-components-design.md): SideNav and Pagination arrive in Plan 7a, the rest in Plans 7d–7f.
+
 ## 7. Motion
 
 ### Tokens
