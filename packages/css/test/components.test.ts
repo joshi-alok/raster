@@ -701,6 +701,10 @@ describe("chips (TagGroup)", () => {
 });
 
 describe("segmented control", () => {
+  it("stays as wide as its segments inside a field's grid", () => {
+    expect(rule(".sw-segmented-list")).toMatch(/justify-self:\s*start/);
+  });
+
   it("joins the segments inside one border", () => {
     expect(rule(".sw-segmented-list")).toMatch(/border:\s*1px solid var\(--border-strong\)/);
     expect(css).toMatch(/\.sw-segment \+ \.sw-segment\s*\{[^}]*border-inline-start:\s*1px solid var\(--border-strong\)/);

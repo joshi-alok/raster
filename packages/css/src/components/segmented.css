@@ -5,6 +5,8 @@
  */
 .sw-segmented-list {
   display: inline-flex;
+  /* A field is a grid that stretches its children; the row stays as wide as its segments. */
+  justify-self: start;
   max-inline-size: 100%;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius);
