@@ -674,3 +674,28 @@ describe("sidenav", () => {
     expect(r).toMatch(/font-weight:\s*500/);
   });
 });
+
+describe("chips (TagGroup)", () => {
+  it("are pill-shaped 32px chips with a 44px hit area", () => {
+    const r = rule(".sw-chip");
+    expect(r).toMatch(/border-radius:\s*var\(--radius-full\)/);
+    expect(r).toMatch(/min-block-size:\s*2rem/);
+    expect(css).toMatch(/\.sw-chip::?before\s*\{[^}]*inset-block:\s*calc\(\(2rem - var\(--target-min\)\) \/ 2\)/);
+  });
+
+  it("keep the native input focusable but invisible", () => {
+    const r = rule(".sw-chip-input");
+    expect(r).toMatch(/opacity:\s*0/);
+    expect(r).toMatch(/position:\s*absolute/);
+  });
+
+  // Lightning CSS prints `:has(> x)` as `:has( > x)`, hence the optional space.
+  it("mark selection on both routes with a check and a tint, never colour alone", () => {
+    expect(css).toMatch(/:is\(\.sw-chip:has\( ?> \.sw-chip-input:checked\),\s*\.sw-chip\[data-selected\]\)\s*\{[^}]*background-color:\s*var\(--accent-subtle\)/);
+    expect(css).toMatch(/:is\(\.sw-chip:has\( ?> \.sw-chip-input:checked\),\s*\.sw-chip\[data-selected\]\) \.sw-chip-check\s*\{[^}]*display:\s*block/);
+  });
+
+  it("show the focus ring on the chip for both routes", () => {
+    expect(css).toMatch(/:is\(\.sw-chip:has\( ?> \.sw-chip-input:focus-visible\),\s*\.sw-chip\[data-focus-visible\]\)\s*\{[^}]*outline:\s*var\(--focus-width\) solid var\(--accent\)/);
+  });
+});

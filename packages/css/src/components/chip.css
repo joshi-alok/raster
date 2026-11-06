@@ -1,0 +1,91 @@
+/*
+ * Selectable chips (TagGroup). Native route: a labelled group of <label class="sw-chip"> elements,
+ * each holding a checkbox (multiple) or radio (single) input. React route: React Aria TagGroup,
+ * where each Tag carries data-selected. Full rounding is reserved for Tag and Switch; chips are tags.
+ */
+.sw-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-2);
+  outline: none;
+}
+
+.sw-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: 2rem;
+  padding-inline: var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-full);
+  background-color: var(--surface-raised);
+  color: var(--text-primary);
+  font-size: var(--text-body-size);
+  line-height: 1.25;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+}
+
+/* Hit area: 44px tall although the chip is drawn 32px tall. */
+.sw-chip::before {
+  content: "";
+  position: absolute;
+  inset-block: calc((2rem - var(--target-min)) / 2);
+  inset-inline: 0;
+}
+
+@media (hover: hover) {
+  .sw-chip:hover {
+    border-color: var(--text-secondary);
+  }
+}
+
+.sw-chip-input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* A check drawn with two borders, shown only when selected. */
+.sw-chip-check {
+  display: none;
+  flex: none;
+  inline-size: 0.625rem;
+  block-size: 0.375rem;
+  margin-block-start: -0.25rem;
+  border-inline-start: 1.5px solid currentColor;
+  border-block-end: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+}
+
+:is(.sw-chip:has(> .sw-chip-input:checked), .sw-chip[data-selected]) {
+  border-color: var(--accent);
+  background-color: var(--accent-subtle);
+  color: var(--on-accent-subtle);
+}
+
+:is(.sw-chip:has(> .sw-chip-input:checked), .sw-chip[data-selected]) .sw-chip-check {
+  display: block;
+}
+
+:is(.sw-chip:has(> .sw-chip-input:focus-visible), .sw-chip[data-focus-visible]) {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+:is(.sw-chip:has(> .sw-chip-input:disabled), .sw-chip[data-disabled]) {
+  border-color: var(--border);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+@media (forced-colors: active) {
+  :is(.sw-chip:has(> .sw-chip-input:checked), .sw-chip[data-selected]) {
+    border-color: Highlight;
+  }
+}
