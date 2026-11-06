@@ -1,7 +1,8 @@
 import { isWeekend, parseDate } from "@internationalized/date";
-import { act } from "react";
+import { act, useState } from "react";
 import { Calendar, RangeCalendar } from "../src/forms/Calendar";
 import { DatePicker, DateRangePicker } from "../src/forms/DatePicker";
+import { acceptsFile, FileUpload, type FileUploadEntry, formatFileSize } from "../src/forms/FileUpload";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
@@ -174,5 +175,93 @@ describe("DateRangePicker", () => {
     expect(dialog.querySelector(".sw-range-calendar")).not.toBeNull();
     expect(dialog.querySelector(".sw-calendar-cell[data-selection-start]")).toHaveTextContent("9");
     expect(dialog.querySelector(".sw-calendar-cell[data-selection-end]")).toHaveTextContent("13");
+  });
+});
+
+describe("formatFileSize", () => {
+  it("uses decimal units in the reader's locale", () => {
+    expect(formatFileSize(820_000, "en-US")).toBe("820 kB");
+    expect(formatFileSize(1_200_000, "en-US")).toBe("1.2 MB");
+  });
+});
+
+describe("acceptsFile", () => {
+  it("matches MIME types, wildcards and extensions", () => {
+    const pdf = { name: "Cover.PDF", type: "application/pdf" };
+    expect(acceptsFile(pdf, undefined)).toBe(true);
+    expect(acceptsFile(pdf, ["application/pdf"])).toBe(true);
+    expect(acceptsFile(pdf, [".pdf"])).toBe(true);
+    expect(acceptsFile(pdf, ["image/*"])).toBe(false);
+    expect(acceptsFile({ name: "a.png", type: "image/png" }, ["image/*"])).toBe(true);
+  });
+});
+
+describe("FileUpload", () => {
+  function Proofs() {
+    const [files, setFiles] = useState<FileUploadEntry[]>([
+      { id: "cover", name: "cover.pdf", size: 820_000 },
+      { id: "spread", name: "spread-04.png", size: 2_400_000, progress: 40 },
+    ]);
+    return (
+      <FileUpload
+        label="Proofs"
+        description="PDF or PNG, up to 10 MB."
+        acceptedFileTypes={["application/pdf", "image/png"]}
+        allowsMultiple
+        maxSize={10_000_000}
+        files={files}
+        onAdd={(added) => setFiles((current) => [...current, ...added.map((f) => ({ id: f.name, name: f.name, size: f.size }))])}
+        onRemove={(id) => setFiles((current) => current.filter((f) => f.id !== id))}
+      />
+    );
+  }
+
+  it("renders a drop zone with a Choose files button named with the field label", () => {
+    const { container } = render(<Proofs />);
+    expect(container.firstElementChild).toHaveClass("sw-field", "sw-file-upload");
+    expect(container.querySelector(".sw-file-drop")).not.toBeNull();
+    const choose = screen.getByRole("button", { name: "Choose files Proofs" });
+    expect(choose).toHaveAccessibleDescription("PDF or PNG, up to 10 MB.");
+  });
+
+  it("lists files with their size, a named Remove button and progress while uploading", () => {
+    render(<Proofs />);
+    const list = screen.getByRole("list", { name: "Proofs" });
+    expect(within(list).getAllByRole("listitem")).toHaveLength(2);
+    expect(within(list).getByText("820 kB")).toHaveClass("sw-file-size");
+    expect(within(list).getByText("2.4 MB · 40%")).toHaveClass("sw-file-size");
+    expect(within(list).getByRole("progressbar", { name: "Uploading spread-04.png" })).toHaveValue(40);
+    expect(within(list).getByRole("button", { name: "Remove cover.pdf" })).toHaveClass("sw-file-remove");
+  });
+
+  it("adds chosen files and refuses the wrong type or size with a message", async () => {
+    const user = userEvent.setup({ applyAccept: false });
+    const { container } = render(<Proofs />);
+    const input = container.querySelector<HTMLInputElement>('input[type="file"]');
+    if (!input) throw new Error("No file input");
+    await user.upload(input, [
+      new File(["%PDF"], "index.pdf", { type: "application/pdf" }),
+      new File(["x"], "notes.txt", { type: "text/plain" }),
+      new File([new Uint8Array(10_000_001)], "scan.png", { type: "image/png" }),
+    ]);
+    expect(screen.getByText("index.pdf")).toHaveClass("sw-file-name");
+    const alert = screen.getByRole("alert");
+    expect(alert).toHaveTextContent("notes.txt is not an accepted type.");
+    expect(alert).toHaveTextContent("scan.png is larger than 10 MB.");
+  });
+
+  it("moves focus to the next Remove button, then to Choose files when the list is empty", async () => {
+    const user = userEvent.setup();
+    render(<Proofs />);
+    await user.click(screen.getByRole("button", { name: "Remove cover.pdf" }));
+    await waitFor(() => expect(screen.getByRole("button", { name: "Remove spread-04.png" })).toHaveFocus());
+    await user.click(screen.getByRole("button", { name: "Remove spread-04.png" }));
+    await waitFor(() => expect(screen.getByRole("button", { name: "Choose files Proofs" })).toHaveFocus());
+    expect(screen.queryByRole("list")).toBeNull();
+  });
+
+  it("has no structural accessibility violations", async () => {
+    const { container } = render(<Proofs />);
+    await expectAccessible(container);
   });
 });

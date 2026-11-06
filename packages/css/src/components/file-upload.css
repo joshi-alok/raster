@@ -1,0 +1,111 @@
+/*
+ * FileUpload.
+ * React route: a React Aria DropZone (.sw-file-drop) holding an icon, a line of text and the
+ * Choose files button; chosen files are listed below in .sw-file-list.
+ * Native route: <input type="file" class="sw-file-input"> is itself the drop zone. Browsers accept
+ * files dropped on it and show the chosen names beside its button, so no script is needed.
+ */
+.sw-file-drop {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  padding-block: var(--space-6);
+  padding-inline: var(--space-4);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  background-color: var(--surface-raised);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.sw-file-drop > svg {
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  stroke-width: 1.5;
+}
+
+.sw-file-drop[data-drop-target] {
+  border-style: solid;
+  border-color: var(--accent);
+  background-color: var(--accent-subtle);
+  color: var(--on-accent-subtle);
+}
+
+.sw-file-drop[data-focus-visible] {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+/* Native route */
+.sw-file-input {
+  inline-size: 100%;
+  padding-block: var(--space-6);
+  padding-inline: var(--space-4);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  background-color: var(--surface-raised);
+  color: var(--text-secondary);
+  font-size: var(--text-body-size);
+  cursor: pointer;
+}
+
+.sw-file-input::file-selector-button {
+  min-block-size: var(--control-height);
+  margin-inline-end: var(--space-3);
+  padding-inline: var(--space-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background-color: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* The list of chosen files */
+.sw-file-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  border-block-start: 1px solid var(--border);
+  list-style: none;
+}
+
+.sw-file-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--space-3);
+  row-gap: var(--space-1);
+  padding-block: var(--space-2);
+  border-block-end: 1px solid var(--border);
+}
+
+.sw-file-meta {
+  display: grid;
+  min-inline-size: 0;
+}
+
+.sw-file-name {
+  overflow: hidden;
+  color: var(--text-primary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sw-file-size {
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-caption-size);
+  font-variant-numeric: tabular-nums;
+}
+
+.sw-file-item > .sw-progress-bar {
+  grid-column: 1 / -1;
+}
+
+@media (forced-colors: active) {
+  .sw-file-drop[data-drop-target] {
+    border-color: Highlight;
+  }
+}

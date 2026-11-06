@@ -50,6 +50,7 @@ export { Stat, type StatProps } from "./display/Stat";
 export { ComboBox, ComboBoxItem, type ComboBoxItemProps, type ComboBoxProps } from "./forms/ComboBox";
 export { Calendar, type CalendarProps, RangeCalendar, type RangeCalendarProps } from "./forms/Calendar";
 export { DatePicker, type DatePickerProps, DateRangePicker, type DateRangePickerProps } from "./forms/DatePicker";
+export { acceptsFile, FileUpload, type FileUploadEntry, type FileUploadProps, formatFileSize } from "./forms/FileUpload";
 export type { Tone } from "./display/tones";
 export { Dialog, type DialogProps, DialogTrigger } from "./overlays/Dialog";
 export { Popover, type PopoverProps } from "./overlays/Popover";

@@ -1035,3 +1035,32 @@ describe("date picker", () => {
     expect(rule(".sw-date-range-native")).toMatch(/border:\s*0/);
   });
 });
+
+describe("file upload", () => {
+  it("draws the drop zone with a dashed hairline", () => {
+    expect(rule(".sw-file-drop")).toMatch(/border:\s*1px dashed var\(--border-strong\)/);
+  });
+
+  it("shows a drag-over by a solid border and a fill, not colour alone", () => {
+    const r = rule(".sw-file-drop[data-drop-target]");
+    expect(r).toMatch(/border-style:\s*solid/);
+    expect(r).toMatch(/background-color:\s*var\(--accent-subtle\)/);
+  });
+
+  it("makes the native file input itself the drop zone", () => {
+    const r = rule(".sw-file-input");
+    expect(r).toMatch(/inline-size:\s*100%/);
+    expect(r).toMatch(/border:\s*1px dashed var\(--border-strong\)/);
+  });
+
+  it("styles the native choose button as a Raster button", () => {
+    // Lightning CSS may also print a -webkit-file-upload-button copy; the standard one must exist.
+    expect(css).toMatch(/\.sw-file-input::file-selector-button\s*\{[^}]*border:\s*1px solid var\(--border-strong\)/);
+  });
+
+  it("lists files between hairlines, with the size in mono", () => {
+    expect(rule(".sw-file-item")).toMatch(/border-block-end:\s*1px solid var\(--border\)/);
+    expect(rule(".sw-file-size")).toMatch(/font-family:\s*var\(--font-mono\)/);
+    expect(rule(".sw-file-name")).toMatch(/text-overflow:\s*ellipsis/);
+  });
+});
