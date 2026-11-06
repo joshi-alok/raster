@@ -163,3 +163,24 @@ Each track after Plan 7c starts with its own short design discussion and spec ad
 - **A loading area is named by role.** A plain div may not carry aria-label, so the area marked aria-busy is a named group (a card) or a region (a major part of the page).
 - **Forced colours are tested.** `apps/docs/e2e/forced-colors.spec.ts` screenshots every bar, thumb, fill and block in forced-colours mode, including Plan 7b's slider and chips.
 - **Stat changes are neutral in colour:** a fall is not always bad, so the sign and the words carry the meaning.
+
+## 12. Plan 7d design: combobox, dates and files
+
+Agreed on 2026-11-06. Five components, taking Raster from 52 to 57.
+
+| Component | HTML route | React route |
+|---|---|---|
+| Combobox | `<input list>` with a `<datalist>`; the suggestion list is the browser's own and accepts free text | `ComboBox`: the list opens in the Select popover and listbox, filtered as you type |
+| DatePicker | `<input type="date">`; the calendar is the browser's own | `DatePicker`: day, month and year segments in the reader's locale, and a Calendar in a popover |
+| DateRangePicker | Two date inputs, From and To, in a `fieldset` with a legend | `DateRangePicker`: start and end segments and a RangeCalendar |
+| Calendar, RangeCalendar | None: no native calendar exists; the DatePicker page points to `<input type="date">` | `Calendar`, `RangeCalendar` |
+| FileUpload | The file input is itself the drop zone: browsers accept dropped files on it, and it shows the chosen names; no script | `FileUpload`: a `DropZone` with a Choose files button, and a list of files with size, Remove and optional progress |
+
+**Visual rules:**
+- **Calendar:** a 7-column grid of 44px cells, mono numbers, narrow weekday initials in the label style, the month heading at body size and weight 500, previous and next buttons that mirror in right-to-left text.
+- **Calendar states, never colour alone:** today has a 2px underline; a selected day has the accent fill and weight 500; a range has solid ends and a subtle fill between; an unavailable day is struck through and muted; days outside the month are hidden.
+- **Date field:** one `sw-input` holding the segments and a calendar button at the inline end behind a hairline; the focused segment takes the accent fill.
+- **Drop zone:** a dashed `border-strong` hairline at rest. While files are dragged over it, the border turns solid accent, the fill turns `accent-subtle` and the text changes to "Drop to add". The native route has no drag-over state.
+- **File list:** rows between hairlines; the name truncates, the size is mono, Remove is a ghost button named "Remove <file name>", and an upload in progress shows a 4px bar under the row.
+
+**Testing:** no parity screenshots in this plan. Each native control is drawn by the browser (the datalist list, the date input's calendar, the file input's button and text), so the two routes cannot match pixel for pixel. Keyboard walkthroughs run on both routes, a drop is tested on the React route, and forced-colours screenshots cover the calendars, the date field and the drop zone.
