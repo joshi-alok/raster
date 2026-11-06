@@ -63,8 +63,8 @@ export function Pagination({
         )}
         {paginationItems(current, total, siblings).map((item, i) =>
           item === "ellipsis" ? (
-            <li key={`ellipsis-${i}`}>
-              <span className="sw-pagination-ellipsis" aria-hidden="true">
+            <li key={`ellipsis-${i}`} aria-hidden="true">
+              <span className="sw-pagination-ellipsis">
                 …
               </span>
             </li>

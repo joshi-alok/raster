@@ -325,7 +325,15 @@ describe("Pagination", () => {
     expect(screen.getByRole("link", { name: "Page 6" })).toHaveAttribute("aria-current", "page");
     const ellipses = container.querySelectorAll(".sw-pagination-ellipsis");
     expect(ellipses).toHaveLength(2);
-    for (const e of ellipses) expect(e).toHaveAttribute("aria-hidden", "true");
+    // Hide the whole item, so screen readers do not count an empty list item.
+    for (const e of ellipses) {
+      expect(e.parentElement?.tagName).toBe("LI");
+      expect(e.parentElement).toHaveAttribute("aria-hidden", "true");
+      expect(e).not.toHaveAttribute("aria-hidden");
+    }
+    expect(container.querySelectorAll("li")).toHaveLength(9);
+    // Previous, 1, 5, 6, 7, 12, Next: the two ellipsis items are not counted.
+    expect(within(screen.getByRole("navigation")).getAllByRole("listitem")).toHaveLength(7);
   });
 
   it("links the previous and next pages, and omits a step that does not exist", () => {
