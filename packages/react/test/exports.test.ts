@@ -27,6 +27,7 @@ describe("public API", () => {
       "ComboBox", "ComboBoxItem", "Calendar", "RangeCalendar",
       "DatePicker", "DateRangePicker",
       "FileUpload", "formatFileSize", "acceptsFile",
+      "DataGrid", "DataGridHeader", "DataGridColumn", "DataGridBody", "DataGridRow", "DataGridCell",
       "cx",
     ];
     for (const name of expected) expect(typeof (raster as Record<string, unknown>)[name], name).toBe("function");
