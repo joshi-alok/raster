@@ -77,3 +77,24 @@ test("the Grid toggle overlays the page grid and persists", async ({ page }) => 
   await page.getByRole("button", { name: "Grid", exact: true }).click();
   await expect(page.locator("[data-page-grid]")).not.toHaveAttribute("data-grid-debug");
 });
+
+test("on a phone the header shows a Menu button instead of the links, and the menu lists them all", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.goto("/components/");
+  const header = page.locator("body > .sw-header");
+  await expect(header.getByRole("navigation", { name: "Main" })).toBeHidden();
+  await header.getByRole("button", { name: "Menu" }).click();
+  const menu = page.getByRole("dialog", { name: "Menu" });
+  const links = menu.getByRole("navigation", { name: "Main" }).getByRole("link");
+  await expect(links).toHaveText(["Principles", "Foundations", "Components", "Templates", "Themes"]);
+  await expect(menu.getByRole("link", { name: "Components" })).toHaveAttribute("aria-current", "page");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+});
+
+test("on a wide screen the header shows the links and no Menu button", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/");
+  const header = page.locator("body > .sw-header");
+  await expect(header.getByRole("navigation", { name: "Main" })).toBeVisible();
+  await expect(header.getByRole("button", { name: "Menu" })).toBeHidden();
+});
