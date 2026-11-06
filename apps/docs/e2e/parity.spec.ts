@@ -94,5 +94,49 @@ for (const combo of COMBOS) {
         demo(page, "Documentation sections without React"),
       );
     });
+
+    test("tag group renders alike, as loaded and after a change", async ({ page }) => {
+      await open(page, "/components/tag-group/");
+      const react = demo(page, "Disciplines");
+      const native = demo(page, "Disciplines without React");
+      await expectSameRendering(page, `tag-group-${variant}`, react, native);
+      await react.getByRole("row", { name: "Wayfinding" }).click();
+      await native.getByText("Wayfinding").click();
+      await expectSameRendering(page, `tag-group-changed-${variant}`, react, native);
+    });
+
+    test("segmented control renders alike, as loaded and after a change", async ({ page }) => {
+      await open(page, "/components/segmented-control/");
+      const react = demo(page, "View");
+      const native = demo(page, "View without React");
+      await expectSameRendering(page, `segmented-${variant}`, react, native);
+      await react.getByRole("radio", { name: "Map" }).click();
+      await native.getByText("Map").click();
+      await expectSameRendering(page, `segmented-changed-${variant}`, react, native);
+    });
+
+    test("search field renders alike, empty and with text", async ({ page }) => {
+      await open(page, "/components/search-field/");
+      const react = demo(page, "Project search");
+      const native = demo(page, "Project search without React");
+      await expectSameRendering(page, `search-empty-${variant}`, react, native);
+      await react.getByRole("searchbox").fill("Linie");
+      await native.getByRole("searchbox").fill("Linie");
+      await expectSameRendering(page, `search-filled-${variant}`, react, native);
+    });
+
+    test("slider renders alike, as loaded and at its maximum", async ({ page }) => {
+      await open(page, "/components/slider/");
+      const react = demo(page, "Gutter");
+      const native = demo(page, "Gutter without React");
+      await expectSameRendering(page, `slider-${variant}`, react, native);
+      for (const target of [react, native]) {
+        await target.getByRole("slider").focus();
+        await page.keyboard.press("End");
+      }
+      await expectSameRendering(page, `slider-max-${variant}`, react, native);
+    });
+
+    // NumberField has no parity check: the native route uses the browser's own steppers by design.
   });
 }

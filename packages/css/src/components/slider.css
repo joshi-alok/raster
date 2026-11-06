@@ -1,0 +1,159 @@
+/*
+ * Slider. Native route: <input type="range" class="sw-slider-input"> with an <output> for the value.
+ * React route: React Aria Slider (SliderTrack with one SliderThumb per value, SliderOutput).
+ */
+.sw-slider {
+  --_thumb: 1.25rem;
+}
+
+.sw-slider-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.sw-slider-output {
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Native route */
+.sw-slider-input {
+  appearance: none;
+  display: block;
+  inline-size: 100%;
+  block-size: var(--target-min);
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.sw-slider-input:focus-visible {
+  outline: none;
+}
+
+.sw-slider-input::-webkit-slider-runnable-track {
+  block-size: 2px;
+  background-color: var(--border-strong);
+}
+
+.sw-slider-input::-webkit-slider-thumb {
+  appearance: none;
+  inline-size: var(--_thumb);
+  block-size: var(--_thumb);
+  margin-block-start: calc(1px - var(--_thumb) / 2);
+  border: 0;
+  border-radius: var(--radius);
+  background-color: var(--accent);
+}
+
+.sw-slider-input::-moz-range-track {
+  block-size: 2px;
+  background-color: var(--border-strong);
+}
+
+.sw-slider-input::-moz-range-thumb {
+  inline-size: var(--_thumb);
+  block-size: var(--_thumb);
+  border: 0;
+  border-radius: var(--radius);
+  background-color: var(--accent);
+}
+
+.sw-slider-input:focus-visible::-webkit-slider-thumb {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+.sw-slider-input:focus-visible::-moz-range-thumb {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+.sw-slider-input:disabled::-webkit-slider-thumb {
+  background-color: var(--text-muted);
+}
+
+.sw-slider-input:disabled::-moz-range-thumb {
+  background-color: var(--text-muted);
+}
+
+/* React route: the track is inset by half a thumb; its line is drawn back out to full width. */
+.sw-slider-track {
+  position: relative;
+  block-size: var(--target-min);
+  margin-inline: calc(var(--_thumb) / 2);
+  cursor: pointer;
+}
+
+.sw-slider-track::before {
+  content: "";
+  position: absolute;
+  inset-block-start: calc(50% - 1px);
+  inset-inline: calc(var(--_thumb) / -2);
+  block-size: 2px;
+  background-color: var(--border-strong);
+}
+
+/*
+ * React Aria sets the thumb's inline offset and an inline transform: translate(-50%, -50%)
+ * that centres it on that point; only the block offset is set here.
+ */
+.sw-slider-thumb {
+  inset-block-start: 50%;
+  inline-size: var(--_thumb);
+  block-size: var(--_thumb);
+  border-radius: var(--radius);
+  background-color: var(--accent);
+}
+
+/* Hit area: 44px square around the 20px thumb. */
+.sw-slider-thumb::before {
+  content: "";
+  position: absolute;
+  inset: calc((var(--_thumb) - var(--target-min)) / 2);
+}
+
+.sw-slider-thumb[data-focus-visible] {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+.sw-slider[data-disabled] .sw-slider-thumb {
+  background-color: var(--text-muted);
+}
+
+@media (forced-colors: active) {
+  .sw-slider-track::before {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
+
+  .sw-slider-thumb {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  /* The native track and thumb are drawn with backgrounds only, which forced colours would drop. */
+  .sw-slider-input::-webkit-slider-runnable-track {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
+
+  .sw-slider-input::-moz-range-track {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
+
+  .sw-slider-input::-webkit-slider-thumb {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  .sw-slider-input::-moz-range-thumb {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+}

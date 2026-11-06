@@ -1,0 +1,72 @@
+/*
+ * SearchField: a search input with a clear button at its inline end.
+ * Native route: <input type="search"> with a placeholder (the clear button hides while it shows)
+ * and a <button class="sw-search-clear" tabindex="-1">; Escape clears in the browser itself.
+ * React route: React Aria SearchField, whose root carries data-empty.
+ */
+.sw-search-control {
+  position: relative;
+}
+
+.sw-search-input {
+  appearance: none;
+  padding-inline-end: var(--control-height);
+}
+
+.sw-search-input::-webkit-search-cancel-button,
+.sw-search-input::-webkit-search-decoration {
+  appearance: none;
+  display: none;
+}
+
+.sw-search-clear {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  display: grid;
+  place-items: center;
+  inline-size: var(--control-height);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  outline: none;
+}
+
+@media (hover: hover) {
+  .sw-search-clear:hover {
+    color: var(--text-primary);
+  }
+}
+
+.sw-search-clear:is(:focus-visible, [data-focus-visible]) {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: calc(-1 * var(--focus-width) - 2px);
+}
+
+.sw-search[data-empty] .sw-search-clear,
+.sw-search-control:has(> .sw-search-input:placeholder-shown) .sw-search-clear {
+  display: none;
+}
+
+/* A cross drawn with borders, so it survives forced-colours mode. */
+.sw-search-clear-icon {
+  position: relative;
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
+}
+
+.sw-search-clear-icon::before,
+.sw-search-clear-icon::after {
+  content: "";
+  position: absolute;
+  inset-block-start: calc(50% - 0.75px);
+  inset-inline: 0;
+  border-block-start: 1.5px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.sw-search-clear-icon::after {
+  transform: rotate(-45deg);
+}

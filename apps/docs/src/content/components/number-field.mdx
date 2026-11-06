@@ -1,0 +1,39 @@
+---
+title: NumberField
+group: Forms
+order: 11
+summary: A number with step buttons, for quantities and other small whole numbers.
+interactive: true
+props:
+  - name: label
+    type: ReactNode
+    description: Required. The visible label.
+  - name: value / defaultValue / onChange
+    type: number / number / (value) => void
+    description: Controlled or starting value, and its change handler.
+  - name: minValue / maxValue / step
+    type: number
+    description: Limits and step size; the buttons disable at the limits.
+  - name: formatOptions
+    type: Intl.NumberFormatOptions
+    description: Formats the value, for example as a currency or a percentage.
+  - name: description / errorMessage
+    type: ReactNode
+    description: Help text, and the message shown when the value is invalid.
+a11y:
+  - Arrow keys step the value on both routes; Page Up and Page Down take bigger steps on the React route.
+  - The step buttons are named Increase and Decrease and stay out of the tab order, so the input is a single tab stop.
+  - Without React, the browser draws its own steppers inside the input, so this route looks different by design and has no parity screenshot.
+  - Use a TextField with inputmode="numeric" instead for codes and numbers that are not quantities.
+---
+import Example from "../../components/Example.astro";
+import NativeExample from "../../components/NativeExample.astro";
+import Copies from "../../demos/number-field/Copies";
+import copiesSource from "../../demos/number-field/Copies.tsx?raw";
+import copiesHtml from "../../demos/number-field/copies.html?raw";
+
+<Example title="Copies" source={copiesSource}>
+  <Copies client:load />
+</Example>
+
+<NativeExample title="Copies without React" html={copiesHtml} />

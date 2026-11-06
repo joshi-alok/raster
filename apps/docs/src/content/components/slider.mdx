@@ -1,0 +1,61 @@
+---
+title: Slider
+group: Forms
+order: 12
+summary: A value, or a range between two thumbs, chosen along a track, with the value shown in mono.
+interactive: true
+props:
+  - name: label
+    type: ReactNode
+    description: Required. The visible label.
+  - name: value / defaultValue / onChange
+    type: number | number[] / number | number[] / (value) => void
+    description: A number for one thumb, or two numbers for a range.
+  - name: minValue / maxValue / step
+    type: number
+    default: "0 / 100 / 1"
+    description: Limits and step size.
+  - name: thumbLabels
+    type: string[]
+    description: Names for the thumbs of a range, such as Minimum and Maximum.
+  - name: formatOptions
+    type: Intl.NumberFormatOptions
+    description: Formats the value shown beside the label.
+a11y:
+  - Each thumb has the slider role; arrow keys step, Page Up and Page Down take bigger steps, Home and End go to the limits.
+  - The value is shown as text beside the label, so position is never the only cue.
+  - The thumb is drawn 20px square with a 44px hit area. In forced-colours mode, on both routes, the thumb takes the system highlight colour and the track the system text colour.
+  - A range needs thumbLabels, such as Minimum and Maximum, so each thumb has its own name.
+  - The output beside the label is not a live region (aria-live="off"), because the slider already announces its value.
+  - Without React, a range input does the same with one thumb; a two-thumb range needs React. Its output follows the input with the short script below.
+---
+import CodeBlock from "../../components/CodeBlock.astro";
+import Example from "../../components/Example.astro";
+import NativeExample from "../../components/NativeExample.astro";
+import Budget from "../../demos/slider/Budget";
+import budgetSource from "../../demos/slider/Budget.tsx?raw";
+import Gutter from "../../demos/slider/Gutter";
+import gutterSource from "../../demos/slider/Gutter.tsx?raw";
+import gutterHtml from "../../demos/slider/gutter.html?raw";
+
+export const outputScript = `document.addEventListener("input", (event) => {
+  const input = event.target;
+  if (!(input instanceof HTMLInputElement) || input.type !== "range" || !input.id) return;
+  for (const output of document.querySelectorAll("output")) {
+    if (output.htmlFor.contains(input.id)) output.value = input.value;
+  }
+});`;
+
+<Example title="Gutter" source={gutterSource}>
+  <Gutter client:load />
+</Example>
+
+<NativeExample title="Gutter without React" html={gutterHtml} />
+
+The native output needs this script once per page:
+
+<CodeBlock code={outputScript} label="Slider output script" />
+
+<Example title="Budget range" source={budgetSource}>
+  <Budget client:load />
+</Example>

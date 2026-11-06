@@ -674,3 +674,137 @@ describe("sidenav", () => {
     expect(r).toMatch(/font-weight:\s*500/);
   });
 });
+
+describe("chips (TagGroup)", () => {
+  it("are pill-shaped 32px chips with a 44px hit area", () => {
+    const r = rule(".sw-chip");
+    expect(r).toMatch(/border-radius:\s*var\(--radius-full\)/);
+    expect(r).toMatch(/min-block-size:\s*2rem/);
+    expect(css).toMatch(/\.sw-chip::?before\s*\{[^}]*inset-block:\s*calc\(\(2rem - var\(--target-min\)\) \/ 2\)/);
+  });
+
+  it("keep the native input focusable but invisible", () => {
+    const r = rule(".sw-chip-input");
+    expect(r).toMatch(/opacity:\s*0/);
+    expect(r).toMatch(/position:\s*absolute/);
+  });
+
+  // Lightning CSS prints `:has(> x)` as `:has( > x)`, hence the optional space.
+  it("mark selection on both routes with a check and a tint, never colour alone", () => {
+    expect(css).toMatch(/:is\(\.sw-chip:has\( ?> \.sw-chip-input:checked\),\s*\.sw-chip\[data-selected\]\)\s*\{[^}]*background-color:\s*var\(--accent-subtle\)/);
+    expect(css).toMatch(/:is\(\.sw-chip:has\( ?> \.sw-chip-input:checked\),\s*\.sw-chip\[data-selected\]\) \.sw-chip-check\s*\{[^}]*display:\s*block/);
+  });
+
+  it("draw the check with physical borders, so it stays a tick in right-to-left text", () => {
+    const r = rule(".sw-chip-check");
+    // Lightning CSS drops `currentColor`, the default border colour.
+    expect(r).toMatch(/border-left:\s*1\.5px solid(?: currentcolor)?;/i);
+    expect(r).toMatch(/border-bottom:\s*1\.5px solid(?: currentcolor)?;/i);
+    expect(r).not.toMatch(/border-inline-start/);
+    expect(r).toMatch(/transform:\s*rotate\(-45deg\)/);
+  });
+
+  it("show the focus ring on the chip for both routes", () => {
+    expect(css).toMatch(/:is\(\.sw-chip:has\( ?> \.sw-chip-input:focus-visible\),\s*\.sw-chip\[data-focus-visible\]\)\s*\{[^}]*outline:\s*var\(--focus-width\) solid var\(--accent\)/);
+  });
+});
+
+describe("segmented control", () => {
+  it("stays as wide as its segments inside a field's grid", () => {
+    expect(rule(".sw-segmented-list")).toMatch(/justify-self:\s*start/);
+  });
+
+  it("joins the segments inside one border", () => {
+    expect(rule(".sw-segmented-list")).toMatch(/border:\s*1px solid var\(--border-strong\)/);
+    expect(css).toMatch(/\.sw-segment \+ \.sw-segment\s*\{[^}]*border-inline-start:\s*1px solid var\(--border-strong\)/);
+  });
+
+  it("gives each segment a 40px control with a 44px hit area", () => {
+    expect(rule(".sw-segment")).toMatch(/min-block-size:\s*var\(--control-height\)/);
+    expect(css).toMatch(/\.sw-segment::?before\s*\{[^}]*inset-block:\s*calc\(\(var\(--control-height\) - var\(--target-min\)\) \/ 2\)/);
+  });
+
+  it("marks the selected segment like a pressed toggle: inset accent line and underline", () => {
+    // Lightning CSS prints `:has(> x)` as `:has( > x)`, hence the optional space.
+    const sel = /:is\(\.sw-segment:has\( ?> \.sw-segment-input:checked\),\s*\.sw-segment\[data-selected\]\)\s*\{([^}]*)\}/;
+    const body = css.match(sel)?.[1] ?? "";
+    expect(body).toMatch(/box-shadow:\s*inset 0 0 0 1px var\(--accent\)/);
+    expect(body).toMatch(/text-decoration-line:\s*underline/);
+  });
+});
+
+describe("search field", () => {
+  it("reserves room for the clear button inside the input and hides the browser's own", () => {
+    expect(rule(".sw-search-input")).toMatch(/padding-inline-end:\s*var\(--control-height\)/);
+    // Lightning CSS prints the grouped selector on one line, so allow the rest of the group before `{`.
+    expect(css).toMatch(/\.sw-search-input::-webkit-search-cancel-button(?:,[^{]*)?\s*\{[^}]*display:\s*none/);
+  });
+
+  it("places a square clear button at the inline end", () => {
+    const r = rule(".sw-search-clear");
+    expect(r).toMatch(/position:\s*absolute/);
+    expect(r).toMatch(/inset-inline-end:\s*0/);
+    expect(r).toMatch(/inline-size:\s*var\(--control-height\)/);
+  });
+
+  it("hides the clear button while the field is empty, on both routes", () => {
+    // Lightning CSS prints `:has(> x)` as `:has( > x)`, hence the optional space.
+    expect(css).toMatch(
+      /\.sw-search\[data-empty\] \.sw-search-clear,\s*\.sw-search-control:has\( ?> \.sw-search-input:placeholder-shown\) \.sw-search-clear\s*\{[^}]*display:\s*none/,
+    );
+  });
+});
+
+describe("number field", () => {
+  it("sets the value in tabular figures, centred", () => {
+    const r = rule(".sw-number-input");
+    expect(r).toMatch(/font-variant-numeric:\s*tabular-nums/);
+    expect(r).toMatch(/text-align:\s*center/);
+  });
+
+  it("gives the steppers a 44px-wide control with a 44px-tall hit area", () => {
+    const r = rule(".sw-number-step");
+    expect(r).toMatch(/inline-size:\s*var\(--target-min\)/);
+    expect(r).toMatch(/border:\s*1px solid var\(--border-strong\)/);
+    expect(css).toMatch(/\.sw-number-step::?before\s*\{[^}]*inset-block:\s*calc\(\(var\(--control-height\) - var\(--target-min\)\) \/ 2\)/);
+  });
+
+  it("draws plus and minus with borders, so they survive forced colours", () => {
+    expect(css).toMatch(/\.sw-number-sign::?before,\s*\.sw-number-sign\[data-sign="?plus"?\]::?after\s*\{[^}]*border-block-start:\s*1\.5px solid/);
+  });
+});
+
+describe("slider", () => {
+  it("draws a 2px track on both routes", () => {
+    expect(css).toMatch(/\.sw-slider-input::-webkit-slider-runnable-track\s*\{[^}]*block-size:\s*2px/);
+    expect(css).toMatch(/\.sw-slider-input::-moz-range-track\s*\{[^}]*block-size:\s*2px/);
+    expect(css).toMatch(/\.sw-slider-track::?before\s*\{[^}]*block-size:\s*2px/);
+  });
+
+  it("uses a square thumb with the theme radius on both routes", () => {
+    expect(css).toMatch(/\.sw-slider-input::-webkit-slider-thumb\s*\{[^}]*border-radius:\s*var\(--radius\)/);
+    expect(rule(".sw-slider-thumb")).toMatch(/border-radius:\s*var\(--radius\)/);
+  });
+
+  it("insets the React track by half a thumb so thumbs travel like native ones", () => {
+    expect(rule(".sw-slider-track")).toMatch(/margin-inline:\s*calc\(var\(--_thumb\) \/ 2\)/);
+  });
+
+  it("keeps the thumb visible in forced colours", () => {
+    // Lightning CSS lowercases system colours (`Highlight` prints as `highlight`), hence /i.
+    expect(css).toMatch(/@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-slider-thumb\s*\{[^}]*background-color:\s*Highlight/i);
+  });
+
+  it("keeps the native track and thumb visible in forced colours, which drop their backgrounds", () => {
+    // Lightning CSS lowercases system colours (`CanvasText` prints as `canvastext`), hence /i.
+    const forced = (pseudo: string, colour: string) =>
+      new RegExp(
+        `@media \\(forced-colors: active\\)\\s*\\{[\\s\\S]*?\\.sw-slider-input::${pseudo}\\s*\\{[^}]*forced-color-adjust:\\s*none[^}]*background-color:\\s*${colour}`,
+        "i",
+      );
+    expect(css).toMatch(forced("-webkit-slider-runnable-track", "CanvasText"));
+    expect(css).toMatch(forced("-moz-range-track", "CanvasText"));
+    expect(css).toMatch(forced("-webkit-slider-thumb", "Highlight"));
+    expect(css).toMatch(forced("-moz-range-thumb", "Highlight"));
+  });
+});

@@ -1,0 +1,78 @@
+/*
+ * SegmentedControl: one choice from a short set, shown as a joined row.
+ * Native route: a role="radiogroup" of <label class="sw-segment"> elements holding radio inputs.
+ * React route: React Aria ToggleButtonGroup (single selection), each ToggleButton carrying data-selected.
+ */
+.sw-segmented-list {
+  display: inline-flex;
+  /* A field is a grid that stretches its children; the row stays as wide as its segments. */
+  justify-self: start;
+  max-inline-size: 100%;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background-color: var(--surface-raised);
+}
+
+.sw-segment {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--control-height);
+  padding-inline: var(--space-4);
+  border: 0;
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  font-weight: 500;
+  line-height: 1.25;
+  text-underline-offset: 0.3em;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+}
+
+.sw-segment + .sw-segment {
+  border-inline-start: 1px solid var(--border-strong);
+}
+
+/* Hit area: 44px tall. */
+.sw-segment::before {
+  content: "";
+  position: absolute;
+  inset-block: calc((var(--control-height) - var(--target-min)) / 2);
+  inset-inline: 0;
+}
+
+@media (hover: hover) {
+  .sw-segment:hover {
+    color: var(--text-primary);
+  }
+}
+
+.sw-segment-input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+:is(.sw-segment:has(> .sw-segment-input:checked), .sw-segment[data-selected]) {
+  box-shadow: inset 0 0 0 1px var(--accent);
+  color: var(--text-primary);
+  text-decoration-line: underline;
+  text-decoration-thickness: 2px;
+}
+
+:is(.sw-segment:has(> .sw-segment-input:focus-visible), .sw-segment[data-focus-visible]) {
+  z-index: 1;
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+:is(.sw-segment:has(> .sw-segment-input:disabled), .sw-segment[data-disabled]) {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
