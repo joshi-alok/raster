@@ -1000,6 +1000,18 @@ describe("calendar", () => {
 });
 
 describe("date picker", () => {
+  it("keeps a wide range field's two dates together, with the button at the end", () => {
+    expect(rule(".sw-date-range-picker .sw-date-input")).toMatch(/flex:\s*none/);
+    expect(rule(".sw-date-range-picker .sw-date-button")).toMatch(/margin-inline-start:\s*auto/);
+  });
+
+  it("stacks a narrow range field: start over end, the calendar button beside both", () => {
+    expect(rule(".sw-date-range-picker")).toMatch(/container:\s*sw-date-range \/ inline-size/);
+    expect(css).toMatch(
+      /@container sw-date-range \(width < 18rem\)\s*\{[\s\S]*?\.sw-date-range-picker \.sw-date-field\s*\{[^}]*display:\s*grid[\s\S]*?\.sw-date-input-end\s*\{[^}]*grid-row:\s*2[\s\S]*?\.sw-date-range-dash\s*\{[^}]*display:\s*none/,
+    );
+  });
+
   it("lays the segments and the calendar button out in one input", () => {
     const r = rule(".sw-date-field");
     expect(r).toMatch(/display:\s*flex/);

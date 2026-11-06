@@ -165,6 +165,8 @@ describe("DateRangePicker", () => {
     render(<DateRangePicker label="Project period" defaultValue={period} />);
     const group = screen.getByRole("group", { name: "Project period" });
     expect(within(group).getAllByRole("spinbutton").map((s) => s.textContent)).toEqual(["3", "9", "2026", "3", "13", "2026"]);
+    expect(group.querySelector(".sw-date-input-start")).not.toBeNull();
+    expect(group.querySelector(".sw-date-input-end")).not.toBeNull();
   });
 
   it("opens a range calendar showing the range", async () => {

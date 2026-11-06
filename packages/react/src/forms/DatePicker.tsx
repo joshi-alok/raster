@@ -29,7 +29,7 @@ type FieldText = {
 /** Day, month and year segments, in the order and with the separators of the reader's locale. */
 function Segments({ slot }: { slot?: "start" | "end" }) {
   return (
-    <DateInput slot={slot} className="sw-date-input">
+    <DateInput slot={slot} className={cx("sw-date-input", slot && `sw-date-input-${slot}`)}>
       {(segment) => <DateSegment segment={segment} className="sw-date-segment" />}
     </DateInput>
   );
