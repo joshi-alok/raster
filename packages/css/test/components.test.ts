@@ -597,3 +597,35 @@ describe("drawer", () => {
     expect(css).toMatch(/\[data-motion="?reduce"?\] \.sw-drawer\s*\{[^}]*--_drawer-from:\s*none/);
   });
 });
+
+describe("header compact mode", () => {
+  it("makes a compact header a named inline-size container", () => {
+    expect(rule(".sw-header[data-compact]")).toMatch(/container:\s*sw-header\s*\/\s*inline-size/);
+  });
+
+  it("swaps the links for the menu button below 600px of header width", () => {
+    expect(rule(".sw-header-menu-button")).toMatch(/display:\s*none/);
+    expect(css).toMatch(
+      /@container sw-header \(width < 600px\)\s*\{[\s\S]*?\.sw-header-nav\s*\{[^}]*display:\s*none[\s\S]*?\.sw-header-menu-button\s*\{[^}]*display:\s*inline-flex/,
+    );
+  });
+
+  it("opens a full-screen menu on the page surface, on both routes", () => {
+    const r = rule(".sw-header-menu");
+    expect(r).toMatch(/position:\s*fixed/);
+    expect(r).toMatch(/inset:\s*0/);
+    expect(r).toMatch(/max-inline-size:\s*none/);
+    expect(r).toMatch(/background-color:\s*var\(--surface-page\)/);
+    expect(rule(".sw-header-menu-overlay")).toMatch(/z-index:\s*var\(--z-modal\)/);
+  });
+
+  it("sets links large, numbered in mono without announcing the numbers, with a signal bar on the current one", () => {
+    const link = rule(".sw-header-menu-nav .sw-link");
+    expect(link).toMatch(/font-size:\s*var\(--text-h2-size\)/);
+    expect(link).toMatch(/border-block-end:\s*1px solid var\(--border\)/);
+    expect(css).toMatch(/\.sw-header-menu-nav \.sw-link::?before\s*\{[^}]*content:\s*counter\(sw-menu,\s*decimal-leading-zero\)\s*\/\s*""/);
+    expect(css).toMatch(
+      /\.sw-header-menu-nav \.sw-link\[aria-current\]:not\(\[aria-current="?false"?\]\)\s*\{[^}]*border-inline-start-color:\s*var\(--brand-signal\)/,
+    );
+  });
+});

@@ -3,6 +3,7 @@ import { Button, Header, Link } from "@raster/react";
 export default function Basic() {
   return (
     <Header
+      compact={false}
       sticky={false}
       navLabel="Example site"
       brand={<Link href="/">Studio</Link>}
