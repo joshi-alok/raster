@@ -4,6 +4,7 @@
  */
 .sw-banner {
   --_tone: var(--accent);
+  container: sw-banner / inline-size;
   border-block-end: 1px solid var(--border);
   border-inline-start: 4px solid var(--_tone);
   background-color: var(--surface-subtle);
@@ -60,4 +61,18 @@
 
 .sw-banner-dismiss {
   margin-block: calc(-1 * var(--space-2));
+}
+
+/* Narrow: the button drops under the text, its label aligned with the text, so the text keeps the width. */
+@container sw-banner (width < 480px) {
+  .sw-banner-inner {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .sw-banner-dismiss {
+    grid-column: 2;
+    justify-self: start;
+    margin-block: var(--space-1) calc(-1 * var(--space-2));
+    margin-inline-start: calc(-1 * var(--space-4));
+  }
 }

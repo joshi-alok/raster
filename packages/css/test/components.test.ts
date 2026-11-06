@@ -854,6 +854,11 @@ describe("banner", () => {
   it("aligns its content with the page's content width", () => {
     expect(rule(".sw-banner-inner")).toMatch(/max-inline-size:\s*calc\(var\(--content-max\) \+ 2 \* var\(--page-margin\)\)/);
   });
+
+  it("moves the dismiss button under the text when the banner is narrow", () => {
+    expect(rule(".sw-banner")).toMatch(/container:\s*sw-banner \/ inline-size/);
+    expect(css).toMatch(/@container sw-banner \(width < 480px\)\s*\{[\s\S]*?\.sw-banner-dismiss\s*\{[^}]*grid-column:\s*2/);
+  });
 });
 
 describe("empty state", () => {
