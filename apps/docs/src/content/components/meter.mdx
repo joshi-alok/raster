@@ -1,0 +1,38 @@
+---
+title: Meter
+group: Display
+order: 6
+summary: A measurement within a known range, coloured by how good it is and named when it is high or low.
+props:
+  - name: label
+    type: ReactNode
+    description: Required. Names the meter.
+  - name: value
+    type: number
+    description: Required. The measurement.
+  - name: minValue / maxValue
+    type: number
+    default: "0 / 100"
+    description: The range.
+  - name: low / high / optimum
+    type: number
+    description: The edges of the middle region, and the best value; together they decide the state, as in HTML.
+  - name: valueLabel
+    type: string
+    description: Text for the value, such as "86 of 100 GB"; defaults to a percentage.
+  - name: regionLabels
+    type: "{ low?: string; high?: string }"
+    default: '{ low: "Low", high: "High" }'
+    description: Words shown when the value is outside the middle region.
+a11y:
+  - Both routes render a native meter with low, high and optimum; its state sets the colour through data-state.
+  - Outside the middle region a word ("High", "Low") is shown and announced with the value, so the state is never colour alone.
+  - Without React, set data-state ("optimum", "suboptimum" or "poor") and write the word yourself, as in the HTML below.
+---
+import Example from "../../components/Example.astro";
+import Levels from "../../demos/meter/Levels";
+import levelsSource from "../../demos/meter/Levels.tsx?raw";
+
+<Example title="Levels" source={levelsSource} of={Levels}>
+  <Levels />
+</Example>

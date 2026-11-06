@@ -1,0 +1,33 @@
+---
+title: EmptyState
+group: Display
+order: 9
+summary: What to show when there is nothing to show, on a hanging layout with one sentence and one action.
+props:
+  - name: title
+    type: ReactNode
+    description: Required. A short heading that says what is empty.
+  - name: label
+    type: ReactNode
+    description: A mono label for the area, such as "Projects".
+  - name: children
+    type: ReactNode
+    description: One sentence - what happened and what to do next.
+  - name: action
+    type: ReactNode
+    description: One button or link.
+  - name: headingLevel
+    type: 2 | 3 | 4 | 5 | 6
+    default: "2"
+    description: Level of the heading, to fit the page outline.
+a11y:
+  - The heading level follows the page outline; the sentence and the action follow it in reading order.
+  - There is no illustration by default, so nothing needs a text alternative.
+---
+import Example from "../../components/Example.astro";
+import NoResults from "../../demos/empty-state/NoResults";
+import noResultsSource from "../../demos/empty-state/NoResults.tsx?raw";
+
+<Example title="No results" source={noResultsSource} of={NoResults}>
+  <NoResults />
+</Example>

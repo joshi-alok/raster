@@ -1,0 +1,50 @@
+---
+title: Banner
+group: Display
+order: 8
+summary: A page-level message strip below the header, with a tone rule, an icon and an optional dismiss button.
+interactive: true
+props:
+  - name: tone
+    type: '"info" | "success" | "warning" | "danger"'
+    default: '"info"'
+    description: Sets the rule, the icon and the spoken tone word.
+  - name: title
+    type: ReactNode
+    description: A short heading for the message.
+  - name: onDismiss
+    type: () => void
+    description: Shows a dismiss button; called after the banner hides.
+  - name: dismissLabel
+    type: string
+    default: '"Dismiss"'
+    description: Text of the dismiss button.
+  - name: focusAfterDismiss
+    type: string
+    default: '"#main"'
+    description: A selector for where focus goes after dismissing.
+a11y:
+  - Danger uses the alert role; the other tones use status, so screen readers announce the message politely.
+  - A hidden tone word ("Note", "Success", "Warning", "Error") is read first, so the tone never depends on colour or the icon.
+  - After dismissing, focus moves to the main content instead of being lost.
+  - Use Callout for messages inside the content; a Banner is for the whole page.
+---
+import Example from "../../components/Example.astro";
+import Dismissable from "../../demos/banner/Dismissable";
+import dismissableSource from "../../demos/banner/Dismissable.tsx?raw";
+import Failure from "../../demos/banner/Failure";
+import failureSource from "../../demos/banner/Failure.tsx?raw";
+import Maintenance from "../../demos/banner/Maintenance";
+import maintenanceSource from "../../demos/banner/Maintenance.tsx?raw";
+
+<Example title="Maintenance notice" source={maintenanceSource} of={Maintenance}>
+  <Maintenance />
+</Example>
+
+<Example title="Publishing failed" source={failureSource} of={Failure}>
+  <Failure />
+</Example>
+
+<Example title="Dismissable banner" source={dismissableSource}>
+  <Dismissable client:load />
+</Example>

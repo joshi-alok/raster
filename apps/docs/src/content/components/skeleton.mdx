@@ -1,0 +1,25 @@
+---
+title: Skeleton
+group: Display
+order: 7
+summary: Placeholder blocks in the shape of the content that is loading, with a slow pulse.
+props:
+  - name: shape
+    type: '"text" | "heading" | "block"'
+    default: '"text"'
+    description: A line of body text, a heading, or a 16:9 block for media.
+  - name: width
+    type: string
+    description: Any CSS length, such as "60%". Defaults to the full width.
+a11y:
+  - Skeletons are hidden from screen readers. Put aria-busy="true" and a name on the region that is loading, and remove aria-busy when the content arrives.
+  - The pulse is a slow change of opacity, with no gradient; under reduced motion the blocks do not move.
+  - In forced-colours mode each block is outlined.
+---
+import Example from "../../components/Example.astro";
+import LoadingCard from "../../demos/skeleton/LoadingCard";
+import loadingCardSource from "../../demos/skeleton/LoadingCard.tsx?raw";
+
+<Example title="Loading card" source={loadingCardSource} of={LoadingCard}>
+  <LoadingCard />
+</Example>
