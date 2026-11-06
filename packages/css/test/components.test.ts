@@ -760,3 +760,25 @@ describe("number field", () => {
     expect(css).toMatch(/\.sw-number-sign::?before,\s*\.sw-number-sign\[data-sign="?plus"?\]::?after\s*\{[^}]*border-block-start:\s*1\.5px solid/);
   });
 });
+
+describe("slider", () => {
+  it("draws a 2px track on both routes", () => {
+    expect(css).toMatch(/\.sw-slider-input::-webkit-slider-runnable-track\s*\{[^}]*block-size:\s*2px/);
+    expect(css).toMatch(/\.sw-slider-input::-moz-range-track\s*\{[^}]*block-size:\s*2px/);
+    expect(css).toMatch(/\.sw-slider-track::?before\s*\{[^}]*block-size:\s*2px/);
+  });
+
+  it("uses a square thumb with the theme radius on both routes", () => {
+    expect(css).toMatch(/\.sw-slider-input::-webkit-slider-thumb\s*\{[^}]*border-radius:\s*var\(--radius\)/);
+    expect(rule(".sw-slider-thumb")).toMatch(/border-radius:\s*var\(--radius\)/);
+  });
+
+  it("insets the React track by half a thumb so thumbs travel like native ones", () => {
+    expect(rule(".sw-slider-track")).toMatch(/margin-inline:\s*calc\(var\(--_thumb\) \/ 2\)/);
+  });
+
+  it("keeps the thumb visible in forced colours", () => {
+    // Lightning CSS lowercases system colours (`Highlight` prints as `highlight`), hence /i.
+    expect(css).toMatch(/@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-slider-thumb\s*\{[^}]*background-color:\s*Highlight/i);
+  });
+});

@@ -36,6 +36,7 @@ export { Chip, type ChipProps, TagGroup, type TagGroupProps } from "./forms/TagG
 export { Segment, SegmentedControl, type SegmentedControlProps, type SegmentProps } from "./forms/SegmentedControl";
 export { SearchField, type SearchFieldProps } from "./forms/SearchField";
 export { NumberField, type NumberFieldProps } from "./forms/NumberField";
+export { Slider, type SliderProps } from "./forms/Slider";
 export { Dialog, type DialogProps, DialogTrigger } from "./overlays/Dialog";
 export { Popover, type PopoverProps } from "./overlays/Popover";
 export { Drawer, type DrawerProps } from "./overlays/Drawer";

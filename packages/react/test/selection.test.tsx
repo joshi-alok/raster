@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { NumberField } from "../src/forms/NumberField";
 import { SearchField } from "../src/forms/SearchField";
 import { Segment, SegmentedControl } from "../src/forms/SegmentedControl";
+import { Slider } from "../src/forms/Slider";
 import { Chip, TagGroup } from "../src/forms/TagGroup";
 import { expectAccessible } from "./axe";
 
@@ -178,6 +179,50 @@ describe("NumberField", () => {
 
   it("has no structural accessibility violations", async () => {
     const { container } = render(<NumberField label="Copies" defaultValue={2} />);
+    await expectAccessible(container);
+  });
+});
+
+describe("Slider", () => {
+  it("renders a labelled slider with its value shown", () => {
+    const { container } = render(<Slider label="Gutter (px)" minValue={16} maxValue={32} defaultValue={24} />);
+    expect(container.firstElementChild).toHaveClass("sw-field", "sw-slider");
+    expect(container.querySelector(".sw-slider-head .sw-field-label")).toHaveTextContent("Gutter (px)");
+    expect(container.querySelector(".sw-slider-output")).toHaveTextContent("24");
+    const slider = screen.getByRole("slider", { name: "Gutter (px)" });
+    expect(slider).toHaveValue("24");
+    expect(slider.closest(".sw-slider-thumb")).not.toBeNull();
+  });
+
+  it("steps with the arrow keys and jumps to the ends with Home and End", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<Slider label="Gutter (px)" minValue={16} maxValue={32} defaultValue={24} onChange={onChange} />);
+    const slider = screen.getByRole("slider");
+    // Focus with Tab: a click lands on the track, which reads a position from jsdom's zero-size layout.
+    await user.tab();
+    expect(slider).toHaveFocus();
+    await user.keyboard("{ArrowRight}");
+    expect(slider).toHaveValue("25");
+    await user.keyboard("{End}");
+    expect(slider).toHaveValue("32");
+    await user.keyboard("{Home}");
+    expect(slider).toHaveValue("16");
+    expect(onChange).toHaveBeenLastCalledWith(16);
+  });
+
+  it("draws one thumb per value for a range, each named", () => {
+    render(
+      <Slider label="Budget" minValue={20} maxValue={150} step={5} defaultValue={[40, 90]} thumbLabels={["Minimum", "Maximum"]} />,
+    );
+    const thumbs = screen.getAllByRole("slider");
+    expect(thumbs).toHaveLength(2);
+    expect(screen.getByRole("slider", { name: /Minimum/ })).toHaveValue("40");
+    expect(screen.getByRole("slider", { name: /Maximum/ })).toHaveValue("90");
+  });
+
+  it("has no structural accessibility violations", async () => {
+    const { container } = render(<Slider label="Gutter (px)" defaultValue={24} />);
     await expectAccessible(container);
   });
 });

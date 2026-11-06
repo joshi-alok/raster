@@ -21,6 +21,7 @@ describe("public API", () => {
       "SegmentedControl", "Segment",
       "SearchField",
       "NumberField",
+      "Slider",
       "cx",
     ];
     for (const name of expected) expect(typeof (raster as Record<string, unknown>)[name], name).toBe("function");
