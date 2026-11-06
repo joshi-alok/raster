@@ -1178,6 +1178,17 @@ describe("data grid", () => {
     expect(css).not.toMatch(/\.sw-data-grid-virtualized :is\(th, td\)/);
   });
 
+  it("keeps numeric headers in the header type, and row headers at the body weight, on both routes", () => {
+    expect(rule(".sw-data-grid thead .sw-data-grid-numeric")).toMatch(/font-family:\s*inherit/);
+    expect(rule(".sw-data-grid tbody th")).toMatch(/font-weight:\s*inherit/);
+  });
+
+  // Sticky cells get their own layer, which snaps to whole pixels; every header cell needs one, or the
+  // corner cells' rule sits a pixel off the rest of the header's rule.
+  it("puts every sticky header cell on its own layer, so the header rule stays straight", () => {
+    expect(rule(".sw-data-grid thead th")).toMatch(/will-change:\s*transform/);
+  });
+
   it("rings a header's label when it holds the keyboard focus", () => {
     expect(rule(".sw-data-grid-label:focus-visible")).toMatch(/outline:\s*var\(--focus-width\) solid var\(--accent\)/);
   });

@@ -50,6 +50,7 @@ table.sw-data-grid {
   inset-block-start: 0;
   z-index: 2;
   background-color: var(--surface-page);
+  will-change: transform;
 }
 
 /*
@@ -107,6 +108,16 @@ table.sw-data-grid {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   text-align: end;
+}
+
+/* Mono figures are for the numbers: a numeric column's header keeps the header type, as in Table. */
+.sw-data-grid thead .sw-data-grid-numeric {
+  font-family: inherit;
+}
+
+/* Native row headers are th; keep them at the body weight, as React's row header cells are. */
+.sw-data-grid tbody th {
+  font-weight: inherit;
 }
 
 .sw-data-grid-head {
@@ -253,6 +264,7 @@ table.sw-data-grid {
 
 .sw-data-grid-virtualized .sw-data-grid-column {
   border-block-end-color: var(--text-primary);
+  font-family: inherit;
   background-color: var(--surface-page);
   color: var(--text-secondary);
 }
