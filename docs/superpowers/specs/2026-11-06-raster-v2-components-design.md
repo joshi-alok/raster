@@ -195,3 +195,26 @@ Agreed on 2026-11-06. Five components, taking Raster from 52 to 57.
 - **FileUpload holds no files.** The app owns the list (`files`, `onAdd`, `onRemove`, `progress`); the component checks types and sizes, reports refusals in an alert and keeps focus in place after a removal.
 - **The native file input is the drop zone.** No script is needed to drop or to show the chosen names; there is no drag-over state on that route.
 - **The drop test uses Chromium's own drag pipeline** (CDP `Input.dispatchDragEvent` with files on disk), because React Aria reads dropped files through `webkitGetAsEntry`, which returns nothing for files built in the page. It runs in Chromium only.
+
+## 14. Plan 7e design: DataGrid
+
+Agreed on 2026-11-06. One component, taking Raster from 57 to 58. Table stays for static data; DataGrid is for data people work with.
+
+| Feature | HTML route | React route |
+|---|---|---|
+| Sorting | Header links (`?sort=name&dir=desc`) that the server answers; `aria-sort` on the current column | `allowsSorting` columns; Enter or a click sorts; `aria-sort` from React Aria |
+| Row selection | Checkbox inputs in the first column, inside the app's form; an optional docs script makes the header checkbox select all and show a partial selection | `selectionMode="multiple"` adds a checkbox column and Select all |
+| Empty state | The app renders an EmptyState instead of the table | `emptyState` on the body renders inside the grid |
+| Sticky header and first column | The same classes on the same cells | The same classes; the selection column is sticky too |
+| Column resizing | None | `allowsResizing` adds a handle; pointer or keyboard |
+| Virtualised rows | None (the server pages instead) | `virtualized={{ rowHeight }}` draws only the rows in view |
+
+**Visual rules:**
+- DataGrid carries `.sw-table`, so cells, hairlines and the mono caption look as Table does; numbers are end-aligned in tabular mono.
+- **Sorting:** a sortable header shows a muted pair of chevrons; the sorted one shows a single chevron in the text colour. Drawn with borders, so it survives forced colours.
+- **Selection:** a selected row has the `accent-subtle` fill and a 2px accent bar at its inline start, as well as a ticked checkbox. In forced colours it uses the system highlight.
+- **Sticky cells** have a solid page-coloured background; the sticky first column ends in a hairline.
+- **Resize handle:** a 1px `border-strong` line at the header's inline end, 2px accent while hovered or resizing, with a 24px-wide hit area.
+- **Narrow screens:** the grid scrolls inside its own region; the page never scrolls sideways.
+
+**Testing:** no parity screenshots, because native checkboxes and link headers cannot match React Aria's rendering pixel for pixel. Unit tests cover sorting, selection, the empty state, the handle and the classes. Browser tests cover grid keyboard navigation, sorting and selecting from the keyboard, resizing from the keyboard, virtualisation drawing far fewer rows than it has, and the native sort links and Select all. Forced-colours screenshots cover selected rows, sort chevrons and handles.
