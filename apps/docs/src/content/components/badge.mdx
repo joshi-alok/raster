@@ -1,0 +1,28 @@
+---
+title: Badge
+group: Display
+order: 12
+summary: A small count or status marker in mono, beside the thing it counts.
+props:
+  - name: children
+    type: ReactNode
+    description: Required. The count or a short word.
+  - name: label
+    type: string
+    description: What a count means, read instead of the bare number, such as "3 unread messages".
+  - name: tone
+    type: '"neutral" | "accent" | "danger"'
+    default: '"neutral"'
+    description: Neutral for counts, accent for new things, danger for failures.
+a11y:
+  - Give every count a label, so a screen reader says "3 unread messages" rather than "3".
+  - The tone is never the only cue; the word or count says what it means.
+  - In forced-colours mode badges keep an outline.
+---
+import Example from "../../components/Example.astro";
+import Counts from "../../demos/badge/Counts";
+import countsSource from "../../demos/badge/Counts.tsx?raw";
+
+<Example title="Counts" source={countsSource} of={Counts}>
+  <Counts />
+</Example>

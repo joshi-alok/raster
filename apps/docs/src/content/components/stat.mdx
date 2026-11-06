@@ -1,0 +1,31 @@
+---
+title: Stat
+group: Display
+order: 14
+summary: One key figure, large and light, with its label and how it changed.
+props:
+  - name: value
+    type: ReactNode
+    description: Required. The figure, formatted.
+  - name: label
+    type: ReactNode
+    description: Required. What it measures.
+  - name: change
+    type: ReactNode
+    description: The change as words with its sign, such as "+12% on last year".
+  - name: trend
+    type: '"up" | "down" | "flat"'
+    default: '"flat"'
+    description: Draws the arrow beside the change.
+a11y:
+  - The change is written out with its sign; the arrow is decoration and hidden from screen readers.
+  - The change keeps a neutral colour, because a fall is not always bad; the words say whether it is good.
+  - The arrow mirrors in right-to-left layouts.
+---
+import Example from "../../components/Example.astro";
+import Figures from "../../demos/stat/Figures";
+import figuresSource from "../../demos/stat/Figures.tsx?raw";
+
+<Example title="Figures" source={figuresSource} of={Figures}>
+  <Figures />
+</Example>

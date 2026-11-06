@@ -1,0 +1,26 @@
+---
+title: DescriptionList
+group: Display
+order: 13
+summary: Facts as a grid of terms over values, each cell topped by a hairline.
+props:
+  - name: children
+    type: ReactNode
+    description: Required. DescriptionItem elements.
+  - name: DescriptionItem term
+    type: ReactNode
+    description: Required. The name of the fact, set in mono.
+  - name: DescriptionItem children
+    type: ReactNode
+    description: Required. The value.
+a11y:
+  - A description list, so screen readers announce each term with its value.
+  - The grid reflows from one to several columns with the container; reading order stays term then value.
+---
+import Example from "../../components/Example.astro";
+import ProjectFacts from "../../demos/description-list/ProjectFacts";
+import projectFactsSource from "../../demos/description-list/ProjectFacts.tsx?raw";
+
+<Example title="Project facts" source={projectFactsSource} of={ProjectFacts}>
+  <ProjectFacts />
+</Example>
