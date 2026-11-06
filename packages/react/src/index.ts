@@ -47,6 +47,7 @@ export { Avatar, type AvatarProps, initials } from "./display/Avatar";
 export { Badge, type BadgeProps } from "./display/Badge";
 export { DescriptionItem, type DescriptionItemProps, DescriptionList, type DescriptionListProps } from "./display/DescriptionList";
 export { Stat, type StatProps } from "./display/Stat";
+export { ComboBox, ComboBoxItem, type ComboBoxItemProps, type ComboBoxProps } from "./forms/ComboBox";
 export type { Tone } from "./display/tones";
 export { Dialog, type DialogProps, DialogTrigger } from "./overlays/Dialog";
 export { Popover, type PopoverProps } from "./overlays/Popover";

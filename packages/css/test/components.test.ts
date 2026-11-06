@@ -931,3 +931,24 @@ describe("description list and stat", () => {
     expect(css).toMatch(/\.sw-stat-change svg:dir\(rtl\)\s*\{[^}]*transform:\s*scaleX\(-1\)/);
   });
 });
+
+describe("combobox", () => {
+  it("reserves room for the suggestions button inside the input", () => {
+    expect(rule(".sw-combobox-input")).toMatch(/padding-inline-end:\s*var\(--control-height\)/);
+  });
+
+  it("places a square suggestions button at the inline end", () => {
+    const r = rule(".sw-combobox-button");
+    expect(r).toMatch(/position:\s*absolute/);
+    expect(r).toMatch(/inset-inline-end:\s*0/);
+    expect(r).toMatch(/inline-size:\s*var\(--control-height\)/);
+  });
+
+  it("extends the button's hit area to the 44px target", () => {
+    expect(rule(".sw-combobox-button:before")).toMatch(/inset-block:\s*calc\(\(var\(--control-height\) - var\(--target-min\)\) \/ 2\)/);
+  });
+
+  it("gives the native list input back its normal padding, since the browser draws its own indicator", () => {
+    expect(rule(".sw-combobox-input[list]")).toMatch(/padding-inline-end:\s*var\(--space-3\)/);
+  });
+});

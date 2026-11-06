@@ -1,0 +1,52 @@
+/*
+ * Combobox: type to filter a list of suggestions.
+ * Native route: <input list> with a <datalist>. The suggestion list and its indicator are the
+ * browser's own, and any text is accepted.
+ * React route: React Aria ComboBox. The list opens in .sw-popover with .sw-listbox, as Select does.
+ */
+.sw-combobox-control {
+  position: relative;
+}
+
+.sw-combobox-input {
+  padding-inline-end: var(--control-height);
+}
+
+.sw-combobox-input[list] {
+  padding-inline-end: var(--space-3);
+}
+
+.sw-combobox-button {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  display: grid;
+  place-items: center;
+  inline-size: var(--control-height);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  outline: none;
+}
+
+/* Extend the hit area to the 44px touch target without changing the 40px control. */
+.sw-combobox-button::before {
+  content: "";
+  position: absolute;
+  inset-block: calc((var(--control-height) - var(--target-min)) / 2);
+  inset-inline: 0;
+}
+
+@media (hover: hover) {
+  .sw-combobox-button:hover {
+    color: var(--text-primary);
+  }
+}
+
+.sw-combobox-button svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+  stroke-width: 1.5;
+}
