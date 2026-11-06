@@ -1,0 +1,37 @@
+---
+title: SideNav
+group: Overlay and navigation
+order: 12
+summary: Section navigation for documentation and app layouts, hung from a hairline with collapsible groups.
+interactive: true
+props:
+  - name: aria-label
+    type: string
+    default: '"Section"'
+    description: Name of the navigation landmark.
+  - name: SideNavLink href / current
+    type: string / boolean
+    description: The link target; current marks it with aria-current="page".
+  - name: SideNavGroup title
+    type: ReactNode
+    description: Required. The group's label and its toggle's name.
+  - name: SideNavGroup defaultExpanded
+    type: boolean
+    default: "true"
+    description: Whether the group starts open.
+a11y:
+  - A named navigation landmark of nested lists, so screen readers announce the structure and counts.
+  - The current page has aria-current="page" and an accent bar with weight 500, never colour alone; in forced-colours mode the bar uses the system highlight.
+  - Group toggles are buttons with aria-expanded on the React route and summary elements without React; Enter and Space toggle both.
+---
+import Example from "../../components/Example.astro";
+import NativeExample from "../../components/NativeExample.astro";
+import Docs from "../../demos/side-nav/Docs";
+import docsSource from "../../demos/side-nav/Docs.tsx?raw";
+import docsHtml from "../../demos/side-nav/docs.html?raw";
+
+<Example title="Documentation sections" source={docsSource}>
+  <Docs client:load />
+</Example>
+
+<NativeExample title="Documentation sections without React" html={docsHtml} />

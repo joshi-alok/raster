@@ -3,6 +3,7 @@ title: Header
 group: Overlay and navigation
 order: 6
 summary: The site banner with a skip link, brand, primary navigation and actions; sticky by default.
+interactive: true
 props:
   - name: brand
     type: ReactNode
@@ -25,17 +26,55 @@ props:
     type: boolean
     default: "true"
     description: Sticks to the top; the page then reserves scroll padding so focused content is never hidden (WCAG 2.4.11).
+  - name: compact
+    type: boolean
+    default: "true"
+    description: Below 600px of header width, moves the links into a full-screen menu opened by a Menu button.
+  - name: menuLabel
+    type: string
+    default: '"Menu"'
+    description: Text of the menu button and name of the menu dialog.
 a11y:
   - The skip link is the first tab stop and appears when focused.
   - The current page is marked with aria-current and shown by weight and underline.
   - On narrow screens the navigation scrolls sideways inside the header rather than wrapping.
+  - The compact menu is a modal dialog named "Menu". Focus moves inside, Escape closes it, and focus returns to the Menu button.
+  - Menu links are numbered in mono as decoration; the numbers are left out of each link's accessible name.
+  - Without React, the Menu button opens a native dialog with invoker commands (commandfor and command), so no script is needed in browsers from December 2025 on.
 ---
 import Example from "../../components/Example.astro";
 import Basic from "../../demos/header/Basic";
 import basicSource from "../../demos/header/Basic.tsx?raw";
+import CodeBlock from "../../components/CodeBlock.astro";
+import NativeExample from "../../components/NativeExample.astro";
+import Compact from "../../demos/header/Compact";
+import compactSource from "../../demos/header/Compact.tsx?raw";
+import compactHtml from "../../demos/header/compact.html?raw";
+
+export const invokerFallback = `// Invoker commands for browsers released before December 2025.
+if (!("command" in HTMLButtonElement.prototype)) {
+  document.addEventListener("click", (event) => {
+    const button = event.target instanceof Element ? event.target.closest("button[commandfor]") : null;
+    const target = button && document.getElementById(button.getAttribute("commandfor"));
+    if (!(target instanceof HTMLDialogElement)) return;
+    const command = button.getAttribute("command");
+    if (command === "show-modal") target.showModal();
+    else if (command === "close") target.close();
+  });
+}`;
 
 This site's own header is the same component, written as HTML.
 
 <Example title="Site header" source={basicSource} of={Basic}>
   <Basic />
 </Example>
+
+<Example title="Compact menu" source={compactSource}>
+  <Compact client:load />
+</Example>
+
+<NativeExample title="Compact menu without React" html={compactHtml} />
+
+To support browsers released before December 2025, add this script once per page:
+
+<CodeBlock code={invokerFallback} label="Invoker commands fallback" />

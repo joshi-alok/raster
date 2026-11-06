@@ -1,0 +1,46 @@
+---
+title: Pagination
+group: Overlay and navigation
+order: 11
+summary: Links between the pages of a long list, with distant ranges collapsed and the current page underlined.
+props:
+  - name: page
+    type: number
+    description: Required. The current page, counted from 1.
+  - name: total
+    type: number
+    description: Required. The number of pages.
+  - name: href
+    type: (page) => string
+    description: Required. The URL of a page.
+  - name: siblings
+    type: number
+    default: "1"
+    description: Pages shown either side of the current one; the first and last are always shown.
+  - name: aria-label
+    type: string
+    default: '"Pagination"'
+    description: Name of the navigation landmark; give each one on a page a different name.
+  - name: previousLabel / nextLabel
+    type: string
+    default: '"Previous" / "Next"'
+    description: Text of the step links. A step that does not exist is left out.
+a11y:
+  - A named navigation landmark. Page links are named "Page 6" and the current one has aria-current="page".
+  - The current page is marked by weight and a 2px underline, not colour alone.
+  - The ellipses are hidden from screen readers; every link is at least 44px square.
+  - It is plain links, so the HTML below is the whole component.
+---
+import Example from "../../components/Example.astro";
+import First from "../../demos/pagination/First";
+import firstSource from "../../demos/pagination/First.tsx?raw";
+import Middle from "../../demos/pagination/Middle";
+import middleSource from "../../demos/pagination/Middle.tsx?raw";
+
+<Example title="Page 6 of 12" source={middleSource} of={Middle}>
+  <Middle />
+</Example>
+
+<Example title="First page" source={firstSource} of={First}>
+  <First />
+</Example>
