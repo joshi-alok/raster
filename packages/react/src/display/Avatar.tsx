@@ -1,12 +1,20 @@
 import type { ComponentPropsWithRef } from "react";
 import { cx } from "../utils/cx";
 
+const graphemes = new Intl.Segmenter(undefined, { granularity: "grapheme" });
+
+/** The first whole character of a word, keeping accents, emoji and astral letters intact. */
+function firstCharacter(word: string): string {
+  for (const { segment } of graphemes.segment(word)) return segment;
+  return "";
+}
+
 /** The first letters of the first and last words of a name, upper-cased: "Lea Brunner" → "LB". */
 export function initials(name: string): string {
   const words = name.trim().split(/\s+/).filter(Boolean);
   if (words.length === 0) return "";
-  const first = words[0][0] ?? "";
-  const last = words.length > 1 ? (words[words.length - 1][0] ?? "") : "";
+  const first = firstCharacter(words[0]);
+  const last = words.length > 1 ? firstCharacter(words[words.length - 1]) : "";
   return `${first}${last}`.toLocaleUpperCase();
 }
 

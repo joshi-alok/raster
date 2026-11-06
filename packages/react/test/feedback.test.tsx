@@ -34,6 +34,12 @@ describe("ProgressBar", () => {
     expect(bar).toHaveAttribute("aria-valuetext", "12 of 22 pages");
   });
 
+  it("computes the percentage from ranges under 1", () => {
+    const { container } = render(<ProgressBar label="Ratio" value={0.25} maxValue={0.5} />);
+    expect(container.querySelector(".sw-progress-value")).toHaveTextContent("50%");
+    expect(screen.getByRole("progressbar")).toHaveAttribute("max", "0.5");
+  });
+
   it("has no structural accessibility violations", async () => {
     const { container } = render(<ProgressBar label="Uploading proofs" value={40} />);
     await expectAccessible(container);
@@ -60,6 +66,14 @@ describe("meterState", () => {
     expect(meterState(10, { ...range, optimum: 100 })).toBe("poor");
   });
 
+  it("follows the HTML algorithm when low and high are out of order or out of range", () => {
+    // low 80, high 20: high is raised to low, so 80 is in the middle region, not above high.
+    expect(meterState(80, { min: 0, max: 100, low: 80, high: 20, optimum: 80 })).toBe("optimum");
+    expect(meterState(81, { min: 0, max: 100, low: 80, high: 20, optimum: 80 })).toBe("suboptimum");
+    // low below min is clamped to min, so the minimum is in the middle region.
+    expect(meterState(0, { min: 0, max: 100, low: -10, high: 80, optimum: 50 })).toBe("optimum");
+  });
+
   it("names the region a value falls in", () => {
     expect(meterRegion(10, 30, 80)).toBe("low");
     expect(meterRegion(50, 30, 80)).toBe("medium");
@@ -78,10 +92,25 @@ describe("Meter", () => {
     expect(container.querySelector(".sw-meter-word")).toHaveTextContent("High");
   });
 
-  it("shows no word in the middle region", () => {
-    const { container } = render(<Meter label="Storage" value={50} low={30} high={80} optimum={0} />);
+  it("shows no word when the middle region is the good one", () => {
+    const { container } = render(<Meter label="Fill" value={50} low={30} high={80} optimum={50} />);
     expect(container.querySelector(".sw-meter-word")).toBeNull();
-    expect(screen.getByRole("meter")).toHaveAttribute("data-state", "suboptimum");
+    expect(screen.getByRole("meter")).toHaveAttribute("data-state", "optimum");
+  });
+
+  it("names the middle region when it is not the good one, so the state is never colour alone", () => {
+    const { container } = render(<Meter label="Build time" value={55} low={30} high={80} optimum={0} valueLabel="55 s" />);
+    expect(container.querySelector(".sw-meter-word")).toHaveTextContent("Medium");
+    const meter = screen.getByRole("meter");
+    expect(meter).toHaveAttribute("data-state", "suboptimum");
+    expect(meter).toHaveAttribute("aria-valuetext", "55 s, Medium");
+  });
+
+  it("clamps the shown percentage to the range and handles ranges under 1", () => {
+    const { rerender } = render(<Meter label="Load" value={120} high={90} optimum={50} />);
+    expect(screen.getByRole("meter")).toHaveAttribute("aria-valuetext", "100%, High");
+    rerender(<Meter label="Load" value={0.25} maxValue={0.5} />);
+    expect(screen.getByRole("meter").getAttribute("aria-valuetext")).toBe("50%");
   });
 
   it("has no structural accessibility violations", async () => {
@@ -193,6 +222,12 @@ describe("initials", () => {
     expect(initials("Anouk van der Meier")).toBe("AM");
     expect(initials("Lea")).toBe("L");
     expect(initials("  élodie   roux ")).toBe("ÉR");
+  });
+
+  it("keeps whole characters: astral letters, emoji and combining accents", () => {
+    expect(initials("𠮷野 太郎")).toBe("𠮷太");
+    expect(initials("😀 Lea")).toBe("😀L");
+    expect(initials("E\u0301va Roux")).toBe("E\u0301R");
   });
 });
 

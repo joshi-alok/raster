@@ -810,6 +810,15 @@ describe("slider", () => {
 });
 
 describe("progress bar and meter", () => {
+  it("keeps the meter word with its dot when the value wraps", () => {
+    expect(rule(".sw-meter-word")).toMatch(/white-space:\s*nowrap/);
+  });
+
+  it("moves a long value onto its own line instead of breaking it", () => {
+    expect(rule(".sw-progress-head")).toMatch(/flex-wrap:\s*wrap/);
+    expect(rule(".sw-progress-value")).toMatch(/margin-inline-start:\s*auto/);
+  });
+
   it("draw a 4px bar with the browser's appearance removed", () => {
     expect(css).toMatch(/\.sw-progress-bar,\s*\.sw-meter-bar\s*\{[^}]*appearance:\s*none[^}]*block-size:\s*4px/);
   });

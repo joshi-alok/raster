@@ -20,7 +20,7 @@ const clamp = (value: number, min: number, max: number) => Math.min(Math.max(val
  */
 export function ProgressBar({ label, value, minValue = 0, maxValue = 100, valueLabel, className, ...rest }: ProgressBarProps) {
   const id = useId();
-  const span = Math.max(maxValue - minValue, 1);
+  const span = maxValue > minValue ? maxValue - minValue : 1;
   const position = clamp(value, minValue, maxValue) - minValue;
   const percent = Math.round((position / span) * 100);
   return (
