@@ -878,3 +878,23 @@ describe("media", () => {
     expect(css).toMatch(/\.sw-media-frame > :is\(img,\s*video,\s*svg,\s*iframe\)\s*\{[^}]*object-fit:\s*cover/);
   });
 });
+
+describe("avatar and badge", () => {
+  it("draws the avatar square with the theme radius, never a circle", () => {
+    const r = rule(".sw-avatar");
+    expect(r).toMatch(/border-radius:\s*var\(--radius\)/);
+    expect(r).toMatch(/font-family:\s*var\(--font-mono\)/);
+    expect(rule('.sw-avatar[data-size="lg"]')).toMatch(/--_size:\s*3\.5rem/);
+  });
+
+  it("sets badges in tabular mono figures with the theme radius", () => {
+    const r = rule(".sw-badge");
+    expect(r).toMatch(/border-radius:\s*var\(--radius\)/);
+    expect(r).toMatch(/font-variant-numeric:\s*tabular-nums/);
+    expect(rule('.sw-badge[data-tone="danger"]')).toMatch(/background-color:\s*var\(--danger\)/);
+  });
+
+  it("keeps avatars and badges outlined in forced colours", () => {
+    expect(css).toMatch(/@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-avatar,\s*\.sw-badge\s*\{[^}]*border:\s*1px solid canvastext/i);
+  });
+});

@@ -1,6 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { Avatar, initials } from "../src/display/Avatar";
+import { Badge } from "../src/display/Badge";
 import { Media } from "../src/display/Media";
 import { Banner } from "../src/feedback/Banner";
 import { EmptyState } from "../src/feedback/EmptyState";
@@ -180,5 +182,52 @@ describe("Media", () => {
     );
     expect(container.firstElementChild).toHaveAttribute("data-ratio", "16:9");
     expect(container.querySelector("figcaption")).toBeNull();
+  });
+});
+
+describe("initials", () => {
+  it("takes the first letters of the first and last words, at most two", () => {
+    expect(initials("Lea Brunner")).toBe("LB");
+    expect(initials("Anouk van der Meier")).toBe("AM");
+    expect(initials("Lea")).toBe("L");
+    expect(initials("  élodie   roux ")).toBe("ÉR");
+  });
+});
+
+describe("Avatar", () => {
+  it("shows initials named for screen readers when there is no image", () => {
+    render(<Avatar name="Lea Brunner" size="lg" />);
+    const avatar = screen.getByRole("img", { name: "Lea Brunner" });
+    expect(avatar).toHaveClass("sw-avatar");
+    expect(avatar).toHaveAttribute("data-size", "lg");
+    expect(avatar).toHaveTextContent("LB");
+  });
+
+  it("shows an image with the name as its text alternative", () => {
+    render(<Avatar name="Lea Brunner" src="/lea.jpg" />);
+    expect(screen.getByRole("img", { name: "Lea Brunner" })).toHaveAttribute("src", "/lea.jpg");
+  });
+
+  it("hides itself when a visible name sits beside it", () => {
+    const { container } = render(<Avatar name="Lea Brunner" decorative />);
+    expect(container.firstElementChild).toHaveAttribute("aria-hidden", "true");
+    expect(screen.queryByRole("img")).toBeNull();
+  });
+});
+
+describe("Badge", () => {
+  it("shows a count with a text equivalent for screen readers", () => {
+    const { container } = render(<Badge label="3 unread messages">3</Badge>);
+    const badge = container.firstElementChild as HTMLElement;
+    expect(badge).toHaveClass("sw-badge");
+    expect(badge).toHaveAttribute("data-tone", "neutral");
+    expect(badge.querySelector('[aria-hidden="true"]')).toHaveTextContent("3");
+    expect(badge.querySelector(".sw-sr-only")).toHaveTextContent("3 unread messages");
+  });
+
+  it("accepts a tone and plain text without a label", () => {
+    const { container } = render(<Badge tone="danger">New</Badge>);
+    expect(container.firstElementChild).toHaveAttribute("data-tone", "danger");
+    expect(container.querySelector('[aria-hidden="true"]')).toBeNull();
   });
 });

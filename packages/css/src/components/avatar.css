@@ -1,0 +1,69 @@
+/* Avatar: an image or initials in a square with the theme radius (full rounding is reserved). */
+.sw-avatar {
+  --_size: 2.5rem;
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  inline-size: var(--_size);
+  block-size: var(--_size);
+  overflow: hidden;
+  border-radius: var(--radius);
+  background-color: var(--accent-subtle);
+  color: var(--on-accent-subtle);
+  font-family: var(--font-mono);
+  font-size: calc(var(--_size) * 0.38);
+  line-height: 1;
+  user-select: none;
+}
+
+.sw-avatar[data-size="sm"] {
+  --_size: 2rem;
+}
+
+.sw-avatar[data-size="lg"] {
+  --_size: 3.5rem;
+}
+
+.sw-avatar > img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* Badge: a small count or status marker. A count always carries a text equivalent. */
+.sw-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 1.25rem;
+  block-size: 1.25rem;
+  padding-inline: var(--space-1);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background-color: var(--surface-subtle);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-label-size);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.sw-badge[data-tone="accent"] {
+  border-color: transparent;
+  background-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.sw-badge[data-tone="danger"] {
+  border-color: transparent;
+  background-color: var(--danger);
+  color: var(--on-danger);
+}
+
+@media (forced-colors: active) {
+  .sw-avatar,
+  .sw-badge {
+    border: 1px solid CanvasText;
+  }
+}
