@@ -808,3 +808,26 @@ describe("slider", () => {
     expect(css).toMatch(forced("-moz-range-thumb", "Highlight"));
   });
 });
+
+describe("progress bar and meter", () => {
+  it("draw a 4px bar with the browser's appearance removed", () => {
+    expect(css).toMatch(/\.sw-progress-bar,\s*\.sw-meter-bar\s*\{[^}]*appearance:\s*none[^}]*block-size:\s*4px/);
+  });
+
+  it("fill the progress value with the accent in every engine", () => {
+    expect(css).toMatch(/\.sw-progress-bar::-webkit-progress-value\s*\{[^}]*background-color:\s*var\(--accent\)/);
+    expect(css).toMatch(/\.sw-progress-bar::-moz-progress-bar\s*\{[^}]*background-color:\s*var\(--accent\)/);
+  });
+
+  it("colour the meter by data-state, not by vendor pseudo-classes", () => {
+    expect(rule('.sw-meter-bar[data-state="optimum"]')).toMatch(/--_meter-fill:\s*var\(--success\)/);
+    expect(rule('.sw-meter-bar[data-state="suboptimum"]')).toMatch(/--_meter-fill:\s*var\(--warning\)/);
+    expect(rule('.sw-meter-bar[data-state="poor"]')).toMatch(/--_meter-fill:\s*var\(--danger\)/);
+    expect(css).not.toMatch(/-moz-meter-(optimum|sub)/);
+  });
+
+  it("keep bars visible in forced colours", () => {
+    expect(css).toMatch(/@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-progress-bar::-webkit-progress-value[\s\S]*?background-color:\s*highlight/i);
+    expect(css).toMatch(/@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-meter-bar::-moz-meter-bar[\s\S]*?background-color:\s*highlight/i);
+  });
+});

@@ -37,6 +37,8 @@ export { Segment, SegmentedControl, type SegmentedControlProps, type SegmentProp
 export { SearchField, type SearchFieldProps } from "./forms/SearchField";
 export { NumberField, type NumberFieldProps } from "./forms/NumberField";
 export { Slider, type SliderProps } from "./forms/Slider";
+export { Meter, type MeterProps, type MeterRegion, meterRegion, type MeterState, meterState } from "./feedback/Meter";
+export { ProgressBar, type ProgressBarProps } from "./feedback/ProgressBar";
 export { Dialog, type DialogProps, DialogTrigger } from "./overlays/Dialog";
 export { Popover, type PopoverProps } from "./overlays/Popover";
 export { Drawer, type DrawerProps } from "./overlays/Drawer";
