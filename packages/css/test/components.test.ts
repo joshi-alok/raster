@@ -554,3 +554,19 @@ describe("disclosure", () => {
     expect(css).toMatch(/\[data-motion="?reduce"?\] \.sw-disclosure::details-content\s*\{[^}]*transition:\s*none/);
   });
 });
+
+describe("popover (content)", () => {
+  it("holds content in a padded dialog with a capped width", () => {
+    expect(rule(".sw-popover-content")).toMatch(/max-inline-size:\s*min\(20rem/);
+    expect(rule(".sw-popover-content")).toMatch(/padding:\s*0/);
+    expect(rule(".sw-popover-dialog")).toMatch(/padding:\s*var\(--space-4\)/);
+  });
+
+  it("anchors native popovers below their trigger only where anchor positioning exists", () => {
+    expect(css).toMatch(/@supports \(position-anchor:\s*--a\)\s*\{[\s\S]*?\[popover\]\.sw-popover\s*\{[^}]*position-area:\s*block-end span-inline-end/);
+  });
+
+  it("fades native popovers in with a short slide, from a starting style", () => {
+    expect(css).toMatch(/@starting-style\s*\{[\s\S]*?\[popover\]\.sw-popover:popover-open/);
+  });
+});

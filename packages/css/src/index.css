@@ -27,3 +27,4 @@
 @import "./components/tabs.css" layer(raster.components);
 @import "./components/header.css" layer(raster.components);
 @import "./components/disclosure.css" layer(raster.components);
+@import "./components/popover.css" layer(raster.components);
