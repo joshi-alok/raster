@@ -93,7 +93,7 @@ All version 1 rules apply: flat surfaces, hairlines and white space; weights 300
 **Motion:**
 - Drawer and the compact menu slide along one axis, `dur-slow` (320ms), `ease-standard`.
 - Popover fades with at most an 8px translate, `dur-base`.
-- Disclosure animates its height over `dur-base` where `interpolate-size` is supported; elsewhere it opens instantly.
+- Disclosure animates its height over `dur-base` on the native route where `interpolate-size` and `::details-content` are supported. React Aria hides a closed panel with `hidden="until-found"`, so the React route opens instantly; `.sw-disclosure-panel[hidden]` drops the panel's padding so closed rows match on both routes.
 - Reduced motion: fades capped at 120ms or no animation; no transforms.
 
 ## 5. Code layout
@@ -138,8 +138,11 @@ All version 1 rules apply: flat surfaces, hairlines and white space; weights 300
 
 Each track after Plan 7c starts with its own short design discussion and spec addendum. The order after 7c may change.
 
-## 9. Open questions for the plans
+## 9. Settled in Plan 7a
 
-- **Invoker commands support.** Confirm browser support when Plan 7a starts and size the fallback script accordingly.
-- **Anchor positioning support.** The same check for Popover's fallback placement.
-- **Parity tolerances.** Plan 7a sets the harness and the default tolerance; any component needing a looser one documents why in its test.
+- **Invoker commands:** Baseline since Safari 26.2 (December 2025). The Header docs page publishes a 12-line fallback for older browsers; Raster ships no script.
+- **Anchor positioning:** Baseline since Firefox 147 (January 2026). Native popovers are anchored inside `@supports (position-anchor: --a)`; elsewhere the browser centres them.
+- **Parity tolerance:** zero differing pixels (`maxDiffPixels: 0`). The 0.001 ratio used for visual baselines would let a whole current-page bar (about 350 pixels) through on a full-screen menu; the zero cap catches it. Popover parity also checks placement: on both routes the panel sits 4–12px below its trigger with inline-start edges aligned. Two harness measures make the comparison about the components rather than where they sit on the page:
+  - Before each screenshot the element is moved onto a whole pixel, because the fluid type scale leaves the React and native examples at different fractional offsets and Chromium places text by that fraction.
+  - The native popover is compared with `position: absolute` (the scheme React Aria uses). As a fixed, anchored top-layer element its glyphs land about half a pixel apart even when every box matches. The product keeps `position: fixed`.
+- **Full-page screenshot tolerance:** a change the size of the header (about 600px) stays under 0.001 on a full-page template screenshot of about 800,000px, so such baselines can miss it. Plan 7a regenerated them in full; a tighter rule for full-page shots (a `maxDiffPixels` cap) belongs in the Distribution track.
