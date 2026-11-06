@@ -20,7 +20,7 @@ props:
     description: Position relative to the trigger; it flips when there is no room.
 a11y:
   - "React route: the popover is modal, as React Aria recommends. Focus moves into it when it opens, the rest of the page is hidden from assistive technology while it is open, and an outside click lands on an underlay that closes it. Focus returns to the trigger on Escape or that click."
-  - "Without React the popover is non-modal: the page stays exposed to assistive technology and a click outside light-dismisses it. popovertarget gives the button aria-expanded; Tab moves from the button into the popover, and Escape closes it."
+  - "Without React the popover is non-modal: the page stays exposed to assistive technology and a click outside light-dismisses it. popovertarget gives the button aria-expanded; Tab moves from the button into the popover, and Escape closes it. Focus stays on the button when it opens, so its panel has the group role, named by its title, not a dialog."
   - The native popover is placed with CSS anchor positioning (anchor-name on the button, position-anchor on the panel). Browsers without it centre the panel instead.
   - Use a Dialog instead when the content needs a decision before the page can be used again.
 ---

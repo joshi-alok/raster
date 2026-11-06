@@ -215,6 +215,9 @@ test("popover, native: Tab moves from the button into the popover, Escape return
   await page.keyboard.press("Enter");
   const popover = page.locator("#grid-units");
   await expect(popover).toBeVisible();
+  // Focus stays on the button when a native popover opens, so its panel is a named group, not a dialog.
+  await expect(popover.getByRole("group", { name: "Grid units" })).toBeVisible();
+  await expect(popover.getByRole("dialog")).toHaveCount(0);
   // popovertarget exposes the expanded state in the browser's accessibility tree, not as a DOM
   // attribute, and getByRole reads only aria-expanded, so ask Chromium's tree directly.
   await expect.poll(() => browserExpanded(page, '[popovertarget="grid-units"]')).toBe(true);
