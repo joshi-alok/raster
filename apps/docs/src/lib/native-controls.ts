@@ -52,28 +52,49 @@ export function installSliderOutputs(doc: Document): () => void {
 }
 
 /**
- * Data grids: a header checkbox with data-select-all checks or clears every row checkbox in its
- * table, and shows a partial selection as indeterminate. Rows still submit as plain checkboxes.
+ * Data grids: a header checkbox with data-select-all checks or clears every enabled row checkbox in
+ * its table, and shows a partial selection as indeterminate. Rows still submit as plain checkboxes.
+ * The header is brought in line on install, on pageshow (restored form state) and after a form reset,
+ * since none of those fire change; indeterminate cannot be written in HTML.
  */
 export function installSelectAll(doc: Document): () => void {
+  const parts = (table: Element) => {
+    // React Aria's grids manage their own selection; their elements carry data-rac.
+    if (table.closest("[data-rac]")) return null;
+    const all = table.querySelector<HTMLInputElement>("thead input[data-select-all]");
+    if (!all) return null;
+    const rows = [...table.querySelectorAll<HTMLInputElement>('tbody input[type="checkbox"]:not(:disabled)')];
+    return { all, rows };
+  };
+  const sync = (table: Element) => {
+    const grid = parts(table);
+    if (!grid) return;
+    const checked = grid.rows.filter((box) => box.checked).length;
+    grid.all.checked = grid.rows.length > 0 && checked === grid.rows.length;
+    grid.all.indeterminate = checked > 0 && checked < grid.rows.length;
+  };
+  const syncAll = () => {
+    for (const table of doc.querySelectorAll("table.sw-data-grid")) sync(table);
+  };
   const onChange = (event: Event) => {
     const input = event.target;
     if (!(input instanceof HTMLInputElement) || input.type !== "checkbox") return;
     const table = input.closest("table.sw-data-grid");
-    // React Aria's grids manage their own selection; their elements carry data-rac.
-    if (!table || table.closest("[data-rac]")) return;
-    const all = table.querySelector<HTMLInputElement>("thead input[data-select-all]");
-    if (!all) return;
-    const rows = [...table.querySelectorAll<HTMLInputElement>('tbody input[type="checkbox"]')];
-    if (input === all) {
-      for (const box of rows) box.checked = all.checked;
-      all.indeterminate = false;
-      return;
-    }
-    const checked = rows.filter((box) => box.checked).length;
-    all.checked = checked === rows.length;
-    all.indeterminate = checked > 0 && checked < rows.length;
+    const grid = table && parts(table);
+    if (!table || !grid) return;
+    if (input === grid.all) for (const box of grid.rows) box.checked = grid.all.checked;
+    sync(table);
   };
+  // reset fires before the form's controls are restored, so look once they have been.
+  const onReset = () => setTimeout(syncAll, 0);
+  const view = doc.defaultView;
   doc.addEventListener("change", onChange);
-  return () => doc.removeEventListener("change", onChange);
+  doc.addEventListener("reset", onReset);
+  view?.addEventListener("pageshow", syncAll);
+  syncAll();
+  return () => {
+    doc.removeEventListener("change", onChange);
+    doc.removeEventListener("reset", onReset);
+    view?.removeEventListener("pageshow", syncAll);
+  };
 }

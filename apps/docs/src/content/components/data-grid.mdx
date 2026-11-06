@@ -10,7 +10,7 @@ props:
     description: Required. Shown above the grid and names it.
   - name: selectionMode / selectedKeys / defaultSelectedKeys / onSelectionChange
     type: '"none" | "single" | "multiple" / … / (keys) => void'
-    description: Row selection. Multiple selection adds a checkbox column and Select all.
+    description: Row selection. Multiple selection adds a checkbox column and Select all (with the default selectionBehavior, "toggle").
   - name: sortDescriptor / onSortChange
     type: "{ column, direction } / (descriptor) => void"
     description: The sorted column and direction; sort the rows yourself when it changes.
@@ -44,17 +44,31 @@ import Projects from "../../demos/data-grid/Projects";
 import projectsSource from "../../demos/data-grid/Projects.tsx?raw";
 import projectsHtml from "../../demos/data-grid/projects.html?raw";
 
-export const selectAllScript = `document.addEventListener("change", (event) => {
+export const selectAllScript = `const parts = (table) => {
+  const all = table.querySelector("thead input[data-select-all]");
+  const rows = [...table.querySelectorAll('tbody input[type="checkbox"]:not(:disabled)')];
+  return all ? { all, rows } : null;
+};
+const sync = (table) => {
+  const grid = parts(table);
+  if (!grid) return;
+  const checked = grid.rows.filter((box) => box.checked).length;
+  grid.all.checked = grid.rows.length > 0 && checked === grid.rows.length;
+  grid.all.indeterminate = checked > 0 && checked < grid.rows.length;
+};
+const syncAll = () => document.querySelectorAll("table.sw-data-grid").forEach(sync);
+document.addEventListener("change", (event) => {
   const input = event.target;
   const table = input instanceof HTMLInputElement ? input.closest("table.sw-data-grid") : null;
-  const all = table?.querySelector("thead input[data-select-all]");
-  if (!all) return;
-  const rows = [...table.querySelectorAll('tbody input[type="checkbox"]')];
-  if (input === all) rows.forEach((box) => (box.checked = all.checked));
-  const checked = rows.filter((box) => box.checked).length;
-  all.checked = checked === rows.length;
-  all.indeterminate = checked > 0 && checked < rows.length;
-});`;
+  const grid = table && parts(table);
+  if (!grid) return;
+  if (input === grid.all) grid.rows.forEach((box) => (box.checked = grid.all.checked));
+  sync(table);
+});
+// Load, back/forward and form reset don't fire change, and indeterminate can't be written in HTML.
+document.addEventListener("reset", () => setTimeout(syncAll, 0));
+addEventListener("pageshow", syncAll);
+syncAll();`;
 
 <Example title="Projects" source={projectsSource}>
   <Projects client:load />

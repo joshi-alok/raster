@@ -633,6 +633,8 @@ test("data grid, native: sort links carry aria-sort; Select all checks every row
   await expect(grid.getByRole("link", { name: /^Project ?, sort descending$/ })).toHaveAttribute("href", "?sort=name&dir=desc");
   const all = grid.getByRole("checkbox", { name: "Select all projects" });
   const rows = grid.locator('tbody input[type="checkbox"]');
+  // The page loads with Klangraum checked, so Select all starts partial, before any change.
+  await expect.poll(() => all.evaluate((el: HTMLInputElement) => el.indeterminate)).toBe(true);
   await all.check();
   for (const box of await rows.all()) await expect(box).toBeChecked();
   await rows.first().uncheck();
