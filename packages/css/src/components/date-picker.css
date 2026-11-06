@@ -1,0 +1,133 @@
+/*
+ * DatePicker and DateRangePicker.
+ * React route: a React Aria Group with class "sw-input sw-date-field" holds the date segments and a
+ * calendar button; the calendar opens in .sw-popover.sw-calendar-popover (calendar.css).
+ * Native route: <input type="date" class="sw-input sw-date-native">; a range is two of them in
+ * <fieldset class="sw-field sw-date-range-native"> with a legend.
+ */
+.sw-date-field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-block: 0;
+  padding-inline-end: 0;
+}
+
+.sw-date-field[data-focus-visible] {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+.sw-date-field[data-invalid] {
+  border-color: var(--danger);
+  border-inline-start-width: 4px;
+}
+
+.sw-date-input {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-inline-size: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.sw-date-segment {
+  padding-inline: 0.0625rem;
+  border-radius: 2px;
+  color: var(--text-primary);
+  caret-color: transparent;
+  outline: none;
+}
+
+.sw-date-segment[data-type="literal"] {
+  padding-inline: 0;
+  color: var(--text-secondary);
+}
+
+.sw-date-segment[data-placeholder] {
+  color: var(--text-muted);
+}
+
+.sw-date-segment[data-focused] {
+  background-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.sw-date-range-dash {
+  color: var(--text-secondary);
+}
+
+.sw-date-button {
+  position: relative;
+  display: grid;
+  flex: none;
+  align-self: stretch;
+  place-items: center;
+  inline-size: var(--control-height);
+  padding: 0;
+  border: 0;
+  border-inline-start: 1px solid var(--border);
+  background: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  outline: none;
+}
+
+/* Extend the hit area to the 44px touch target. */
+.sw-date-button::before {
+  content: "";
+  position: absolute;
+  inset-block: calc((var(--control-height) - var(--target-min)) / 2);
+  inset-inline: 0;
+}
+
+@media (hover: hover) {
+  .sw-date-button:hover {
+    color: var(--text-primary);
+  }
+}
+
+.sw-date-button[data-focus-visible] {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: calc(-1 * var(--focus-width) - 2px);
+}
+
+.sw-date-button svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+  stroke-width: 1.5;
+}
+
+/* Native route */
+.sw-date-native {
+  font-variant-numeric: tabular-nums;
+}
+
+.sw-date-native::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+.sw-date-range-native {
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.sw-date-range-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.sw-date-range-fields > .sw-field {
+  flex: 1 1 10rem;
+}
+
+@media (forced-colors: active) {
+  .sw-date-segment[data-focused] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+}

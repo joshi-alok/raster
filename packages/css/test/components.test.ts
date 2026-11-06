@@ -998,3 +998,40 @@ describe("calendar", () => {
     );
   });
 });
+
+describe("date picker", () => {
+  it("lays the segments and the calendar button out in one input", () => {
+    const r = rule(".sw-date-field");
+    expect(r).toMatch(/display:\s*flex/);
+    expect(r).toMatch(/padding-block:\s*0/);
+    expect(r).toMatch(/padding-inline-end:\s*0/);
+  });
+
+  it("rings the whole field while a segment has keyboard focus", () => {
+    expect(rule(".sw-date-field[data-focus-visible]")).toMatch(/outline:\s*var\(--focus-width\) solid var\(--accent\)/);
+  });
+
+  it("marks an invalid field with a thicker leading edge as well as colour", () => {
+    const r = rule(".sw-date-field[data-invalid]");
+    expect(r).toMatch(/border-color:\s*var\(--danger\)/);
+    expect(r).toMatch(/border-inline-start-width:\s*4px/);
+  });
+
+  it("fills the focused segment with the accent, and keeps it visible in forced colours", () => {
+    expect(rule(".sw-date-segment[data-focused]")).toMatch(/background-color:\s*var\(--accent\)/);
+    expect(css).toMatch(
+      /@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-date-segment\[data-focused\]\s*\{[^}]*forced-color-adjust:\s*none[^}]*background-color:\s*highlight/i,
+    );
+  });
+
+  it("puts the calendar button behind a hairline at the inline end", () => {
+    const r = rule(".sw-date-button");
+    expect(r).toMatch(/inline-size:\s*var\(--control-height\)/);
+    expect(r).toMatch(/border-inline-start:\s*1px solid var\(--border\)/);
+  });
+
+  it("sets a native date range as two fields side by side that wrap", () => {
+    expect(rule(".sw-date-range-fields")).toMatch(/flex-wrap:\s*wrap/);
+    expect(rule(".sw-date-range-native")).toMatch(/border:\s*0/);
+  });
+});

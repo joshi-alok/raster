@@ -1,7 +1,8 @@
 import { isWeekend, parseDate } from "@internationalized/date";
 import { act } from "react";
 import { Calendar, RangeCalendar } from "../src/forms/Calendar";
-import { render, screen, within } from "@testing-library/react";
+import { DatePicker, DateRangePicker } from "../src/forms/DatePicker";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { ComboBox, ComboBoxItem } from "../src/forms/ComboBox";
@@ -121,5 +122,57 @@ describe("RangeCalendar", () => {
     expect(container.querySelector(".sw-calendar-cell[data-selection-start]")).toHaveTextContent("9");
     expect(container.querySelector(".sw-calendar-cell[data-selection-end]")).toHaveTextContent("13");
     expect(container.querySelectorAll(".sw-calendar-cell[data-selected]")).toHaveLength(5);
+  });
+});
+
+describe("DatePicker", () => {
+  it("renders a labelled group of date segments with a calendar button", () => {
+    const { container } = render(<DatePicker label="Delivery date" defaultValue={parseDate("2026-03-12")} />);
+    expect(container.querySelector(":scope > :not(template)")).toHaveClass("sw-field", "sw-date-picker");
+    const group = screen.getByRole("group", { name: "Delivery date" });
+    expect(group).toHaveClass("sw-input", "sw-date-field");
+    expect(within(group).getAllByRole("spinbutton").map((s) => s.textContent)).toEqual(["3", "12", "2026"]);
+    expect(within(group).getByRole("button", { name: /Calendar/ })).toHaveClass("sw-date-button");
+  });
+
+  it("opens a calendar on its value and closes when a day is chosen", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<DatePicker label="Delivery date" defaultValue={parseDate("2026-03-12")} onChange={onChange} />);
+    await user.click(screen.getByRole("button", { name: /Calendar/ }));
+    const dialog = await screen.findByRole("dialog");
+    expect(dialog.closest(".sw-popover")).toHaveClass("sw-calendar-popover");
+    expect(within(dialog).getByRole("heading")).toHaveTextContent("March 2026");
+    await user.click(within(dialog).getByText("20"));
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(String(onChange.mock.calls.at(-1)?.[0])).toBe("2026-03-20");
+    expect(screen.getAllByRole("spinbutton")[1]).toHaveTextContent("20");
+  });
+
+  it("has no structural accessibility violations", async () => {
+    const { container } = render(
+      <DatePicker label="Delivery date" description="From 2 March." defaultValue={parseDate("2026-03-12")} />,
+    );
+    await expectAccessible(container);
+  });
+});
+
+describe("DateRangePicker", () => {
+  const period = { start: parseDate("2026-03-09"), end: parseDate("2026-03-13") };
+
+  it("renders start and end segments in one labelled group", () => {
+    render(<DateRangePicker label="Project period" defaultValue={period} />);
+    const group = screen.getByRole("group", { name: "Project period" });
+    expect(within(group).getAllByRole("spinbutton").map((s) => s.textContent)).toEqual(["3", "9", "2026", "3", "13", "2026"]);
+  });
+
+  it("opens a range calendar showing the range", async () => {
+    const user = userEvent.setup();
+    render(<DateRangePicker label="Project period" defaultValue={period} />);
+    await user.click(screen.getByRole("button", { name: /Calendar/ }));
+    const dialog = await screen.findByRole("dialog");
+    expect(dialog.querySelector(".sw-range-calendar")).not.toBeNull();
+    expect(dialog.querySelector(".sw-calendar-cell[data-selection-start]")).toHaveTextContent("9");
+    expect(dialog.querySelector(".sw-calendar-cell[data-selection-end]")).toHaveTextContent("13");
   });
 });

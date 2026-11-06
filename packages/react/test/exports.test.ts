@@ -25,6 +25,7 @@ describe("public API", () => {
       "ProgressBar", "Meter", "meterState", "meterRegion",
       "Banner", "Skeleton", "EmptyState", "Media", "Avatar", "initials", "Badge", "DescriptionList", "DescriptionItem", "Stat",
       "ComboBox", "ComboBoxItem", "Calendar", "RangeCalendar",
+      "DatePicker", "DateRangePicker",
       "cx",
     ];
     for (const name of expected) expect(typeof (raster as Record<string, unknown>)[name], name).toBe("function");
