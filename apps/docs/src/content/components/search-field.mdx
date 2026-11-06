@@ -1,0 +1,57 @@
+---
+title: SearchField
+group: Forms
+order: 10
+summary: A search input with a clear button; Escape clears it and Enter submits.
+interactive: true
+props:
+  - name: label
+    type: ReactNode
+    description: Required. The visible label.
+  - name: placeholder
+    type: string
+    description: An example of what to type. The native route needs one, because the clear button hides while it shows.
+  - name: description / errorMessage
+    type: ReactNode
+    description: Help text, and the message shown when the field is invalid.
+  - name: value / defaultValue / onChange
+    type: string / string / (value) => void
+    description: Controlled or starting text, and its change handler.
+  - name: onSubmit / onClear
+    type: (value) => void / () => void
+    description: Called on Enter, and when the field is cleared.
+  - name: clearLabel
+    type: string
+    default: '"Clear search"'
+    description: Accessible name of the clear button.
+a11y:
+  - The input has the searchbox role and its label; the description is announced with it.
+  - The clear button is left out of the tab order on both routes, because Escape clears the field from the keyboard.
+  - The browser's own clear control is hidden so there is only one.
+  - Without React, the clear button needs the short script below; Escape works without it.
+---
+import CodeBlock from "../../components/CodeBlock.astro";
+import Example from "../../components/Example.astro";
+import NativeExample from "../../components/NativeExample.astro";
+import Projects from "../../demos/search-field/Projects";
+import projectsSource from "../../demos/search-field/Projects.tsx?raw";
+import projectsHtml from "../../demos/search-field/projects.html?raw";
+
+export const clearScript = `document.addEventListener("click", (event) => {
+  const button = event.target instanceof Element ? event.target.closest(".sw-search-clear") : null;
+  const input = button?.parentElement?.querySelector('input[type="search"]');
+  if (!input) return;
+  input.value = "";
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+  input.focus();
+});`;
+
+<Example title="Project search" source={projectsSource}>
+  <Projects client:load />
+</Example>
+
+<NativeExample title="Project search without React" html={projectsHtml} />
+
+The native clear button needs this script once per page:
+
+<CodeBlock code={clearScript} label="Search clear script" />

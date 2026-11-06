@@ -1,0 +1,36 @@
+---
+title: SegmentedControl
+group: Forms
+order: 9
+summary: One choice from two to five options shown as a joined row, such as a view or a time range.
+interactive: true
+props:
+  - name: label
+    type: ReactNode
+    description: Required. Names the group.
+  - name: selectedKey / defaultSelectedKey / onSelectionChange
+    type: Key / Key / (key) => void
+    description: Controlled or starting selection, and its change handler. One segment is always selected.
+  - name: isDisabled
+    type: boolean
+    description: Disables every segment.
+  - name: Segment id / children / isDisabled
+    type: Key / ReactNode / boolean
+    description: The segment's key, its label, and whether it can be chosen.
+a11y:
+  - A radio group - one segment is always selected and arrow keys move between segments on both routes.
+  - Without React, the segments are radio inputs inside their labels, so the choice submits with a form and needs no script.
+  - The selected segment is marked by an inset accent line and an underline, not colour alone.
+  - Use RadioGroup instead when the options need descriptions or there are more than five.
+---
+import Example from "../../components/Example.astro";
+import NativeExample from "../../components/NativeExample.astro";
+import View from "../../demos/segmented-control/View";
+import viewSource from "../../demos/segmented-control/View.tsx?raw";
+import viewHtml from "../../demos/segmented-control/view.html?raw";
+
+<Example title="View" source={viewSource}>
+  <View client:load />
+</Example>
+
+<NativeExample title="View without React" html={viewHtml} />

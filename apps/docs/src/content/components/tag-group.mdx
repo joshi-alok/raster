@@ -1,0 +1,40 @@
+---
+title: TagGroup
+group: Forms
+order: 8
+summary: Selectable chips for filtering a list by several values at once, or for one choice among a few.
+interactive: true
+props:
+  - name: label
+    type: ReactNode
+    description: Required. Names the group.
+  - name: description
+    type: ReactNode
+    description: Help text below the chips.
+  - name: selectionMode
+    type: '"multiple" | "single"'
+    default: '"multiple"'
+    description: Multiple for filters; single when exactly one value applies.
+  - name: selectedKeys / defaultSelectedKeys / onSelectionChange
+    type: Iterable<Key> / Iterable<Key> / (keys) => void
+    description: Controlled or starting selection, and its change handler.
+  - name: Chip id / children / isDisabled
+    type: Key / string / boolean
+    description: The chip's key, its text (also its name), and whether it can be chosen.
+a11y:
+  - React route - a grid of tags; arrow keys move between chips, Space toggles one, and selection is announced.
+  - Without React, each chip is a real checkbox (or radio for a single choice) inside its label, so it submits with a form and works without script; Tab moves between chips and Space toggles.
+  - A selected chip shows a check and a tint, never colour alone; in forced-colours mode its border uses the system highlight.
+  - Chips are drawn 32px tall with a 44px hit area.
+---
+import Example from "../../components/Example.astro";
+import NativeExample from "../../components/NativeExample.astro";
+import Disciplines from "../../demos/tag-group/Disciplines";
+import disciplinesSource from "../../demos/tag-group/Disciplines.tsx?raw";
+import disciplinesHtml from "../../demos/tag-group/disciplines.html?raw";
+
+<Example title="Disciplines" source={disciplinesSource}>
+  <Disciplines client:load />
+</Example>
+
+<NativeExample title="Disciplines without React" html={disciplinesHtml} />
