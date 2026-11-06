@@ -1147,6 +1147,20 @@ describe("data grid", () => {
     expect(rule(".sw-data-grid-resizer:before")).toMatch(/border-inline-end:\s*1px solid var\(--border-strong\)/);
   });
 
+  // Virtualised, React Aria draws divs with grid roles, not th and td, so the Table cell rules
+  // cannot reach them: the grid gives its own cells the same padding, hairlines and header type.
+  it("styles virtualised cells by class, since they are divs", () => {
+    const cells = rule(".sw-data-grid-virtualized :is(.sw-data-grid-column, .sw-data-grid-cell)");
+    expect(cells).toMatch(/padding-inline:\s*var\(--space-4\)/);
+    expect(cells).toMatch(/border-block-end:\s*1px solid var\(--border\)/);
+    expect(cells).toMatch(/align-items:\s*center/);
+    expect(cells).toMatch(/block-size:\s*100%/);
+    const head = rule(".sw-data-grid-virtualized .sw-data-grid-column");
+    expect(head).toMatch(/border-block-end-color:\s*var\(--text-primary\)/);
+    expect(head).toMatch(/color:\s*var\(--text-secondary\)/);
+    expect(css).not.toMatch(/\.sw-data-grid-virtualized :is\(th, td\)/);
+  });
+
   it("keeps selected rows visible in forced colours", () => {
     expect(css).toMatch(
       /@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-data-grid-row\[data-selected\] > \*[^{]*\{[^}]*forced-color-adjust:\s*none[^}]*background-color:\s*highlight/i,

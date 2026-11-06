@@ -212,11 +212,29 @@
   outline-offset: calc(-1 * var(--focus-width));
 }
 
-/* Virtualised rows have a fixed height, so cells centre their content instead of padding it. */
-.sw-data-grid-virtualized :is(th, td) {
+/*
+ * Virtualised, React Aria draws divs with grid roles instead of th and td, so Table's cell rules
+ * don't reach them: the cells take the same padding, hairlines and header type by class. Rows have
+ * a fixed height and each cell fills the wrapper React Aria positions it in, so cells centre their
+ * content instead of padding it.
+ */
+.sw-data-grid-virtualized :is(.sw-data-grid-column, .sw-data-grid-cell) {
   display: flex;
+  block-size: 100%;
   align-items: center;
-  padding-block: 0;
+  padding-inline: var(--space-4);
+  border-block-end: 1px solid var(--border);
+}
+
+.sw-data-grid-virtualized .sw-data-grid-column {
+  border-block-end-color: var(--text-primary);
+  background-color: var(--surface-page);
+  color: var(--text-secondary);
+}
+
+.sw-data-grid-virtualized .sw-data-grid-select {
+  justify-content: center;
+  padding-inline: 0;
 }
 
 .sw-data-grid-virtualized .sw-data-grid-numeric {
