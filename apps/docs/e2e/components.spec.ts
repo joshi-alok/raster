@@ -10,7 +10,7 @@ test("the index links to every component page", async ({ page }) => {
 });
 
 for (const path of componentPages) {
-  test(`${path} has examples with code, props, accessibility notes and breadcrumbs`, async ({ page }) => {
+  test(`${path} has examples with code (React, or HTML for native examples), props, accessibility notes and breadcrumbs`, async ({ page }) => {
     await page.goto(path);
     const title = (await page.locator("h1").textContent())?.trim() ?? "";
     const crumbs = page.getByRole("navigation", { name: "Breadcrumbs", exact: true });
@@ -19,7 +19,7 @@ for (const path of componentPages) {
     const examples = page.locator("figure.docs-example");
     expect(await examples.count()).toBeGreaterThan(0);
     for (const example of await examples.all()) {
-      await expect(example.getByRole("region", { name: /^React code: / })).toBeVisible();
+      await expect(example.getByRole("region", { name: /^(React|HTML) code: / }).first()).toBeVisible();
     }
 
     await expect(page.getByRole("heading", { level: 2, name: "Props" })).toBeVisible();

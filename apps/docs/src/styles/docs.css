@@ -453,3 +453,9 @@
     text-transform: uppercase;
   }
 }
+
+/* Examples that need a narrow container, such as the compact header. */
+.docs-frame-narrow {
+  max-inline-size: 22.5rem;
+  border: 1px solid var(--border);
+}
