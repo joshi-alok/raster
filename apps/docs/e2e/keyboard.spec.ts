@@ -274,3 +274,101 @@ for (const route of ["React", "native"] as const) {
     await expect(nav.getByRole("link", { name: "All components" })).toBeVisible();
   });
 }
+
+test("tag group, React: arrows move between chips and Space toggles", async ({ page }) => {
+  await page.goto("/components/tag-group/");
+  await waitForIslands(page);
+  const group = example(page, "Disciplines");
+  const identity = group.getByRole("row", { name: "Identity" });
+  const wayfinding = group.getByRole("row", { name: "Wayfinding" });
+  await tabTo(page, identity);
+  await page.keyboard.press("ArrowRight");
+  await expect(wayfinding).toBeFocused();
+  await page.keyboard.press("Space");
+  await expect(wayfinding).toHaveAttribute("aria-selected", "true");
+  await expect(identity).toHaveAttribute("aria-selected", "true");
+});
+
+test("tag group, native: Tab moves between checkboxes and Space toggles", async ({ page }) => {
+  await page.goto("/components/tag-group/");
+  const group = example(page, "Disciplines without React");
+  const identity = group.getByRole("checkbox", { name: "Identity" });
+  const wayfinding = group.getByRole("checkbox", { name: "Wayfinding" });
+  await tabTo(page, identity);
+  await page.keyboard.press("Space");
+  await expect(identity).not.toBeChecked();
+  await page.keyboard.press("Tab");
+  await expect(wayfinding).toBeFocused();
+  await page.keyboard.press("Space");
+  await expect(wayfinding).toBeChecked();
+});
+
+test("segmented control, React: arrows move and Space selects; one segment stays selected", async ({ page }) => {
+  await page.goto("/components/segmented-control/");
+  await waitForIslands(page);
+  const view = example(page, "View");
+  await tabTo(page, view.getByRole("radio", { name: "Grid" }));
+  await page.keyboard.press("ArrowRight");
+  await expect(view.getByRole("radio", { name: "List" })).toBeFocused();
+  await page.keyboard.press("Space");
+  await expect(view.getByRole("radio", { name: "List" })).toBeChecked();
+  await expect(view.getByRole("radio", { name: "Grid" })).not.toBeChecked();
+});
+
+test("segmented control, native: arrows move the selection", async ({ page }) => {
+  await page.goto("/components/segmented-control/");
+  const view = example(page, "View without React");
+  await tabTo(page, view.getByRole("radio", { name: "Grid" }));
+  await page.keyboard.press("ArrowRight");
+  await expect(view.getByRole("radio", { name: "List" })).toBeFocused();
+  await expect(view.getByRole("radio", { name: "List" })).toBeChecked();
+});
+
+for (const route of ["React", "native"] as const) {
+  test(`search field, ${route}: Escape clears; the clear button clears and returns focus`, async ({ page }) => {
+    await page.goto("/components/search-field/");
+    await waitForIslands(page);
+    const field = example(page, route === "React" ? "Project search" : "Project search without React");
+    const input = field.getByRole("searchbox", { name: "Search projects" });
+    const clear = field.getByRole("button", { name: "Clear search" });
+    await tabTo(page, input);
+    await expect(clear).toBeHidden();
+    await page.keyboard.type("Linie");
+    await expect(clear).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(input).toHaveValue("");
+    await page.keyboard.type("Atlas");
+    await clear.click();
+    await expect(input).toHaveValue("");
+    await expect(input).toBeFocused();
+  });
+
+  test(`number field, ${route}: arrow keys step the value`, async ({ page }) => {
+    await page.goto("/components/number-field/");
+    await waitForIslands(page);
+    const field = example(page, route === "React" ? "Copies" : "Copies without React");
+    const input = route === "React" ? field.getByRole("textbox", { name: "Copies" }) : field.getByRole("spinbutton", { name: "Copies" });
+    await tabTo(page, input);
+    await page.keyboard.press("ArrowUp");
+    await expect(input).toHaveValue("3");
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("ArrowDown");
+    await expect(input).toHaveValue("1");
+  });
+
+  test(`slider, ${route}: arrows step, Home and End reach the limits, the value is shown`, async ({ page }) => {
+    await page.goto("/components/slider/");
+    await waitForIslands(page);
+    const field = example(page, route === "React" ? "Gutter" : "Gutter without React");
+    const slider = field.getByRole("slider", { name: "Gutter (px)" });
+    const output = field.locator(".sw-slider-output");
+    await tabTo(page, slider);
+    await page.keyboard.press("ArrowRight");
+    await expect(slider).toHaveValue("25");
+    await expect(output).toHaveText("25");
+    await page.keyboard.press("End");
+    await expect(output).toHaveText("32");
+    await page.keyboard.press("Home");
+    await expect(output).toHaveText("16");
+  });
+}
