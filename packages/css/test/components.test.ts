@@ -1087,3 +1087,69 @@ describe("file upload", () => {
     expect(rule(".sw-file-name")).toMatch(/text-overflow:\s*ellipsis/);
   });
 });
+
+describe("data grid", () => {
+  it("scrolls inside its own region", () => {
+    expect(rule(".sw-data-grid-scroll")).toMatch(/overflow:\s*auto/);
+  });
+
+  it("keeps cell borders on sticky cells by not collapsing them", () => {
+    const r = rule(".sw-data-grid");
+    expect(r).toMatch(/border-collapse:\s*separate/);
+    expect(r).toMatch(/border-spacing:\s*0/);
+  });
+
+  it("sticks the header row to the top on a solid background", () => {
+    const r = rule(".sw-data-grid thead th");
+    expect(r).toMatch(/position:\s*sticky/);
+    expect(r).toMatch(/inset-block-start:\s*0/);
+    expect(r).toMatch(/background-color:\s*var\(--surface-page\)/);
+  });
+
+  it("sticks the selection column and the sticky column to the inline start", () => {
+    const r = rule(".sw-data-grid :is(.sw-data-grid-select, .sw-data-grid-sticky)");
+    expect(r).toMatch(/position:\s*sticky/);
+    expect(r).toMatch(/inset-inline-start:\s*0/);
+    expect(rule(".sw-data-grid-selectable .sw-data-grid-sticky")).toMatch(/inset-inline-start:\s*var\(--target-min\)/);
+  });
+
+  it("ends the sticky column with a hairline drawn as a border", () => {
+    expect(rule(".sw-data-grid .sw-data-grid-sticky:after")).toMatch(/border-inline-end:\s*1px solid var\(--border\)/);
+  });
+
+  it("aligns numbers at the end in tabular mono", () => {
+    const r = rule(".sw-data-grid-numeric");
+    expect(r).toMatch(/text-align:\s*end/);
+    expect(r).toMatch(/font-family:\s*var\(--font-mono\)/);
+  });
+
+  it("draws the sort chevrons with borders and hides the unused one when sorted", () => {
+    // Lightning CSS joins the grouped ::before/::after rule onto one line and drops currentColor,
+    // the default border colour, from the shorthand.
+    expect(css).toMatch(
+      /\.sw-data-grid-sort-icon::?before,\s*\.sw-data-grid-sort-icon::?after\s*\{[^}]*border-block-start:\s*1\.5px solid(?:\s+currentColor)?\s*;/i,
+    );
+    // Lightning CSS merges these two rules, which have the same body, into one grouped rule.
+    expect(css).toMatch(
+      /\.sw-data-grid-sort-icon\[data-direction="?ascending"?\]::?after,\s*\.sw-data-grid-sort-icon\[data-direction="?descending"?\]::?before\s*\{[^}]*display:\s*none/,
+    );
+  });
+
+  it("marks a selected row with a fill and a 2px bar on both routes", () => {
+    expect(css).toMatch(
+      /\.sw-data-grid-row\[data-selected\] > \*,\s*\.sw-data-grid tr:has\( > td > input\[type="?checkbox"?\]:checked\) > \*\s*\{[^}]*background-color:\s*var\(--accent-subtle\)/,
+    );
+    expect(css).toMatch(/:first-child:before\s*\{[^}]*border-inline-start:\s*2px solid var\(--accent\)/);
+  });
+
+  it("draws the resize handle as a border with a 24px hit area", () => {
+    expect(rule(".sw-data-grid-resizer")).toMatch(/inline-size:\s*1\.5rem/);
+    expect(rule(".sw-data-grid-resizer:before")).toMatch(/border-inline-end:\s*1px solid var\(--border-strong\)/);
+  });
+
+  it("keeps selected rows visible in forced colours", () => {
+    expect(css).toMatch(
+      /@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-data-grid-row\[data-selected\] > \*[^{]*\{[^}]*forced-color-adjust:\s*none[^}]*background-color:\s*highlight/i,
+    );
+  });
+});

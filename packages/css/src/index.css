@@ -47,3 +47,4 @@
 @import "./components/calendar.css" layer(raster.components);
 @import "./components/date-picker.css" layer(raster.components);
 @import "./components/file-upload.css" layer(raster.components);
+@import "./components/data-grid.css" layer(raster.components);
