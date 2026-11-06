@@ -164,6 +164,19 @@ test("compact menu, React: opens, holds focus, Escape returns it", async ({ page
   await expect(menuButton).toBeFocused();
 });
 
+test("compact menu, React: a link in the menu navigates even with reduced motion", async ({ page }) => {
+  // With no exit animation the menu unmounts at once; closing during the click would remove the
+  // link before the browser follows it.
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/components/header/");
+  await waitForIslands(page);
+  await example(page, "Compact menu").getByRole("button", { name: "Menu" }).click();
+  const menu = page.getByRole("dialog", { name: "Menu" });
+  await expect(menu).toBeVisible();
+  await menu.getByRole("link", { name: "Templates" }).click();
+  await expect(page).toHaveURL(/\/templates\/$/);
+});
+
 test("disclosure, React: Enter and Space toggle; the accordion keeps one row open", async ({ page }) => {
   await page.goto("/components/disclosure/");
   await waitForIslands(page);

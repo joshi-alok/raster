@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { Link } from "../src/actions/Link";
@@ -127,6 +127,9 @@ describe("Header", () => {
           <Link href="/components" aria-current="page">
             Components
           </Link>
+          <Link href="https://example.com/source" external>
+            Source
+          </Link>
         </Header>
         <main id="main" tabIndex={-1}>
           Content
@@ -199,6 +202,48 @@ describe("Header", () => {
     const menu = await screen.findByRole("dialog", { name: "Menu" });
     await user.click(within(menu).getByRole("link", { name: "Foundations" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+  });
+
+  it("keeps the link in the document until its click has finished dispatching", async () => {
+    const user = userEvent.setup();
+    render(<Page />);
+    await user.click(screen.getByRole("button", { name: "Menu" }));
+    const menu = await screen.findByRole("dialog", { name: "Menu" });
+    const link = within(menu).getByRole("link", { name: "Foundations" });
+    fireEvent.click(link);
+    // The browser follows the link after dispatch; a link removed during dispatch may not navigate.
+    expect(link.isConnected).toBe(true);
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+  });
+
+  const settle = () => new Promise((resolve) => setTimeout(resolve, 50));
+
+  it.each([
+    ["Ctrl", { ctrlKey: true }],
+    ["Meta", { metaKey: true }],
+    ["Shift", { shiftKey: true }],
+    ["Alt", { altKey: true }],
+    ["middle-button", { button: 1 }],
+  ])("keeps the menu open on a %s click, which opens the link elsewhere", async (_name, init) => {
+    const user = userEvent.setup();
+    render(<Page />);
+    await user.click(screen.getByRole("button", { name: "Menu" }));
+    const menu = await screen.findByRole("dialog", { name: "Menu" });
+    fireEvent.click(within(menu).getByRole("link", { name: "Foundations" }), init);
+    await settle();
+    expect(screen.getByRole("dialog", { name: "Menu" })).toBeInTheDocument();
+  });
+
+  it("keeps the menu open when a link opens in another browsing context", async () => {
+    const user = userEvent.setup();
+    render(<Page />);
+    await user.click(screen.getByRole("button", { name: "Menu" }));
+    const menu = await screen.findByRole("dialog", { name: "Menu" });
+    const source = within(menu).getByRole("link", { name: /Source/ });
+    expect(source).toHaveAttribute("target", "_blank");
+    fireEvent.click(source);
+    await settle();
+    expect(screen.getByRole("dialog", { name: "Menu" })).toBeInTheDocument();
   });
 
   it("closes the menu from Close and returns focus to the menu button", async () => {

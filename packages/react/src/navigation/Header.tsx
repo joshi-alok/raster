@@ -75,7 +75,7 @@ export function Header({
                         aria-label={navLabel}
                         // Capture phase: React Aria's Link stops the click from bubbling past itself.
                         onClickCapture={(event: MouseEvent<HTMLElement>) => {
-                          if ((event.target as Element).closest("a")) close();
+                          if (opensInPlace(event)) closeAfterClick(close);
                         }}
                       >
                         {children}
@@ -90,4 +90,22 @@ export function Header({
       </div>
     </header>
   );
+}
+
+/**
+ * Whether a click inside the menu follows a link in this page. Modified and non-primary clicks
+ * open the link elsewhere (new tab, window, download), as does a link with a target other than
+ * _self; the menu stays open for those.
+ */
+function opensInPlace(event: MouseEvent<HTMLElement>): boolean {
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return false;
+  const link = (event.target as Element).closest("a");
+  if (!link) return false;
+  const target = link.getAttribute("target");
+  return !target || target === "_self";
+}
+
+/** Close once the click has finished dispatching, so the link is still in the document when it is followed. */
+function closeAfterClick(close: () => void) {
+  window.setTimeout(close, 0);
 }
