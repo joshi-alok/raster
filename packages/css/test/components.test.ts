@@ -808,3 +808,126 @@ describe("slider", () => {
     expect(css).toMatch(forced("-moz-range-thumb", "Highlight"));
   });
 });
+
+describe("progress bar and meter", () => {
+  it("keeps the meter word with its dot when the value wraps", () => {
+    expect(rule(".sw-meter-word")).toMatch(/white-space:\s*nowrap/);
+  });
+
+  it("moves a long value onto its own line instead of breaking it", () => {
+    expect(rule(".sw-progress-head")).toMatch(/flex-wrap:\s*wrap/);
+    expect(rule(".sw-progress-value")).toMatch(/margin-inline-start:\s*auto/);
+  });
+
+  it("draw a 4px bar with the browser's appearance removed", () => {
+    expect(css).toMatch(/\.sw-progress-bar,\s*\.sw-meter-bar\s*\{[^}]*appearance:\s*none[^}]*block-size:\s*4px/);
+  });
+
+  it("fill the progress value with the accent in every engine", () => {
+    expect(css).toMatch(/\.sw-progress-bar::-webkit-progress-value\s*\{[^}]*background-color:\s*var\(--accent\)/);
+    expect(css).toMatch(/\.sw-progress-bar::-moz-progress-bar\s*\{[^}]*background-color:\s*var\(--accent\)/);
+  });
+
+  it("colour the meter by data-state, not by vendor pseudo-classes", () => {
+    expect(rule('.sw-meter-bar[data-state="optimum"]')).toMatch(/--_meter-fill:\s*var\(--success\)/);
+    expect(rule('.sw-meter-bar[data-state="suboptimum"]')).toMatch(/--_meter-fill:\s*var\(--warning\)/);
+    expect(rule('.sw-meter-bar[data-state="poor"]')).toMatch(/--_meter-fill:\s*var\(--danger\)/);
+    expect(css).not.toMatch(/-moz-meter-(optimum|sub)/);
+  });
+
+  it("keep bars visible in forced colours", () => {
+    expect(css).toMatch(/@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-progress-bar::-webkit-progress-value[\s\S]*?background-color:\s*highlight/i);
+    expect(css).toMatch(/@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-meter-bar::-moz-meter-bar[\s\S]*?background-color:\s*highlight/i);
+  });
+});
+
+describe("skeleton", () => {
+  it("is a static block on the subtle surface that pulses only with full motion", () => {
+    expect(rule(".sw-skeleton")).toMatch(/background-color:\s*var\(--surface-subtle\)/);
+    expect(rule(".sw-skeleton")).toMatch(/animation:\s*sw-skeleton-pulse/);
+    expect(css).toMatch(/\[data-motion="?reduce"?\] \.sw-skeleton\s*\{[^}]*animation:\s*none/);
+    expect(css).not.toMatch(/\.sw-skeleton[^{]*\{[^}]*gradient/);
+  });
+
+  it("stays visible in forced colours", () => {
+    expect(css).toMatch(/@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-skeleton\s*\{[^}]*border:\s*1px solid canvastext/i);
+  });
+});
+
+describe("banner", () => {
+  it("is a full-width strip with a 4px leading rule in the tone colour", () => {
+    expect(rule(".sw-banner")).toMatch(/border-inline-start:\s*4px solid var\(--_tone\)/);
+    expect(rule('.sw-banner[data-tone="danger"]')).toMatch(/--_tone:\s*var\(--danger\)/);
+  });
+
+  it("aligns its content with the page's content width", () => {
+    expect(rule(".sw-banner-inner")).toMatch(/max-inline-size:\s*calc\(var\(--content-max\) \+ 2 \* var\(--page-margin\)\)/);
+  });
+
+  it("moves the dismiss button under the text when the banner is narrow", () => {
+    expect(rule(".sw-banner")).toMatch(/container:\s*sw-banner \/ inline-size/);
+    expect(css).toMatch(/@container sw-banner \(width < 480px\)\s*\{[\s\S]*?\.sw-banner-dismiss\s*\{[^}]*grid-column:\s*2/);
+  });
+});
+
+describe("empty state", () => {
+  it("hangs its label in a narrow column once its container is 600px wide", () => {
+    // Lightning CSS prints (min-width: 600px) in range syntax, as (width >= 600px).
+    expect(css).toMatch(/@container \(width >= 600px\)\s*\{[\s\S]*?\.sw-empty\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\) minmax\(0,\s*3fr\)/);
+  });
+
+  it("caps its text at the reading measure", () => {
+    expect(rule(".sw-empty-text")).toMatch(/max-inline-size:\s*66ch/);
+  });
+});
+
+describe("media", () => {
+  it("frames media at a fixed ratio so the page does not shift as it loads", () => {
+    expect(rule(".sw-media-frame")).toMatch(/aspect-ratio:\s*var\(--_ratio,\s*16 \/ 9\)/);
+    expect(rule('.sw-media[data-ratio="4:3"]')).toMatch(/--_ratio:\s*4 \/ 3/);
+    expect(rule('.sw-media[data-ratio="21:9"]')).toMatch(/--_ratio:\s*21 \/ 9/);
+  });
+
+  it("covers the frame with the image, video or drawing", () => {
+    expect(css).toMatch(/\.sw-media-frame > :is\(img,\s*video,\s*svg,\s*iframe\)\s*\{[^}]*object-fit:\s*cover/);
+  });
+});
+
+describe("avatar and badge", () => {
+  it("draws the avatar square with the theme radius, never a circle", () => {
+    const r = rule(".sw-avatar");
+    expect(r).toMatch(/border-radius:\s*var\(--radius\)/);
+    expect(r).toMatch(/font-family:\s*var\(--font-mono\)/);
+    expect(rule('.sw-avatar[data-size="lg"]')).toMatch(/--_size:\s*3\.5rem/);
+  });
+
+  it("sets badges in tabular mono figures with the theme radius", () => {
+    const r = rule(".sw-badge");
+    expect(r).toMatch(/border-radius:\s*var\(--radius\)/);
+    expect(r).toMatch(/font-variant-numeric:\s*tabular-nums/);
+    expect(rule('.sw-badge[data-tone="danger"]')).toMatch(/background-color:\s*var\(--danger\)/);
+  });
+
+  it("keeps avatars and badges outlined in forced colours", () => {
+    expect(css).toMatch(/@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-avatar,\s*\.sw-badge\s*\{[^}]*border:\s*1px solid canvastext/i);
+  });
+});
+
+describe("description list and stat", () => {
+  it("lays out facts as hairline-topped cells with mono terms", () => {
+    expect(rule(".sw-dl-item")).toMatch(/border-block-start:\s*1px solid var\(--border\)/);
+    expect(rule(".sw-dl dt")).toMatch(/font-family:\s*var\(--font-mono\)/);
+  });
+
+  it("sets the stat value large and light over a signal rule", () => {
+    expect(rule(".sw-stat")).toMatch(/border-block-start:\s*2px solid var\(--brand-signal\)/);
+    const value = rule(".sw-stat-value");
+    expect(value).toMatch(/font-size:\s*var\(--text-h1-size\)/);
+    expect(value).toMatch(/font-weight:\s*300/);
+  });
+
+  it("keeps the change neutral in colour and mirrors its arrow in RTL", () => {
+    expect(rule(".sw-stat-change")).toMatch(/color:\s*var\(--text-secondary\)/);
+    expect(css).toMatch(/\.sw-stat-change svg:dir\(rtl\)\s*\{[^}]*transform:\s*scaleX\(-1\)/);
+  });
+});

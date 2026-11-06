@@ -1,0 +1,32 @@
+---
+title: ProgressBar
+group: Display
+order: 5
+summary: How far a task has got, when its length is known, as a 4px bar with the value in mono.
+props:
+  - name: label
+    type: ReactNode
+    description: Required. Names the bar.
+  - name: value
+    type: number
+    description: Required. The current amount.
+  - name: minValue / maxValue
+    type: number
+    default: "0 / 100"
+    description: The range.
+  - name: valueLabel
+    type: string
+    description: Text shown and announced instead of the percentage, such as "12 of 20 pages".
+a11y:
+  - Both routes render a native progress element, labelled by its label element; screen readers announce the value.
+  - The value beside the label is hidden from screen readers so it is not read twice.
+  - In forced-colours mode the track is outlined and the fill uses the system highlight colour.
+  - For waits of unknown length use Skeleton; there is no indeterminate bar.
+---
+import Example from "../../components/Example.astro";
+import Upload from "../../demos/progress-bar/Upload";
+import uploadSource from "../../demos/progress-bar/Upload.tsx?raw";
+
+<Example title="Upload" source={uploadSource} of={Upload}>
+  <Upload />
+</Example>

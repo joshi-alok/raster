@@ -1,0 +1,38 @@
+---
+title: Avatar
+group: Display
+order: 11
+summary: A person's photo or initials in a square, sized to sit beside text or in a list of people.
+props:
+  - name: name
+    type: string
+    description: Required. The text alternative and the source of the initials.
+  - name: src
+    type: string
+    description: A photo; without one, initials are shown.
+  - name: size
+    type: '"sm" | "md" | "lg"'
+    default: '"md"'
+    description: 32, 40 or 56px.
+  - name: decorative
+    type: boolean
+    default: "false"
+    description: Hides the avatar from screen readers when the name is shown beside it.
+a11y:
+  - Initials are named with the person's name, so "LB" is read as "Lea Brunner".
+  - When the name is written next to the avatar, mark it decorative so the name is not read twice.
+  - Avatars are square with the theme's radius; full rounding is reserved for tags and switches.
+---
+import Example from "../../components/Example.astro";
+import Sizes from "../../demos/avatar/Sizes";
+import sizesSource from "../../demos/avatar/Sizes.tsx?raw";
+import WithName from "../../demos/avatar/WithName";
+import withNameSource from "../../demos/avatar/WithName.tsx?raw";
+
+<Example title="Sizes" source={sizesSource} of={Sizes}>
+  <Sizes />
+</Example>
+
+<Example title="Beside a name" source={withNameSource} of={WithName}>
+  <WithName />
+</Example>

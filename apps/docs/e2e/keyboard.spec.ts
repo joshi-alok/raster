@@ -374,3 +374,14 @@ for (const route of ["React", "native"] as const) {
     await expect(output).toHaveText("16");
   });
 }
+
+test("banner: Dismiss hides it and moves focus to the main content", async ({ page }) => {
+  await page.goto("/components/banner/");
+  await waitForIslands(page);
+  const banner = example(page, "Dismissable banner");
+  const dismiss = banner.getByRole("button", { name: "Dismiss" });
+  await tabTo(page, dismiss);
+  await page.keyboard.press("Enter");
+  await expect(banner.locator(".sw-banner")).toHaveCount(0);
+  await expect(page.locator("main#main")).toBeFocused();
+});

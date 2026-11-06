@@ -1,31 +1,16 @@
-import { CircleCheck, Info, OctagonExclamationPoint, TriangleExclamationPoint } from "lucide-react";
 import type { ComponentPropsWithRef, ReactNode } from "react";
 import { cx } from "../utils/cx";
+import { type Tone, TONE_ICONS, TONE_WORDS } from "./tones";
 
-export type CalloutTone = "info" | "success" | "warning" | "danger";
+export type CalloutTone = Tone;
 
 export type CalloutProps = Omit<ComponentPropsWithRef<"div">, "title"> & {
   tone?: CalloutTone;
   title?: ReactNode;
 };
 
-const ICONS = {
-  info: Info,
-  success: CircleCheck,
-  warning: TriangleExclamationPoint,
-  danger: OctagonExclamationPoint,
-} as const;
-
-/** Read before the content so tone never relies on colour or icon alone. */
-const TONE_WORDS: Record<CalloutTone, string> = {
-  info: "Note",
-  success: "Success",
-  warning: "Warning",
-  danger: "Error",
-};
-
 export function Callout({ tone = "info", title, children, className, ...rest }: CalloutProps) {
-  const Icon = ICONS[tone];
+  const Icon = TONE_ICONS[tone];
   return (
     <div className={cx("sw-callout", className)} data-tone={tone} {...rest}>
       <Icon aria-hidden="true" strokeWidth={1.5} />

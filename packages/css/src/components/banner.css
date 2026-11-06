@@ -1,0 +1,78 @@
+/*
+ * Banner: a page-level message strip below the header, never over content. The tone is carried by a
+ * 4px leading rule, an icon and a spoken tone word, never by colour alone.
+ */
+.sw-banner {
+  --_tone: var(--accent);
+  container: sw-banner / inline-size;
+  border-block-end: 1px solid var(--border);
+  border-inline-start: 4px solid var(--_tone);
+  background-color: var(--surface-subtle);
+  color: var(--text-primary);
+}
+
+.sw-banner[data-tone="success"] {
+  --_tone: var(--success);
+}
+
+.sw-banner[data-tone="warning"] {
+  --_tone: var(--warning);
+}
+
+.sw-banner[data-tone="danger"] {
+  --_tone: var(--danger);
+}
+
+.sw-banner-inner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: var(--space-3);
+  max-inline-size: calc(var(--content-max) + 2 * var(--page-margin));
+  margin-inline: auto;
+  padding-block: var(--space-3);
+  padding-inline: var(--page-margin);
+}
+
+.sw-banner-inner > svg {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  margin-block-start: 0.125em;
+  color: var(--_tone);
+  stroke-width: 1.5;
+}
+
+.sw-banner-body {
+  min-inline-size: 0;
+}
+
+.sw-banner-title {
+  margin: 0;
+  font-weight: 500;
+}
+
+.sw-banner-body > :not(:first-child, .sw-sr-only + *) {
+  margin-block-start: var(--space-1);
+}
+
+.sw-banner-body > p {
+  margin-block-end: 0;
+}
+
+.sw-banner-dismiss {
+  margin-block: calc(-1 * var(--space-2));
+}
+
+/* Narrow: the button drops under the text, its label aligned with the text, so the text keeps the width. */
+@container sw-banner (width < 480px) {
+  .sw-banner-inner {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .sw-banner-dismiss {
+    grid-column: 2;
+    justify-self: start;
+    margin-block: var(--space-1) calc(-1 * var(--space-2));
+    margin-inline-start: calc(-1 * var(--space-4));
+  }
+}

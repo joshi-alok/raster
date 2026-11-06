@@ -37,6 +37,17 @@ export { Segment, SegmentedControl, type SegmentedControlProps, type SegmentProp
 export { SearchField, type SearchFieldProps } from "./forms/SearchField";
 export { NumberField, type NumberFieldProps } from "./forms/NumberField";
 export { Slider, type SliderProps } from "./forms/Slider";
+export { Meter, type MeterProps, type MeterRegion, meterRegion, type MeterState, meterState } from "./feedback/Meter";
+export { ProgressBar, type ProgressBarProps } from "./feedback/ProgressBar";
+export { Banner, type BannerProps } from "./feedback/Banner";
+export { Skeleton, type SkeletonProps } from "./feedback/Skeleton";
+export { EmptyState, type EmptyStateProps } from "./feedback/EmptyState";
+export { Media, type MediaProps, type MediaRatio } from "./display/Media";
+export { Avatar, type AvatarProps, initials } from "./display/Avatar";
+export { Badge, type BadgeProps } from "./display/Badge";
+export { DescriptionItem, type DescriptionItemProps, DescriptionList, type DescriptionListProps } from "./display/DescriptionList";
+export { Stat, type StatProps } from "./display/Stat";
+export type { Tone } from "./display/tones";
 export { Dialog, type DialogProps, DialogTrigger } from "./overlays/Dialog";
 export { Popover, type PopoverProps } from "./overlays/Popover";
 export { Drawer, type DrawerProps } from "./overlays/Drawer";

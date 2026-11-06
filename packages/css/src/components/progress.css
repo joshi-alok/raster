@@ -1,0 +1,111 @@
+/*
+ * ProgressBar and Meter render the browser's own <progress> and <meter> on both routes.
+ * The head row holds the label and the value in mono; the bar is a 4px line on the hairline colour.
+ */
+.sw-progress-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+}
+
+.sw-progress-value {
+  margin-inline-start: auto;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.sw-meter-word {
+  color: var(--text-primary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.sw-progress-bar,
+.sw-meter-bar {
+  appearance: none;
+  display: block;
+  inline-size: 100%;
+  block-size: 4px;
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  background-color: var(--border);
+}
+
+/* Progress */
+.sw-progress-bar::-webkit-progress-bar {
+  background-color: var(--border);
+}
+
+.sw-progress-bar::-webkit-progress-value {
+  background-color: var(--accent);
+}
+
+.sw-progress-bar::-moz-progress-bar {
+  background-color: var(--accent);
+}
+
+/* Meter: the state comes from data-state, so the colour always matches the word beside it. */
+.sw-meter-bar::-webkit-meter-bar {
+  block-size: 4px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  background-color: var(--border);
+}
+
+.sw-meter-bar::-webkit-meter-optimum-value,
+.sw-meter-bar::-webkit-meter-suboptimum-value,
+.sw-meter-bar::-webkit-meter-even-less-good-value {
+  background: none;
+  background-color: var(--_meter-fill, var(--accent));
+}
+
+.sw-meter-bar::-moz-meter-bar {
+  background: none;
+  background-color: var(--_meter-fill, var(--accent));
+}
+
+.sw-meter-bar[data-state="optimum"] {
+  --_meter-fill: var(--success);
+}
+
+.sw-meter-bar[data-state="suboptimum"] {
+  --_meter-fill: var(--warning);
+}
+
+.sw-meter-bar[data-state="poor"] {
+  --_meter-fill: var(--danger);
+}
+
+/* Forced colours drop backgrounds: the track becomes a CanvasText outline, the fill Highlight. */
+@media (forced-colors: active) {
+  .sw-progress-bar,
+  .sw-meter-bar {
+    forced-color-adjust: none;
+    background-color: Canvas;
+    outline: 1px solid CanvasText;
+  }
+
+  .sw-progress-bar::-webkit-progress-bar,
+  .sw-meter-bar::-webkit-meter-bar {
+    background-color: Canvas;
+  }
+
+  .sw-progress-bar::-webkit-progress-value,
+  .sw-meter-bar::-webkit-meter-optimum-value,
+  .sw-meter-bar::-webkit-meter-suboptimum-value,
+  .sw-meter-bar::-webkit-meter-even-less-good-value {
+    background-color: Highlight;
+  }
+
+  .sw-progress-bar::-moz-progress-bar,
+  .sw-meter-bar::-moz-meter-bar {
+    background-color: Highlight;
+  }
+}

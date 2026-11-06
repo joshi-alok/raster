@@ -153,3 +153,13 @@ Each track after Plan 7c starts with its own short design discussion and spec ad
 - **Native-route scripts:** a search field's clear button and a slider's `<output>` need a few lines of script on the native route. The docs ship them (`apps/docs/src/lib/native-controls.ts`) and publish them on the component pages; Raster's packages ship no script. Escape still clears a native search field without script.
 - **Slider:** neither route draws a filled portion of the track. Chromium has no fill pseudo-element and gradients are not allowed; the value is always shown as text. The React track is inset by half a thumb so its thumb travels exactly as a native range thumb does, and the two routes match at zero differing pixels; no tolerance exception was needed.
 - **Chips and segments without script:** the native route uses real checkbox and radio inputs, so a filter or a choice submits with a form.
+
+## 11. Settled in Plan 7c
+
+- **ProgressBar and Meter render native elements on both routes.** The React components output `<progress>` and `<meter>` rather than React Aria's divs: one markup, the browser's own semantics, and no parity gap. There is no indeterminate ProgressBar; waits of unknown length use Skeleton.
+- **Meter states come from data-state.** The React Meter computes the HTML meter algorithm (`meterState`) and sets `data-state`; native authors set it themselves. Colour and the shown word always agree: "High" or "Low" outside the middle region, and "Medium" when the middle is not the best region, so an amber bar never stands without a word. Boundaries are normalised as the HTML algorithm does (clamped into the range, high never below low), and no vendor pseudo-classes are needed. A long value moves onto its own line rather than breaking.
+- **Static components share one markup.** Skeleton, Banner, EmptyState, Media, Avatar, Badge, DescriptionList and Stat render plain HTML; the docs show the rendered markup as the HTML route, so no parity screenshots are needed. Banner's dismiss button is React-only and moves focus to the main content.
+- **A narrow banner stacks its button.** Below 480px of banner width the Dismiss button drops under the text, its label aligned with the text, so the message keeps the full width.
+- **A loading area is named by role.** A plain div may not carry aria-label, so the area marked aria-busy is a named group (a card) or a region (a major part of the page).
+- **Forced colours are tested.** `apps/docs/e2e/forced-colors.spec.ts` screenshots every bar, thumb, fill and block in forced-colours mode, including Plan 7b's slider and chips.
+- **Stat changes are neutral in colour:** a fall is not always bad, so the sign and the words carry the meaning.

@@ -36,3 +36,10 @@
 @import "./components/search.css" layer(raster.components);
 @import "./components/number.css" layer(raster.components);
 @import "./components/slider.css" layer(raster.components);
+@import "./components/progress.css" layer(raster.components);
+@import "./components/skeleton.css" layer(raster.components);
+@import "./components/banner.css" layer(raster.components);
+@import "./components/empty.css" layer(raster.components);
+@import "./components/media.css" layer(raster.components);
+@import "./components/avatar.css" layer(raster.components);
+@import "./components/facts.css" layer(raster.components);

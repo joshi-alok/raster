@@ -1,0 +1,34 @@
+---
+title: Media
+group: Display
+order: 10
+summary: An image, video or drawing in a frame of fixed ratio, so the page does not shift as it loads.
+props:
+  - name: ratio
+    type: '"1:1" | "4:3" | "3:2" | "16:9" | "21:9"'
+    default: '"16:9"'
+    description: The frame's proportion; the content covers it.
+  - name: caption
+    type: ReactNode
+    description: Shown below the frame.
+  - name: children
+    type: ReactNode
+    description: Required. One img, video, svg or iframe.
+a11y:
+  - Give images a text alternative that says what they show; use alt="" only when the caption already says it.
+  - A video needs captions and must not play sound on its own.
+  - The fixed ratio reserves the space, so nothing below moves as the media loads.
+---
+import Example from "../../components/Example.astro";
+import Columns from "../../demos/media/Columns";
+import columnsSource from "../../demos/media/Columns.tsx?raw";
+import Ratios from "../../demos/media/Ratios";
+import ratiosSource from "../../demos/media/Ratios.tsx?raw";
+
+<Example title="Columns" source={columnsSource} of={Columns}>
+  <Columns />
+</Example>
+
+<Example title="Ratios" source={ratiosSource} of={Ratios}>
+  <Ratios />
+</Example>
