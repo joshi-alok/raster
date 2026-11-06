@@ -135,4 +135,25 @@
     forced-color-adjust: none;
     background-color: Highlight;
   }
+
+  /* The native track and thumb are drawn with backgrounds only, which forced colours would drop. */
+  .sw-slider-input::-webkit-slider-runnable-track {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
+
+  .sw-slider-input::-moz-range-track {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
+
+  .sw-slider-input::-webkit-slider-thumb {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  .sw-slider-input::-moz-range-thumb {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
 }

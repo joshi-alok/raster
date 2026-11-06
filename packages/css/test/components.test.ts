@@ -785,4 +785,17 @@ describe("slider", () => {
     // Lightning CSS lowercases system colours (`Highlight` prints as `highlight`), hence /i.
     expect(css).toMatch(/@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-slider-thumb\s*\{[^}]*background-color:\s*Highlight/i);
   });
+
+  it("keeps the native track and thumb visible in forced colours, which drop their backgrounds", () => {
+    // Lightning CSS lowercases system colours (`CanvasText` prints as `canvastext`), hence /i.
+    const forced = (pseudo: string, colour: string) =>
+      new RegExp(
+        `@media \\(forced-colors: active\\)\\s*\\{[\\s\\S]*?\\.sw-slider-input::${pseudo}\\s*\\{[^}]*forced-color-adjust:\\s*none[^}]*background-color:\\s*${colour}`,
+        "i",
+      );
+    expect(css).toMatch(forced("-webkit-slider-runnable-track", "CanvasText"));
+    expect(css).toMatch(forced("-moz-range-track", "CanvasText"));
+    expect(css).toMatch(forced("-webkit-slider-thumb", "Highlight"));
+    expect(css).toMatch(forced("-moz-range-thumb", "Highlight"));
+  });
 });
