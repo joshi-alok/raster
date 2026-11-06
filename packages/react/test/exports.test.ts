@@ -13,6 +13,7 @@ describe("public API", () => {
       "ThemeRegion", "Dialog", "DialogTrigger", "Menu", "MenuItem", "MenuSeparator", "MenuTrigger",
       "Tooltip", "TooltipTrigger", "ToastRegion", "createToastQueue",
       "Breadcrumbs", "Breadcrumb", "Tabs", "TabList", "Tab", "TabPanel", "Header", "Reveal",
+      "Accordion", "Disclosure",
       "cx",
     ];
     for (const name of expected) expect(typeof (raster as Record<string, unknown>)[name], name).toBe("function");

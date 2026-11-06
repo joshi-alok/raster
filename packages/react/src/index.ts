@@ -5,6 +5,7 @@ export { Callout, type CalloutProps, type CalloutTone } from "./display/Callout"
 export { Card, type CardProps } from "./display/Card";
 export { Table, type TableProps } from "./display/Table";
 export { Tag, type TagProps, type TagTone } from "./display/Tag";
+export { Accordion, type AccordionProps, Disclosure, type DisclosureProps } from "./disclosure/Disclosure";
 export { Col, type ColProps, type ColumnCount, type PerColumnCount } from "./layout/Col";
 export { Container, type ContainerProps } from "./layout/Container";
 export { Grid, type GridLayout, type GridProps } from "./layout/Grid";
