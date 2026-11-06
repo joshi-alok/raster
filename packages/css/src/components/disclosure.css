@@ -69,6 +69,13 @@ summary.sw-disclosure-trigger::-webkit-details-marker {
   padding-block-end: var(--space-5);
 }
 
+/* React Aria closes its panel with hidden="until-found", which Chromium renders as
+   content-visibility: hidden rather than display: none (so find-in-page can still reach it).
+   The box stays in flow, so drop its padding or every closed row grows by it. */
+.sw-disclosure-panel[hidden] {
+  padding-block: 0;
+}
+
 /* Native route: animate the panel's height where the browser can. React Aria hides its panel
    with the hidden attribute, so the React route opens instantly. */
 .sw-disclosure::details-content {
