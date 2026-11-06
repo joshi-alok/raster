@@ -184,3 +184,14 @@ Agreed on 2026-11-06. Five components, taking Raster from 52 to 57.
 - **File list:** rows between hairlines; the name truncates, the size is mono, Remove is a ghost button named "Remove <file name>", and an upload in progress shows a 4px bar under the row.
 
 **Testing:** no parity screenshots in this plan. Each native control is drawn by the browser (the datalist list, the date input's calendar, the file input's button and text), so the two routes cannot match pixel for pixel. Keyboard walkthroughs run on both routes, a drop is tested on the React route, and forced-colours screenshots cover the calendars, the date field and the drop zone.
+
+## 13. Settled in Plan 7d
+
+- **Native controls are the browser's own.** The datalist's list, the date input's calendar and the file input's button and text cannot be styled to match the React route, so Plan 7d has no parity screenshots; both routes have keyboard walkthroughs. Each route orders a date by its own locale source (React Aria by the reader's language, the date input by the browser), so the two can differ on one page.
+- **Dates are `CalendarDate` values** from `@internationalized/date`. Raster's package takes its date types from React Aria and adds no runtime dependency; apps and the docs import `parseDate` and friends directly.
+- **One calendar body.** Calendar, RangeCalendar and both pickers' popovers share `CalendarBody`: a heading between Previous and Next, and a grid of 44px cells. Its header row is a `div`, because a `header` outside a sectioning element is a page banner. React Aria adds a visually hidden heading and a hidden Next button for screen readers.
+- **Date segments are at least 1.125rem wide**, so one-digit segments ("3/9") meet the 24px target spacing. A single digit therefore sits centred in its slot.
+- **A narrow range field stacks.** Below 18rem the start sits over the end with the calendar button beside both; wider, the two dates sit together and only the button goes to the end.
+- **FileUpload holds no files.** The app owns the list (`files`, `onAdd`, `onRemove`, `progress`); the component checks types and sizes, reports refusals in an alert and keeps focus in place after a removal.
+- **The native file input is the drop zone.** No script is needed to drop or to show the chosen names; there is no drag-over state on that route.
+- **The drop test uses Chromium's own drag pipeline** (CDP `Input.dispatchDragEvent` with files on disk), because React Aria reads dropped files through `webkitGetAsEntry`, which returns nothing for files built in the page. It runs in Chromium only.
