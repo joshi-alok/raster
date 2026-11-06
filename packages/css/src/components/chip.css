@@ -51,15 +51,19 @@
   pointer-events: none;
 }
 
-/* A check drawn with two borders, shown only when selected. */
+/*
+ * A check drawn with two borders, shown only when selected. The borders are physical on purpose:
+ * a tick reads the same in both directions, and border-inline-start would flip it into a chevron
+ * in right-to-left text.
+ */
 .sw-chip-check {
   display: none;
   flex: none;
   inline-size: 0.625rem;
   block-size: 0.375rem;
   margin-block-start: -0.25rem;
-  border-inline-start: 1.5px solid currentColor;
-  border-block-end: 1.5px solid currentColor;
+  border-left: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
   transform: rotate(-45deg);
 }
 

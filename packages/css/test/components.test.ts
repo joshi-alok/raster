@@ -695,6 +695,15 @@ describe("chips (TagGroup)", () => {
     expect(css).toMatch(/:is\(\.sw-chip:has\( ?> \.sw-chip-input:checked\),\s*\.sw-chip\[data-selected\]\) \.sw-chip-check\s*\{[^}]*display:\s*block/);
   });
 
+  it("draw the check with physical borders, so it stays a tick in right-to-left text", () => {
+    const r = rule(".sw-chip-check");
+    // Lightning CSS drops `currentColor`, the default border colour.
+    expect(r).toMatch(/border-left:\s*1\.5px solid(?: currentcolor)?;/i);
+    expect(r).toMatch(/border-bottom:\s*1\.5px solid(?: currentcolor)?;/i);
+    expect(r).not.toMatch(/border-inline-start/);
+    expect(r).toMatch(/transform:\s*rotate\(-45deg\)/);
+  });
+
   it("show the focus ring on the chip for both routes", () => {
     expect(css).toMatch(/:is\(\.sw-chip:has\( ?> \.sw-chip-input:focus-visible\),\s*\.sw-chip\[data-focus-visible\]\)\s*\{[^}]*outline:\s*var\(--focus-width\) solid var\(--accent\)/);
   });
