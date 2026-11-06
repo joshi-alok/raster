@@ -23,6 +23,7 @@ describe("public API", () => {
       "NumberField",
       "Slider",
       "ProgressBar", "Meter", "meterState", "meterRegion",
+      "Banner", "Skeleton",
       "cx",
     ];
     for (const name of expected) expect(typeof (raster as Record<string, unknown>)[name], name).toBe("function");

@@ -831,3 +831,27 @@ describe("progress bar and meter", () => {
     expect(css).toMatch(/@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-meter-bar::-moz-meter-bar[\s\S]*?background-color:\s*highlight/i);
   });
 });
+
+describe("skeleton", () => {
+  it("is a static block on the subtle surface that pulses only with full motion", () => {
+    expect(rule(".sw-skeleton")).toMatch(/background-color:\s*var\(--surface-subtle\)/);
+    expect(rule(".sw-skeleton")).toMatch(/animation:\s*sw-skeleton-pulse/);
+    expect(css).toMatch(/\[data-motion="?reduce"?\] \.sw-skeleton\s*\{[^}]*animation:\s*none/);
+    expect(css).not.toMatch(/\.sw-skeleton[^{]*\{[^}]*gradient/);
+  });
+
+  it("stays visible in forced colours", () => {
+    expect(css).toMatch(/@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-skeleton\s*\{[^}]*border:\s*1px solid canvastext/i);
+  });
+});
+
+describe("banner", () => {
+  it("is a full-width strip with a 4px leading rule in the tone colour", () => {
+    expect(rule(".sw-banner")).toMatch(/border-inline-start:\s*4px solid var\(--_tone\)/);
+    expect(rule('.sw-banner[data-tone="danger"]')).toMatch(/--_tone:\s*var\(--danger\)/);
+  });
+
+  it("aligns its content with the page's content width", () => {
+    expect(rule(".sw-banner-inner")).toMatch(/max-inline-size:\s*calc\(var\(--content-max\) \+ 2 \* var\(--page-margin\)\)/);
+  });
+});

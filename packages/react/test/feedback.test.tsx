@@ -1,7 +1,10 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, it, vi } from "vitest";
+import { Banner } from "../src/feedback/Banner";
 import { Meter, meterRegion, meterState } from "../src/feedback/Meter";
 import { ProgressBar } from "../src/feedback/ProgressBar";
+import { Skeleton } from "../src/feedback/Skeleton";
 import { expectAccessible } from "./axe";
 
 describe("ProgressBar", () => {
@@ -77,6 +80,56 @@ describe("Meter", () => {
 
   it("has no structural accessibility violations", async () => {
     const { container } = render(<Meter label="Storage" value={86} low={30} high={80} optimum={0} />);
+    await expectAccessible(container);
+  });
+});
+
+describe("Skeleton", () => {
+  it("renders a hidden placeholder of the chosen shape and width", () => {
+    const { container } = render(<Skeleton shape="heading" width="60%" />);
+    const block = container.firstElementChild as HTMLElement;
+    expect(block).toHaveClass("sw-skeleton");
+    expect(block).toHaveAttribute("data-shape", "heading");
+    expect(block).toHaveAttribute("aria-hidden", "true");
+    expect(block.style.inlineSize).toBe("60%");
+  });
+});
+
+describe("Banner", () => {
+  it("is a status strip with a tone, an icon and a spoken tone word", () => {
+    const { container } = render(<Banner title="Scheduled maintenance">The studio site is read-only on Sunday.</Banner>);
+    const banner = screen.getByRole("status");
+    expect(banner).toHaveClass("sw-banner");
+    expect(banner).toHaveAttribute("data-tone", "info");
+    expect(container.querySelector(".sw-banner-inner > svg")).toHaveAttribute("aria-hidden", "true");
+    expect(banner).toHaveTextContent("Note:");
+    expect(container.querySelector(".sw-banner-title")).toHaveTextContent("Scheduled maintenance");
+  });
+
+  it("uses the alert role for danger", () => {
+    render(<Banner tone="danger">Payments are failing.</Banner>);
+    expect(screen.getByRole("alert")).toHaveAttribute("data-tone", "danger");
+  });
+
+  it("can be dismissed, telling its owner and moving focus to the main content", async () => {
+    const user = userEvent.setup();
+    const onDismiss = vi.fn();
+    render(
+      <>
+        <Banner onDismiss={onDismiss}>New projects are online.</Banner>
+        <main id="main" tabIndex={-1}>
+          Content
+        </main>
+      </>,
+    );
+    await user.click(screen.getByRole("button", { name: "Dismiss" }));
+    expect(screen.queryByRole("status")).toBeNull();
+    expect(onDismiss).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("main")).toHaveFocus();
+  });
+
+  it("has no structural accessibility violations", async () => {
+    const { container } = render(<Banner title="Scheduled maintenance">Read-only on Sunday.</Banner>);
     await expectAccessible(container);
   });
 });
