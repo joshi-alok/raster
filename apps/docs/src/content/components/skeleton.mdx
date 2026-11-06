@@ -12,7 +12,7 @@ props:
     type: string
     description: Any CSS length, such as "60%". Defaults to the full width.
 a11y:
-  - Skeletons are hidden from screen readers. Put aria-busy="true" and a name on the region that is loading, and remove aria-busy when the content arrives.
+  - Skeletons are hidden from screen readers. Put aria-busy="true" on the area that is loading, with a role and a name (a group for a card, a region for a major part of the page), and remove aria-busy when the content arrives.
   - The pulse is a slow change of opacity, with no gradient; under reduced motion the blocks do not move.
   - In forced-colours mode each block is outlined.
 ---
