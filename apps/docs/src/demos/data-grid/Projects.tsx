@@ -42,7 +42,7 @@ export default function Projects() {
         <DataGridColumn id="year" allowsSorting numeric defaultWidth={100}>
           Year
         </DataGridColumn>
-        <DataGridColumn id="budget" allowsSorting numeric defaultWidth={140}>
+        <DataGridColumn id="budget" allowsSorting numeric defaultWidth={170}>
           Budget (CHF)
         </DataGridColumn>
       </DataGridHeader>

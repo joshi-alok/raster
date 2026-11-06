@@ -1110,15 +1110,32 @@ describe("data grid", () => {
     const r = rule(".sw-data-grid :is(.sw-data-grid-select, .sw-data-grid-sticky)");
     expect(r).toMatch(/position:\s*sticky/);
     expect(r).toMatch(/inset-inline-start:\s*0/);
+    // Own layer from the start, so the cells land on the same pixel on every load.
+    expect(r).toMatch(/will-change:\s*transform/);
     expect(rule(".sw-data-grid-selectable .sw-data-grid-sticky")).toMatch(/inset-inline-start:\s*var\(--target-min\)/);
+  });
+
+  it("lets the native table scroll at its content's width instead of squeezing its columns", () => {
+    const r = rule("table.sw-data-grid");
+    expect(r).toMatch(/inline-size:\s*max-content/);
+    expect(r).toMatch(/min-inline-size:\s*100%/);
+  });
+
+  it("centres the selection checkbox on the row without adding block padding to its 44px target", () => {
+    const r = rule(".sw-data-grid .sw-data-grid-select");
+    expect(r).toMatch(/inline-size:\s*var\(--target-min\)/);
+    expect(r).toMatch(/padding:\s*0/);
+    expect(r).toMatch(/vertical-align:\s*middle/);
   });
 
   it("ends the sticky column with a hairline drawn as a border", () => {
     expect(rule(".sw-data-grid .sw-data-grid-sticky:after")).toMatch(/border-inline-end:\s*1px solid var\(--border\)/);
   });
 
+  // Scoped to the grid: a lone .sw-data-grid-numeric loses to Table's `.sw-table :is(th, td)`
+  // text-align: start, and the numbers stayed start-aligned in the screenshots.
   it("aligns numbers at the end in tabular mono", () => {
-    const r = rule(".sw-data-grid-numeric");
+    const r = rule(".sw-data-grid .sw-data-grid-numeric");
     expect(r).toMatch(/text-align:\s*end/);
     expect(r).toMatch(/font-family:\s*var\(--font-mono\)/);
   });

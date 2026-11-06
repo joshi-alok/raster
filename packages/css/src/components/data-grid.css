@@ -31,6 +31,16 @@
   border-spacing: 0;
 }
 
+/*
+ * The native table takes its content's width, at least its region's, and scrolls rather than
+ * squeezing: squeezed, cells wrap and the selection column shrinks below the offset the sticky
+ * column sits at. React Aria sizes its own table inline (width: min-content, fixed layout).
+ */
+table.sw-data-grid {
+  inline-size: max-content;
+  min-inline-size: 100%;
+}
+
 .sw-data-grid :is(th, td) {
   position: relative;
 }
@@ -42,11 +52,17 @@
   background-color: var(--surface-page);
 }
 
+/*
+ * will-change gives each sticky cell its own layer from the start. Without it, at the fractional
+ * row offsets fluid type produces, Chrome drew the native grid's sticky cells a pixel higher on
+ * some loads than on others.
+ */
 .sw-data-grid :is(.sw-data-grid-select, .sw-data-grid-sticky) {
   position: sticky;
   inset-inline-start: 0;
   z-index: 1;
   background-color: var(--surface-page);
+  will-change: transform;
 }
 
 .sw-data-grid thead :is(.sw-data-grid-select, .sw-data-grid-sticky) {
@@ -66,10 +82,12 @@
   border-inline-end: 1px solid var(--border);
 }
 
+/* No block padding: the 44px checkbox target sets the row height, centred on the row's text. */
 .sw-data-grid .sw-data-grid-select {
   inline-size: var(--target-min);
-  padding-inline: 0;
+  padding: 0;
   text-align: center;
+  vertical-align: middle;
 }
 
 .sw-data-grid .sw-data-grid-select :is(.sw-checkbox, input[type="checkbox"]) {
@@ -84,7 +102,8 @@
   cursor: pointer;
 }
 
-.sw-data-grid-numeric {
+/* Inside .sw-data-grid, to outweigh Table's start alignment on th and td. */
+.sw-data-grid .sw-data-grid-numeric {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   text-align: end;
