@@ -1,0 +1,82 @@
+---
+title: DataGrid
+group: Display
+order: 15
+summary: A table to sort, select from, resize and scroll, for data people work with.
+interactive: true
+props:
+  - name: caption
+    type: ReactNode
+    description: Required. Shown above the grid and names it.
+  - name: selectionMode / selectedKeys / defaultSelectedKeys / onSelectionChange
+    type: '"none" | "single" | "multiple" / … / (keys) => void'
+    description: Row selection. Multiple selection adds a checkbox column and Select all.
+  - name: sortDescriptor / onSortChange
+    type: "{ column, direction } / (descriptor) => void"
+    description: The sorted column and direction; sort the rows yourself when it changes.
+  - name: maxHeight
+    type: string
+    description: A CSS length. The grid scrolls inside it and the header row sticks.
+  - name: virtualized
+    type: "{ rowHeight, headingHeight? }"
+    description: Draw only the rows in view, for thousands of rows. Every row must be rowHeight pixels tall.
+  - name: DataGridColumn props
+    type: "allowsSorting, allowsResizing, isRowHeader, numeric, sticky, defaultWidth, minWidth"
+    description: Per column. Mark the column that names each row as isRowHeader, and make it sticky.
+  - name: DataGridBody emptyState
+    type: ReactNode
+    description: Shown inside the grid when there are no rows, usually an EmptyState.
+a11y:
+  - The grid is one tab stop. Arrow keys move between rows and cells, Space selects a row, and Enter on a sortable header sorts it.
+  - The sorted column carries aria-sort, so screen readers announce the direction; the chevron shows it on screen, never colour alone.
+  - A selected row has a fill, a 2px bar at its start and a ticked checkbox; in forced-colours mode it uses the system highlight.
+  - Resize handles can be moved from the keyboard as well as by dragging.
+  - Without React, sort headers are links your server answers, with aria-sort on the current column, and rows are selected with checkbox inputs inside your form. Select all needs the short script below.
+---
+import CodeBlock from "../../components/CodeBlock.astro";
+import Example from "../../components/Example.astro";
+import NativeExample from "../../components/NativeExample.astro";
+import Archive from "../../demos/data-grid/Archive";
+import archiveSource from "../../demos/data-grid/Archive.tsx?raw";
+import NoResults from "../../demos/data-grid/NoResults";
+import noResultsSource from "../../demos/data-grid/NoResults.tsx?raw";
+import Projects from "../../demos/data-grid/Projects";
+import projectsSource from "../../demos/data-grid/Projects.tsx?raw";
+import projectsHtml from "../../demos/data-grid/projects.html?raw";
+
+export const selectAllScript = `document.addEventListener("change", (event) => {
+  const input = event.target;
+  const table = input instanceof HTMLInputElement ? input.closest("table.sw-data-grid") : null;
+  const all = table?.querySelector("thead input[data-select-all]");
+  if (!all) return;
+  const rows = [...table.querySelectorAll('tbody input[type="checkbox"]')];
+  if (input === all) rows.forEach((box) => (box.checked = all.checked));
+  const checked = rows.filter((box) => box.checked).length;
+  all.checked = checked === rows.length;
+  all.indeterminate = checked > 0 && checked < rows.length;
+});`;
+
+<Example title="Projects" source={projectsSource}>
+  <Projects client:load />
+</Example>
+
+Sort by Project, Year or Budget; resize Project and Client from their handles. The grid scrolls inside 22rem, keeping its header and the Project column in view.
+
+<Example title="No results" source={noResultsSource}>
+  <NoResults client:load />
+</Example>
+
+{/* Rendered on the client only: hydrating a 5,000-row React Aria collection rebuilds it once per row (about 10s of main thread). */}
+<Example title="Archive" source={archiveSource}>
+  <Archive client:only="react" />
+</Example>
+
+The archive has 5,000 rows, but only the rows in view are drawn.
+
+<NativeExample title="Projects without React" html={projectsHtml} />
+
+Select all in the native grid needs this script once per page:
+
+<CodeBlock code={selectAllScript} label="Select all script" />
+
+For data that is only read, use Table. Pair a DataGrid with Pagination when the server pages the data, and with SearchField or TagGroup to filter it.
