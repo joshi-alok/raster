@@ -124,7 +124,9 @@ export function DataGridColumn({ children, numeric, sticky, allowsResizing, clas
     >
       {({ allowsSorting, sortDirection }) => (
         <div className="sw-data-grid-head">
-          <span className="sw-data-grid-label" id={labelId} ref={nameHeaderByLabel}>
+          {/* Focusable by script only, so it is the header's first focusable child and takes the header's
+              focus: Enter there sorts. Otherwise the resize handle's input would, and Enter would resize. */}
+          <span className="sw-data-grid-label" id={labelId} ref={nameHeaderByLabel} tabIndex={-1}>
             {children}
           </span>
           {allowsSorting && <span className="sw-data-grid-sort-icon" data-direction={sortDirection} aria-hidden="true" />}

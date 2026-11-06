@@ -135,6 +135,12 @@ table.sw-data-grid {
   outline-offset: calc(-1 * var(--focus-width));
 }
 
+/* A header's focus rests on its label (so Enter sorts, not resizes); ring the label. */
+.sw-data-grid-label:focus-visible {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
 /* Native sort links */
 .sw-data-grid-sort {
   display: inline-flex;

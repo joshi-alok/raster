@@ -562,9 +562,8 @@ test("data grid, React: arrows move, Space selects a row, Enter on a header sort
   for (let i = 0; i < 5; i++) await page.keyboard.press("ArrowRight");
   await expect(next.getByRole("gridcell", { name: "2023" })).toBeFocused();
   for (let i = 0; i < 7; i++) await page.keyboard.press("ArrowUp");
-  // Year: Project and Client hold a resize handle, which takes the header's focus (next test).
   const year = grid.getByRole("columnheader", { name: "Year" });
-  await expect(year).toBeFocused();
+  await expect(year.locator(".sw-data-grid-label")).toBeFocused();
   await expect(year).toHaveAttribute("aria-sort", "none");
   await page.keyboard.press("Enter");
   await expect(year).toHaveAttribute("aria-sort", "ascending");
@@ -575,11 +574,9 @@ test("data grid, React: arrows move, Space selects a row, Enter on a header sort
   await expect(grid.getByRole("rowheader").first()).toHaveText("Plakatsammlung");
 });
 
-// Known defect, kept failing on purpose: React Aria gives a column header's focus to its first
-// focusable child (useTableColumnHeader, focusMode "child"). On Project, sortable and resizable,
-// that is the resize handle's range input, and Enter there starts a resize, so the keyboard cannot
-// sort Project. When DataGridColumn is fixed this test passes and test.fail must come off.
-test.fail("data grid, React: Enter on a sortable, resizable header (Project) sorts it", async ({ page }) => {
+// A header's focus goes to its first focusable child (React Aria's focusMode "child"). DataGridColumn
+// makes the label that child, so Enter sorts even when the column also holds a resize handle.
+test("data grid, React: Enter on a sortable, resizable header (Project) sorts it", async ({ page }) => {
   await page.goto("/components/data-grid/");
   await waitForIslands(page);
   const grid = example(page, "Projects").getByRole("grid", { name: "Studio projects" });
@@ -588,7 +585,7 @@ test.fail("data grid, React: Enter on a sortable, resizable header (Project) sor
   await page.keyboard.press("ArrowRight");
   for (let i = 0; i < 6; i++) await page.keyboard.press("ArrowUp");
   const project = grid.getByRole("columnheader", { name: "Project" });
-  await expect.poll(() => project.evaluate((h) => h.contains(document.activeElement))).toBe(true);
+  await expect(project.locator(".sw-data-grid-label")).toBeFocused();
   await expect(project).toHaveAttribute("aria-sort", "ascending");
   await page.keyboard.press("Enter");
   await expect(project).toHaveAttribute("aria-sort", "descending", { timeout: 3000 });
@@ -604,7 +601,9 @@ test("data grid, React: a column resizes from the keyboard", async ({ page }) =>
   // The checkbox, Project, Client; then up past five rows (Linie 7 is sixth) to the header.
   for (let i = 0; i < 3; i++) await page.keyboard.press("ArrowRight");
   for (let i = 0; i < 6; i++) await page.keyboard.press("ArrowUp");
-  // React Aria focuses a header's first focusable child: here the resize handle's hidden range input.
+  // Focus lands on the header's label; ArrowRight moves on to its resize handle's hidden range input.
+  await expect(client.locator(".sw-data-grid-label")).toBeFocused();
+  await page.keyboard.press("ArrowRight");
   const handle = client.locator(".sw-data-grid-resizer input");
   await expect(handle).toBeFocused();
   // Enter starts resizing, each ArrowRight adds 10px, Enter ends it.

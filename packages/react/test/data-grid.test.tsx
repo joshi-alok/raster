@@ -120,6 +120,14 @@ describe("DataGrid", () => {
     expect(within(grid).getByText("No projects match")).toBeInTheDocument();
   });
 
+  it("makes each header's label its first focusable child, before the resize handle", () => {
+    render(<Projects />);
+    const project = screen.getByRole("columnheader", { name: PROJECT_HEADER });
+    const first = project.querySelector("[tabindex], input, button");
+    expect(first).toHaveClass("sw-data-grid-label");
+    expect(first).toHaveAttribute("tabindex", "-1");
+  });
+
   it("puts a resize handle in resizable columns only", () => {
     render(<Projects />);
     expect(screen.getByRole("columnheader", { name: PROJECT_HEADER }).querySelector(".sw-data-grid-resizer")).not.toBeNull();

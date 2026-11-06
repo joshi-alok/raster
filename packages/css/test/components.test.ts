@@ -1178,6 +1178,10 @@ describe("data grid", () => {
     expect(css).not.toMatch(/\.sw-data-grid-virtualized :is\(th, td\)/);
   });
 
+  it("rings a header's label when it holds the keyboard focus", () => {
+    expect(rule(".sw-data-grid-label:focus-visible")).toMatch(/outline:\s*var\(--focus-width\) solid var\(--accent\)/);
+  });
+
   it("keeps selected rows visible in forced colours", () => {
     expect(css).toMatch(
       /@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-data-grid-row\[data-selected\] > \*[^{]*\{[^}]*forced-color-adjust:\s*none[^}]*background-color:\s*highlight/i,
