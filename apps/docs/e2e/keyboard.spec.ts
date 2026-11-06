@@ -1,3 +1,4 @@
+import { writeFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
 import { example } from "./examples";
 import { waitForIslands } from "./islands";
@@ -384,4 +385,162 @@ test("banner: Dismiss hides it and moves focus to the main content", async ({ pa
   await page.keyboard.press("Enter");
   await expect(banner.locator(".sw-banner")).toHaveCount(0);
   await expect(page.locator("main#main")).toBeFocused();
+});
+
+test("combobox, React: typing filters, arrows and Enter choose, Escape closes", async ({ page }) => {
+  await page.goto("/components/combobox/");
+  await waitForIslands(page);
+  const input = example(page, "City").getByRole("combobox", { name: "City" });
+  await tabTo(page, input);
+  await page.keyboard.type("Lu");
+  const list = page.getByRole("listbox");
+  await expect(list.getByRole("option")).toHaveText(["Lucerne", "Lugano"]);
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("Enter");
+  await expect(input).toHaveValue("Lucerne");
+  await expect(list).toBeHidden();
+  await page.keyboard.press("ArrowDown");
+  await expect(page.getByRole("listbox")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("listbox")).toBeHidden();
+  await expect(input).toBeFocused();
+});
+
+test("combobox, native: a labelled input wired to its datalist that takes typed text", async ({ page }) => {
+  await page.goto("/components/combobox/");
+  const field = example(page, "City without React");
+  const input = field.getByRole("combobox", { name: "City" });
+  await expect(input).toHaveAttribute("list", "cities");
+  await expect(field.locator("datalist#cities option")).toHaveCount(10);
+  // The suggestion list itself is browser UI, outside the page, so it is not driven here.
+  await tabTo(page, input);
+  await page.keyboard.type("Lugano");
+  await expect(input).toHaveValue("Lugano");
+});
+
+test("date picker, React: arrows step a segment; the calendar opens, moves by day and month, and chooses", async ({ page }) => {
+  await page.goto("/components/date-picker/");
+  await waitForIslands(page);
+  const group = example(page, "Delivery date").getByRole("group", { name: "Delivery date" });
+  const segments = group.getByRole("spinbutton");
+  await tabTo(page, segments.first());
+  await page.keyboard.press("ArrowUp");
+  await expect(segments.first()).toHaveText("4");
+  await page.keyboard.press("ArrowDown");
+  await expect(segments.first()).toHaveText("3");
+  const button = group.getByRole("button", { name: /Calendar/ });
+  await tabTo(page, button);
+  await page.keyboard.press("Enter");
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole("heading")).toHaveText("March 2026");
+  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("PageDown");
+  await expect(dialog.getByRole("heading")).toHaveText("April 2026");
+  await page.keyboard.press("Enter");
+  await expect(dialog).toBeHidden();
+  await expect(segments.first()).toHaveText("4");
+  await expect(segments.nth(1)).toHaveText("13");
+  await expect(button).toBeFocused();
+});
+
+test("date picker, native: a labelled date input that takes a date within its limits", async ({ page }) => {
+  await page.goto("/components/date-picker/");
+  const input = example(page, "Delivery date without React").getByLabel("Delivery date", { exact: true });
+  await expect(input).toHaveAttribute("type", "date");
+  await expect(input).toHaveAttribute("min", "2026-03-02");
+  await input.fill("2026-03-20");
+  await expect(input).toHaveValue("2026-03-20");
+});
+
+test("date range picker, React: Enter starts the range, a second Enter ends it", async ({ page }) => {
+  await page.goto("/components/date-range-picker/");
+  await waitForIslands(page);
+  const group = example(page, "Project period").getByRole("group", { name: "Project period" });
+  const button = group.getByRole("button", { name: /Calendar/ });
+  await tabTo(page, button);
+  await page.keyboard.press("Enter");
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toBeVisible();
+  // Focus opens on the range's start, 9 March. Enter starts a new range there, and React Aria then
+  // moves focus on by a day (useCalendarCell: "auto-advance the focused date by one if using
+  // keyboard"), so one ArrowRight reaches 11 March.
+  await expect(page.locator(":focus")).toHaveAttribute("aria-label", /March 9, 2026/);
+  await page.keyboard.press("Enter");
+  await expect(page.locator(":focus")).toHaveAttribute("aria-label", /March 10, 2026/);
+  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("Enter");
+  await expect(dialog).toBeHidden();
+  const segments = group.getByRole("spinbutton");
+  await expect(segments.nth(1)).toHaveText("9");
+  await expect(segments.nth(4)).toHaveText("11");
+});
+
+test("date range picker, native: From and To are labelled inside the named group", async ({ page }) => {
+  await page.goto("/components/date-range-picker/");
+  const group = example(page, "Project period without React").getByRole("group", { name: "Project period" });
+  await expect(group.getByLabel("From")).toHaveValue("2026-03-09");
+  await expect(group.getByLabel("To")).toHaveValue("2026-03-13");
+});
+
+test("calendar: arrows move by day; an unavailable weekend day cannot be chosen", async ({ page }) => {
+  await page.goto("/components/calendar/");
+  await waitForIslands(page);
+  const calendar = example(page, "Delivery day");
+  const selected = calendar.locator(".sw-calendar-cell[data-selected]");
+  await expect(selected).toHaveText("12");
+  await selected.focus();
+  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("Enter");
+  await expect(selected).toHaveText("13");
+  await page.keyboard.press("ArrowRight");
+  await expect(calendar.locator(".sw-calendar-cell[data-focused]")).toHaveAttribute("data-unavailable", "true");
+  await page.keyboard.press("Enter");
+  await expect(selected).toHaveText("13");
+});
+
+test("file upload, React: Choose files from the keyboard adds files; Remove moves focus on", async ({ page }) => {
+  await page.goto("/components/file-upload/");
+  await waitForIslands(page);
+  const field = example(page, "Proofs");
+  const choose = field.getByRole("button", { name: "Choose files Proofs" });
+  await tabTo(page, choose);
+  const chooser = page.waitForEvent("filechooser");
+  await page.keyboard.press("Enter");
+  await (await chooser).setFiles({ name: "index.pdf", mimeType: "application/pdf", buffer: Buffer.from("%PDF-1.7") });
+  await expect(field.locator(".sw-file-name")).toHaveText(["cover.pdf", "spread-04.png", "index.pdf"]);
+  await field.getByRole("button", { name: "Remove cover.pdf" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(field.getByRole("button", { name: "Remove spread-04.png" })).toBeFocused();
+});
+
+test("file upload, React: a dropped file is added; a wrong type is refused with a message", async ({ page }, testInfo) => {
+  await page.goto("/components/file-upload/");
+  await waitForIslands(page);
+  const field = example(page, "Proofs");
+  // A real drop of files from disk, through Chromium's own drag pipeline. A DataTransfer built in
+  // the page will not do: React Aria reads dropped files with webkitGetAsEntry(), which returns
+  // null for script-made items, so they are skipped.
+  const plan = testInfo.outputPath("plan.pdf");
+  const notes = testInfo.outputPath("notes.txt");
+  await writeFile(plan, "%PDF-1.7");
+  await writeFile(notes, "notes");
+  const box = await field.locator(".sw-file-drop").boundingBox();
+  if (!box) throw new Error("The drop zone has no box");
+  const at = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+  const data = { items: [], files: [plan, notes], dragOperationsMask: 1 };
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send("Input.dispatchDragEvent", { type: "dragEnter", ...at, data });
+  await cdp.send("Input.dispatchDragEvent", { type: "dragOver", ...at, data });
+  await expect(field.locator(".sw-file-drop-text")).toHaveText("Drop to add");
+  await cdp.send("Input.dispatchDragEvent", { type: "drop", ...at, data });
+  await expect(field.locator(".sw-file-name").last()).toHaveText("plan.pdf");
+  await expect(field.getByRole("alert")).toHaveText("notes.txt is not an accepted type.");
+});
+
+test("file upload, native: the labelled file input takes files", async ({ page }) => {
+  await page.goto("/components/file-upload/");
+  const input = example(page, "Proofs without React").getByLabel("Proofs", { exact: true });
+  await input.setInputFiles({ name: "index.pdf", mimeType: "application/pdf", buffer: Buffer.from("%PDF-1.7") });
+  await expect(input).toHaveJSProperty("files.length", 1);
 });
