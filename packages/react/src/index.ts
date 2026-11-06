@@ -51,4 +51,12 @@ export { Reveal, type RevealProps } from "./motion/Reveal";
 export { Breadcrumb, type BreadcrumbProps, Breadcrumbs, type BreadcrumbsProps } from "./navigation/Breadcrumbs";
 export { Header, type HeaderProps } from "./navigation/Header";
 export { Pagination, type PaginationItem, paginationItems, type PaginationProps } from "./navigation/Pagination";
+export {
+  SideNav,
+  SideNavGroup,
+  type SideNavGroupProps,
+  SideNavLink,
+  type SideNavLinkProps,
+  type SideNavProps,
+} from "./navigation/SideNav";
 export { Tab, TabList, type TabListProps, TabPanel, type TabPanelProps, type TabProps, Tabs, type TabsProps } from "./navigation/Tabs";

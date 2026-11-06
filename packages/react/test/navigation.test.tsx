@@ -6,6 +6,7 @@ import { Reveal } from "../src/motion/Reveal";
 import { Breadcrumb, Breadcrumbs } from "../src/navigation/Breadcrumbs";
 import { Header } from "../src/navigation/Header";
 import { Pagination, paginationItems } from "../src/navigation/Pagination";
+import { SideNav, SideNavGroup, SideNavLink } from "../src/navigation/SideNav";
 import { Tab, TabList, TabPanel, Tabs } from "../src/navigation/Tabs";
 import { expectAccessible } from "./axe";
 
@@ -304,6 +305,65 @@ describe("Pagination", () => {
 
   it("has no structural accessibility violations", async () => {
     const { container } = render(<Pagination page={6} total={12} href={href} />);
+    await expectAccessible(container);
+  });
+});
+
+describe("SideNav", () => {
+  function Docs() {
+    return (
+      <SideNav aria-label="Documentation">
+        <SideNavLink href="/">Principles</SideNavLink>
+        <SideNavGroup title="Foundations">
+          <SideNavLink href="/grid">Grid</SideNavLink>
+          <SideNavLink href="/type" current>
+            Type
+          </SideNavLink>
+        </SideNavGroup>
+        <SideNavGroup title="Components" defaultExpanded={false}>
+          <SideNavLink href="/components">All components</SideNavLink>
+        </SideNavGroup>
+      </SideNav>
+    );
+  }
+
+  it("is a named navigation landmark with a list of links", () => {
+    render(<Docs />);
+    const nav = screen.getByRole("navigation", { name: "Documentation" });
+    expect(nav).toHaveClass("sw-sidenav");
+    expect(nav.querySelector("ul")).toHaveClass("sw-sidenav-list");
+    expect(screen.getByRole("link", { name: "Principles" })).toHaveClass("sw-sidenav-link");
+  });
+
+  it("marks the current page", () => {
+    render(<Docs />);
+    expect(screen.getByRole("link", { name: "Type" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "Grid" })).not.toHaveAttribute("aria-current");
+  });
+
+  it("opens groups by default and toggles them", async () => {
+    const user = userEvent.setup();
+    render(<Docs />);
+    const foundations = screen.getByRole("button", { name: "Foundations" });
+    const components = screen.getByRole("button", { name: "Components" });
+    expect(foundations).toHaveClass("sw-sidenav-group-title");
+    expect(foundations).toHaveAttribute("aria-expanded", "true");
+    expect(components).toHaveAttribute("aria-expanded", "false");
+    await user.click(components);
+    expect(screen.getByRole("link", { name: "All components" })).toBeVisible();
+  });
+
+  it("names the landmark Section by default", () => {
+    render(
+      <SideNav>
+        <SideNavLink href="/">Home</SideNavLink>
+      </SideNav>,
+    );
+    expect(screen.getByRole("navigation", { name: "Section" })).toBeInTheDocument();
+  });
+
+  it("has no structural accessibility violations", async () => {
+    const { container } = render(<Docs />);
     await expectAccessible(container);
   });
 });

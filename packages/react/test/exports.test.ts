@@ -16,6 +16,7 @@ describe("public API", () => {
       "Accordion", "Disclosure",
       "Popover", "Drawer",
       "Pagination", "paginationItems",
+      "SideNav", "SideNavGroup", "SideNavLink",
       "cx",
     ];
     for (const name of expected) expect(typeof (raster as Record<string, unknown>)[name], name).toBe("function");

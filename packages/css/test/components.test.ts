@@ -649,3 +649,22 @@ describe("pagination", () => {
     expect(css).toMatch(/\.sw-pagination-step svg:dir\(rtl\)\s*\{[^}]*transform:\s*scaleX\(-1\)/);
   });
 });
+
+describe("sidenav", () => {
+  it("hangs the list from a hairline on the inline-start edge", () => {
+    const r = rule(".sw-sidenav-list");
+    expect(r).toMatch(/border-inline-start:\s*1px solid var\(--border\)/);
+    expect(r).toMatch(/list-style:\s*none/);
+  });
+
+  it("gives links and group titles a 44px row with room for the current-item bar", () => {
+    // Lightning CSS prints transparent as #0000.
+    expect(css).toMatch(/\.sw-sidenav-link,\s*\.sw-sidenav-group-title\s*\{[^}]*min-block-size:\s*var\(--target-min\)[^}]*border-inline-start:\s*2px solid (?:transparent|#0000)\b/);
+  });
+
+  it("marks the current item with an accent bar and weight, not colour alone", () => {
+    const r = rule('.sw-sidenav-link[aria-current]:not([aria-current="false"])');
+    expect(r).toMatch(/border-inline-start-color:\s*var\(--accent\)/);
+    expect(r).toMatch(/font-weight:\s*500/);
+  });
+});
