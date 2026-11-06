@@ -56,7 +56,7 @@ if (!("command" in HTMLButtonElement.prototype)) {
   document.addEventListener("click", (event) => {
     const button = event.target instanceof Element ? event.target.closest("button[commandfor]") : null;
     const target = button && document.getElementById(button.getAttribute("commandfor"));
-    if (!(target instanceof HTMLDialogElement)) return;
+    if (!button || !(target instanceof HTMLDialogElement)) return;
     const command = button.getAttribute("command");
     if (command === "show-modal") target.showModal();
     else if (command === "close") target.close();
