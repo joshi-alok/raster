@@ -267,3 +267,50 @@ describe("FileUpload", () => {
     await expectAccessible(container);
   });
 });
+
+describe("FileUpload, edge cases", () => {
+  const pdf = (name: string) => new File(["%PDF"], name, { type: "application/pdf" });
+
+  it("names the files it leaves out when only one is allowed", async () => {
+    const user = userEvent.setup();
+    const onAdd = vi.fn();
+    const { container } = render(<FileUpload label="Contract" files={[]} onAdd={onAdd} onRemove={() => undefined} />);
+    const input = container.querySelector<HTMLInputElement>('input[type="file"]');
+    if (!input) throw new Error("No file input");
+    // FileTrigger's input lacks `multiple` here, so set the files directly, as a drop would deliver them.
+    await user.upload(input, pdf("a.pdf"));
+    expect(onAdd).toHaveBeenLastCalledWith([expect.objectContaining({ name: "a.pdf" })]);
+    input.multiple = true;
+    await user.upload(input, [pdf("b.pdf"), pdf("c.pdf")]);
+    expect(onAdd).toHaveBeenLastCalledWith([expect.objectContaining({ name: "b.pdf" })]);
+    expect(screen.getByRole("alert")).toHaveTextContent("c.pdf was not added: only one file is allowed.");
+  });
+
+  it("renders a fresh alert for each refusal, so a repeat is announced again", async () => {
+    const user = userEvent.setup({ applyAccept: false });
+    const { container } = render(
+      <FileUpload label="Proofs" acceptedFileTypes={[".pdf"]} files={[]} onAdd={() => undefined} onRemove={() => undefined} />,
+    );
+    const input = container.querySelector<HTMLInputElement>('input[type="file"]');
+    if (!input) throw new Error("No file input");
+    const txt = () => new File(["x"], "notes.txt", { type: "text/plain" });
+    await user.upload(input, txt());
+    const first = screen.getByRole("alert");
+    await user.upload(input, txt());
+    expect(screen.getByRole("alert")).not.toBe(first);
+  });
+
+  it("moves focus only when a file was really removed", async () => {
+    const user = userEvent.setup();
+    const files: FileUploadEntry[] = [{ id: "a", name: "a.pdf", size: 1000, progress: 10 }];
+    // The app ignores Remove (say the request failed), and progress keeps ticking.
+    const { rerender } = render(<FileUpload label="Proofs" files={files} onAdd={() => undefined} onRemove={() => undefined} />);
+    await user.click(screen.getByRole("button", { name: "Remove a.pdf" }));
+    const choose = screen.getByRole("button", { name: "Choose files Proofs" });
+    act(() => choose.focus());
+    rerender(
+      <FileUpload label="Proofs" files={[{ ...files[0], progress: 20 }]} onAdd={() => undefined} onRemove={() => undefined} />,
+    );
+    expect(choose).toHaveFocus();
+  });
+});

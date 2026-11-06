@@ -85,8 +85,10 @@ export function FileUpload({
   const descriptionId = useId();
   const buttonId = useId();
   const listRef = useRef<HTMLUListElement>(null);
-  const removedIndex = useRef<number | null>(null);
-  const [problems, setProblems] = useState<string[]>([]);
+  /** The row a Remove was pressed on, and how many files there were then. */
+  const removal = useRef<{ index: number; count: number } | null>(null);
+  /** Each add gets its own alert (keyed by id), so a repeated refusal is announced again. */
+  const [problems, setProblems] = useState<{ id: number; items: string[] }>({ id: 0, items: [] });
 
   const add = (chosen: File[]) => {
     const accepted: File[] = [];
@@ -96,8 +98,11 @@ export function FileUpload({
       else if (maxSize != null && file.size > maxSize) refused.push(`${file.name} is larger than ${formatFileSize(maxSize)}.`);
       else accepted.push(file);
     }
-    setProblems(refused);
-    if (accepted.length > 0) onAdd(allowsMultiple ? accepted : accepted.slice(0, 1));
+    if (!allowsMultiple) {
+      for (const extra of accepted.splice(1)) refused.push(`${extra.name} was not added: only one file is allowed.`);
+    }
+    setProblems((previous) => ({ id: previous.id + 1, items: refused }));
+    if (accepted.length > 0) onAdd(accepted);
   };
 
   const onDrop: DropZoneProps["onDrop"] = async (event) => {
@@ -105,11 +110,14 @@ export function FileUpload({
   };
 
   // After a removal, keep keyboard users in place: the next Remove button, else Choose files.
+  // Only when the list really got shorter: an ignored Remove followed by a progress tick moves nothing.
   useEffect(() => {
-    if (removedIndex.current == null) return;
+    const pending = removal.current;
+    if (pending == null) return;
+    removal.current = null;
+    if (files.length >= pending.count) return;
     const buttons = listRef.current?.querySelectorAll<HTMLElement>(".sw-file-remove") ?? [];
-    const target = buttons[Math.min(removedIndex.current, buttons.length - 1)] ?? document.getElementById(buttonId);
-    removedIndex.current = null;
+    const target = buttons[Math.min(pending.index, buttons.length - 1)] ?? document.getElementById(buttonId);
     target?.focus();
   }, [files, buttonId]);
 
@@ -146,10 +154,11 @@ export function FileUpload({
           {description}
         </span>
       )}
-      {problems.length > 0 && (
-        <div className="sw-field-error" role="alert">
-          {problems.map((problem) => (
-            <p key={problem}>{problem}</p>
+      {problems.items.length > 0 && (
+        <div key={problems.id} className="sw-field-error" role="alert">
+          {problems.items.map((problem, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: two refused files may share a name.
+            <p key={`${index}-${problem}`}>{problem}</p>
           ))}
         </div>
       )}
@@ -171,7 +180,7 @@ export function FileUpload({
                   className="sw-file-remove"
                   aria-label={`Remove ${file.name}`}
                   onPress={() => {
-                    removedIndex.current = index;
+                    removal.current = { index, count: files.length };
                     onRemove(file.id);
                   }}
                 >

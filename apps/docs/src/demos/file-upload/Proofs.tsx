@@ -17,7 +17,7 @@ export default function Proofs() {
       onAdd={(added) =>
         setFiles((current) => [
           ...current,
-          ...added.map((file) => ({ id: `${file.name}-${file.lastModified}`, name: file.name, size: file.size })),
+          ...added.map((file) => ({ id: crypto.randomUUID(), name: file.name, size: file.size })),
         ])
       }
       onRemove={(id) => setFiles((current) => current.filter((file) => file.id !== id))}
