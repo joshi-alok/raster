@@ -146,3 +146,10 @@ Each track after Plan 7c starts with its own short design discussion and spec ad
   - Before each screenshot the element is moved onto a whole pixel, because the fluid type scale leaves the React and native examples at different fractional offsets and Chromium places text by that fraction.
   - The native popover is compared with `position: absolute` (the scheme React Aria uses). As a fixed, anchored top-layer element its glyphs land about half a pixel apart even when every box matches. The product keeps `position: fixed`.
 - **Full-page screenshot tolerance:** a change the size of the header (about 600px) stays under 0.001 on a full-page template screenshot of about 800,000px, so such baselines can miss it. Plan 7a regenerated them in full; a tighter rule for full-page shots (a `maxDiffPixels` cap) belongs in the Distribution track.
+
+## 10. Settled in Plan 7b
+
+- **NumberField parity:** the native route keeps the browser's own steppers inside the input, so it cannot render like the React route's − and + buttons. NumberField has no parity screenshot; its arrow-key stepping is tested on both routes.
+- **Native-route scripts:** a search field's clear button and a slider's `<output>` need a few lines of script on the native route. The docs ship them (`apps/docs/src/lib/native-controls.ts`) and publish them on the component pages; Raster's packages ship no script. Escape still clears a native search field without script.
+- **Slider:** neither route draws a filled portion of the track. Chromium has no fill pseudo-element and gradients are not allowed; the value is always shown as text. The React track is inset by half a thumb so its thumb travels exactly as a native range thumb does, and the two routes match at zero differing pixels; no tolerance exception was needed.
+- **Chips and segments without script:** the native route uses real checkbox and radio inputs, so a filter or a choice submits with a form.
