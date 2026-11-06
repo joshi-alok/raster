@@ -28,7 +28,7 @@ a11y:
   - The input has the searchbox role and its label; the description is announced with it.
   - The clear button is left out of the tab order on both routes, because Escape clears the field from the keyboard.
   - The browser's own clear control is hidden so there is only one.
-  - Without React, the clear button needs the short script below; Escape works without it.
+  - Without React, the clear button needs the short script below. Most browsers clear a search input on Escape; the script makes that consistent across browsers.
 ---
 import CodeBlock from "../../components/CodeBlock.astro";
 import Example from "../../components/Example.astro";
@@ -44,6 +44,14 @@ export const clearScript = `document.addEventListener("click", (event) => {
   input.value = "";
   input.dispatchEvent(new Event("input", { bubbles: true }));
   input.focus();
+});
+document.addEventListener("keydown", (event) => {
+  const input = event.target;
+  if (event.key !== "Escape" || !(input instanceof HTMLInputElement) || input.type !== "search") return;
+  if (!input.closest(".sw-search-control") || input.value === "") return;
+  input.value = "";
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+  event.preventDefault();
 });`;
 
 <Example title="Project search" source={projectsSource}>
@@ -52,6 +60,6 @@ export const clearScript = `document.addEventListener("click", (event) => {
 
 <NativeExample title="Project search without React" html={projectsHtml} />
 
-The native clear button needs this script once per page:
+The native clear button, and Escape in every browser, need this script once per page:
 
 <CodeBlock code={clearScript} label="Search clear script" />
