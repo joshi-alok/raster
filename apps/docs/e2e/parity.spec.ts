@@ -1,7 +1,7 @@
 import { test } from "@playwright/test";
 import { demo } from "./examples";
 import { waitForIslands } from "./islands";
-import { expectParityBaseline, expectSameRendering } from "./parity";
+import { expectAnchoredBelow, expectParityBaseline, expectSameRendering } from "./parity";
 import { useSettings } from "./settings";
 
 const COMBOS = [
@@ -36,14 +36,18 @@ for (const combo of COMBOS) {
 
     test("popover renders alike when open", async ({ page }) => {
       await open(page, "/components/popover/");
-      await demo(page, "Grid units").getByRole("button", { name: "Grid units" }).click();
+      const reactTrigger = demo(page, "Grid units").getByRole("button", { name: "Grid units" });
+      await reactTrigger.click();
       const react = page.locator(".sw-popover-content:not(#grid-units)");
       await react.waitFor();
+      await test.step("React placement", () => expectAnchoredBelow(reactTrigger, react));
       await test.step("React", () => expectParityBaseline(page, `popover-${variant}`, react));
       await page.keyboard.press("Escape");
-      await demo(page, "Grid units without React").getByRole("button", { name: "Grid units" }).click();
+      const nativeTrigger = demo(page, "Grid units without React").getByRole("button", { name: "Grid units" });
+      await nativeTrigger.click();
       const native = page.locator("#grid-units");
       await native.waitFor();
+      await test.step("native placement", () => expectAnchoredBelow(nativeTrigger, native));
       // React Aria positions its popover with position: absolute; a native [popover] is fixed (the
       // UA default), which Chromium paints through its anchor-scroll path with different glyph
       // positioning even when every box matches to the pixel. Compare both under one scheme; the
