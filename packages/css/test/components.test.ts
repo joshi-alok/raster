@@ -629,3 +629,23 @@ describe("header compact mode", () => {
     );
   });
 });
+
+describe("pagination", () => {
+  it("gives every page link a 44px target in tabular mono figures", () => {
+    const r = rule(".sw-pagination-link");
+    expect(r).toMatch(/min-inline-size:\s*var\(--target-min\)/);
+    expect(r).toMatch(/min-block-size:\s*var\(--target-min\)/);
+    expect(r).toMatch(/font-family:\s*var\(--font-mono\)/);
+    expect(r).toMatch(/font-variant-numeric:\s*tabular-nums/);
+  });
+
+  it("marks the current page with weight and a 2px underline, not colour alone", () => {
+    const r = rule('.sw-pagination-link[aria-current="page"]');
+    expect(r).toMatch(/font-weight:\s*500/);
+    expect(r).toMatch(/text-decoration-thickness:\s*2px/);
+  });
+
+  it("mirrors the step arrows in RTL", () => {
+    expect(css).toMatch(/\.sw-pagination-step svg:dir\(rtl\)\s*\{[^}]*transform:\s*scaleX\(-1\)/);
+  });
+});

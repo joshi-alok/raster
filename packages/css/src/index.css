@@ -29,3 +29,4 @@
 @import "./components/disclosure.css" layer(raster.components);
 @import "./components/popover.css" layer(raster.components);
 @import "./components/drawer.css" layer(raster.components);
+@import "./components/pagination.css" layer(raster.components);

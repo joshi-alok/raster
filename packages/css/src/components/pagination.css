@@ -1,0 +1,65 @@
+/* Pagination: a named nav of page links. The same markup serves both routes; it has no behaviour. */
+.sw-pagination-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sw-pagination-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-inline-size: var(--target-min);
+  min-block-size: var(--target-min);
+  padding-inline: var(--space-2);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-decoration-line: none;
+  text-underline-offset: 0.35em;
+}
+
+@media (hover: hover) {
+  .sw-pagination-link:hover {
+    background-color: var(--surface-subtle);
+  }
+}
+
+.sw-pagination-link:focus-visible {
+  outline-offset: calc(-1 * var(--focus-width));
+}
+
+.sw-pagination-link[aria-current="page"] {
+  font-weight: 500;
+  text-decoration-line: underline;
+  text-decoration-thickness: 2px;
+}
+
+.sw-pagination-step {
+  font-family: var(--font-sans);
+}
+
+.sw-pagination-step svg {
+  flex: none;
+  inline-size: 1rem;
+  block-size: 1rem;
+  stroke-width: 1.5;
+}
+
+.sw-pagination-step svg:dir(rtl) {
+  transform: scaleX(-1);
+}
+
+.sw-pagination-ellipsis {
+  display: inline-flex;
+  justify-content: center;
+  min-inline-size: var(--target-min);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}

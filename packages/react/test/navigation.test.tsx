@@ -5,6 +5,7 @@ import { Link } from "../src/actions/Link";
 import { Reveal } from "../src/motion/Reveal";
 import { Breadcrumb, Breadcrumbs } from "../src/navigation/Breadcrumbs";
 import { Header } from "../src/navigation/Header";
+import { Pagination, paginationItems } from "../src/navigation/Pagination";
 import { Tab, TabList, TabPanel, Tabs } from "../src/navigation/Tabs";
 import { expectAccessible } from "./axe";
 
@@ -236,5 +237,73 @@ describe("Reveal", () => {
     expect(screen.getByTestId("a")).not.toHaveAttribute("data-stagger");
     expect(screen.getByTestId("b").tagName).toBe("UL");
     expect(screen.getByTestId("b")).toHaveAttribute("data-stagger");
+  });
+});
+
+describe("paginationItems", () => {
+  it("shows every page when the gaps are single pages", () => {
+    expect(paginationItems(4, 7)).toEqual([1, 2, 3, 4, 5, 6, 7]);
+  });
+
+  it("collapses distant ranges into ellipses around the current page", () => {
+    expect(paginationItems(6, 12)).toEqual([1, "ellipsis", 5, 6, 7, "ellipsis", 12]);
+  });
+
+  it("keeps the opening pages together on the first page", () => {
+    expect(paginationItems(1, 12)).toEqual([1, 2, "ellipsis", 12]);
+  });
+
+  it("widens the window with more siblings", () => {
+    expect(paginationItems(6, 12, 2)).toEqual([1, "ellipsis", 4, 5, 6, 7, 8, "ellipsis", 12]);
+  });
+
+  it("clamps the page into range and handles no pages", () => {
+    expect(paginationItems(99, 3)).toEqual([1, 2, 3]);
+    expect(paginationItems(1, 0)).toEqual([]);
+  });
+});
+
+describe("Pagination", () => {
+  const href = (page: number) => `?page=${page}`;
+
+  it("is a named navigation landmark of page links", () => {
+    render(<Pagination page={6} total={12} href={href} />);
+    const nav = screen.getByRole("navigation", { name: "Pagination" });
+    expect(nav).toHaveClass("sw-pagination");
+    expect(nav.querySelector("ul")).toHaveClass("sw-pagination-list");
+    expect(screen.getByRole("link", { name: "Page 12" })).toHaveAttribute("href", "?page=12");
+  });
+
+  it("marks the current page and hides the ellipses from screen readers", () => {
+    const { container } = render(<Pagination page={6} total={12} href={href} />);
+    expect(screen.getByRole("link", { name: "Page 6" })).toHaveAttribute("aria-current", "page");
+    const ellipses = container.querySelectorAll(".sw-pagination-ellipsis");
+    expect(ellipses).toHaveLength(2);
+    for (const e of ellipses) expect(e).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("links the previous and next pages, and omits a step that does not exist", () => {
+    const { rerender } = render(<Pagination page={6} total={12} href={href} />);
+    expect(screen.getByRole("link", { name: "Previous" })).toHaveAttribute("href", "?page=5");
+    expect(screen.getByRole("link", { name: "Next" })).toHaveAttribute("rel", "next");
+    rerender(<Pagination page={1} total={12} href={href} />);
+    expect(screen.queryByRole("link", { name: "Previous" })).toBeNull();
+    rerender(<Pagination page={12} total={12} href={href} />);
+    expect(screen.queryByRole("link", { name: "Next" })).toBeNull();
+  });
+
+  it("accepts a landmark name, labels and a className", () => {
+    render(
+      <Pagination aria-label="Results" previousLabel="Back" nextLabel="More" className="extra" page={2} total={3} href={href} />,
+    );
+    const nav = screen.getByRole("navigation", { name: "Results" });
+    expect(nav).toHaveClass("sw-pagination", "extra");
+    expect(screen.getByRole("link", { name: "Back" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "More" })).toBeInTheDocument();
+  });
+
+  it("has no structural accessibility violations", async () => {
+    const { container } = render(<Pagination page={6} total={12} href={href} />);
+    await expectAccessible(container);
   });
 });
