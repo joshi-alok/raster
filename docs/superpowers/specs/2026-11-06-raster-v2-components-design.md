@@ -312,3 +312,40 @@ Agreed on 2026-11-07. Three components, taking Raster from 58 to 61: **BarChart*
 - **Narrow charts.** Below 32rem the frame hides minor category labels, and on horizontal bars every other value label, by container query.
 - **The zero line sits on the bars' base:** it is nudged up 1px in vertical charts, so positive bars meet it without a gap. Bars below zero show a 1px gap; no docs example has negative values.
 - **Known:** screen-reader announcement of the marks has not been checked by hand with VoiceOver or NVDA. Charts lay out left to right in every writing direction (`direction: ltr` on the frame), since their SVG does not mirror.
+
+## 18. Plan 8 design: Guidance
+
+Guidance is part of the docs, held to the same checks as the components: usage is structured data the build requires, patterns are composed from the real components, and content style is checked by a test.
+
+- **Usage on every component page.** Each component's frontmatter gains two required lists:
+  - `use`: what the component is for.
+  - `avoid`: what it is not for. Each item is `{ text, instead? }`, where `instead` names a component or pattern by id.
+
+  The page shows them as a "Usage" section after the lead and before Examples, in two columns, "Use it to" and "Avoid it for". An `instead` renders as a "Use Select instead" link. A test checks that every `instead` names a page that exists.
+- **Patterns.** A new "Patterns" section in the top navigation, between Components and Templates, with an index and five pages:
+  - Forms;
+  - Navigation;
+  - Data;
+  - Empty states;
+  - Errors and feedback.
+
+  Each page is an MDX entry in a `patterns` collection (title, order, summary, the components it uses). It has a short intro, numbered rules, one or two live examples built only from Raster components, and links to those components. Examples use the same `Example` frame as component pages: static ones show the HTML they render, generated from React; interactive ones show React only. There are no parity screenshots.
+- **Content style.** A "Content" page under Foundations. It covers:
+  - voice: plain, direct, second person;
+  - sentence case;
+  - buttons start with a verb and name the outcome;
+  - errors say what happened and what to do next, with no blame, no "Error:" prefix and no exclamation marks;
+  - British spelling;
+  - dates written as "7 November 2026";
+  - a space between a number and its unit;
+  - "…" only on actions that ask for more input.
+- **The content check.** A test runs the rules a script can check over the docs' own copy: component and pattern frontmatter (summary, use, avoid), example titles, and the labels and text in the demos.
+  - Rules it checks: sentence case (with an allowlist of proper nouns and component names), no "click here", no "!", no "Error:" prefix, no "...", no listed American spellings, and no generic button labels ("OK", "Submit", "Yes", "No").
+  - Copy that breaks a rule is fixed, not allowlisted.
+- **Tests:**
+  - The content schema requires both usage lists on all 60 pages.
+  - The `instead` links resolve.
+  - Every component page shows its Usage section.
+  - Navigation tests cover Patterns.
+  - The accessibility, reflow and axe checks reach the new pages because they are built.
+  - Visual baselines cover the pattern examples in four combinations at three widths.
