@@ -30,6 +30,7 @@ describe("themeCss", () => {
     expect(css.startsWith('[data-theme="zurich"] {\n')).toBe(true);
     expect(css).toContain("  --radius: 0;\n");
     expect(css).toContain("  --brand-signal: light-dark(#E5341D, #F2836F);\n");
+    expect(css).toContain("  --chart-1: light-dark(#2F4BD8, #7086F0);\n");
   });
 });
 

@@ -643,3 +643,62 @@ test("data grid, native: sort links carry aria-sort; Select all checks every row
   await expect(all).not.toBeChecked();
   expect(await all.evaluate((el: HTMLInputElement) => el.indeterminate)).toBe(true);
 });
+
+test("bar chart, React: one tab stop, arrows move between bars, the tooltip follows", async ({ page }) => {
+  await page.goto("/components/bar-chart/");
+  await waitForIslands(page);
+  const chart = example(page, "Projects by year");
+  const marks = chart.getByRole("group", { name: "Projects by year" });
+  const first = marks.getByRole("img", { name: "Built, 2019: 3" });
+  await tabTo(page, first);
+  const tooltip = chart.locator(".sw-chart-tooltip");
+  await expect(tooltip).toContainText("2019");
+  await page.keyboard.press("ArrowRight");
+  await expect(marks.getByRole("img", { name: "Built, 2020: 2" })).toBeFocused();
+  await page.keyboard.press("ArrowDown");
+  await expect(marks.getByRole("img", { name: "Planned, 2020: 3" })).toBeFocused();
+  await page.keyboard.press("End");
+  await expect(marks.getByRole("img", { name: "Planned, 2025: 3" })).toBeFocused();
+  await expect(tooltip).toContainText("2025");
+  // One tab stop: Tab leaves the chart for the Show data toggle.
+  await page.keyboard.press("Tab");
+  await expect(chart.locator("summary")).toBeFocused();
+  await expect(tooltip).toHaveCount(0);
+});
+
+test("bar chart: Show data opens the table, natively on both routes", async ({ page }) => {
+  await page.goto("/components/bar-chart/");
+  await waitForIslands(page);
+  for (const title of ["Projects by year", "Projects by year without React"]) {
+    const chart = example(page, title);
+    await chart.locator("summary").focus();
+    await page.keyboard.press("Enter");
+    await expect(chart.getByRole("table")).toBeVisible();
+    await expect(chart.getByRole("rowheader", { name: "2025" })).toBeVisible();
+  }
+});
+
+test("line chart, React: arrows move along a line and between lines; the crosshair follows", async ({ page }) => {
+  await page.goto("/components/line-chart/");
+  await waitForIslands(page);
+  const chart = example(page, "Visitors");
+  const marks = chart.getByRole("group", { name: "Exhibition visitors, thousands" });
+  await tabTo(page, marks.getByRole("img", { name: "Zürich, Jan: 12" }));
+  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("ArrowDown");
+  await expect(marks.getByRole("img", { name: "Basel, Feb: 9" })).toBeFocused();
+  await expect(chart.locator(".sw-chart-crosshair")).toHaveCount(1);
+  await expect(chart.locator(".sw-chart-point[data-active]")).toHaveCount(1);
+});
+
+test("bar chart, React: hovering a bar shows its tooltip; leaving hides it", async ({ page }) => {
+  await page.goto("/components/bar-chart/");
+  await waitForIslands(page);
+  const chart = example(page, "Projects by year");
+  const bar = chart.locator("rect.sw-chart-bar").nth(12); // Built, 2025: the tallest bar.
+  await bar.hover();
+  await expect(chart.locator(".sw-chart-tooltip-row[data-current]")).toContainText("Built");
+  await expect(chart.locator(".sw-chart-tooltip-title")).toHaveText("2025");
+  await page.mouse.move(0, 0);
+  await expect(chart.locator(".sw-chart-tooltip")).toHaveCount(0);
+});

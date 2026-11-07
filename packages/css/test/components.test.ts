@@ -1216,3 +1216,120 @@ describe("data grid", () => {
     );
   });
 });
+
+describe("charts", () => {
+  it("assigns series colours by slot, and the muted colour to de-emphasised series", () => {
+    for (let n = 1; n <= 6; n++) {
+      expect(rule(`.sw-chart [data-series="${n}"]`)).toMatch(new RegExp(`--series:\\s*var\\(--chart-${n}\\)`));
+    }
+    expect(rule(".sw-chart [data-muted]")).toMatch(/--series:\s*var\(--chart-muted\)/);
+  });
+
+  it("lays the frame out as axis, plot and end labels, left to right, at the chart height", () => {
+    const r = rule(".sw-chart-frame");
+    expect(r).toMatch(/display:\s*grid/);
+    expect(r).toMatch(/grid-template-rows:\s*var\(--chart-height,\s*16rem\) auto/);
+    expect(r).toMatch(/direction:\s*ltr/);
+  });
+
+  it("leaves no end-label column, and no gap for it, when a chart has no end labels", () => {
+    expect(rule(".sw-chart-frame")).toMatch(/grid-template-columns:\s*auto minmax\(0,\s*1fr\);/);
+    expect(css).toMatch(/\.sw-chart-frame:has\(\s*>\s*\.sw-chart-ends\)\s*\{[^}]*grid-template-columns:\s*auto minmax\(0,\s*1fr\) auto/);
+  });
+
+  it("positions ticks by percentage within their axis", () => {
+    expect(rule('.sw-chart-axis[data-axis="y"] .sw-chart-tick')).toMatch(/inset-block-start:\s*var\(--at\)/);
+    expect(rule('.sw-chart-axis[data-axis="x"] .sw-chart-tick')).toMatch(/inset-inline-start:\s*var\(--at\)/);
+    expect(rule(".sw-chart-axis")).toMatch(/font-family:\s*var\(--font-mono\)/);
+  });
+
+  it("hides minor category labels when the chart is narrow", () => {
+    // Lightning CSS joins this selector with the horizontal value labels' rule, which hides the same way.
+    expect(css).toMatch(/@container \(inline-size < 32rem\)\s*\{\s*\.sw-chart-tick\[data-minor\][^{]*\{[^}]*visibility:\s*hidden/);
+  });
+
+  it("hides every other value label along horizontal bars when the chart is narrow", () => {
+    // Six labels such as "100k" collide in a 20rem chart; the gridlines stay.
+    expect(css).toMatch(
+      /@container \(inline-size < 32rem\)\s*\{[^@]*\.sw-chart\[data-orientation="?horizontal"?\] \.sw-chart-axis\[data-axis="?x"?\] \.sw-chart-tick:nth-child\(2n\)\s*\{[^}]*visibility:\s*hidden/,
+    );
+  });
+
+  it("draws gridlines as hairlines and the zero line in the text colour", () => {
+    expect(rule(".sw-chart-gridline")).toMatch(/border-block-start:\s*1px solid var\(--border\)/);
+    expect(rule(".sw-chart-gridline[data-zero]")).toMatch(/border-block-start-color:\s*var\(--text-primary\)/);
+    expect(rule('.sw-chart[data-orientation="horizontal"] .sw-chart-gridline')).toMatch(
+      /border-inline-start:\s*1px solid var\(--border\)/,
+    );
+  });
+
+  it("lays the zero line over the bars' base, on the plot's own edge row or column", () => {
+    // A top border at --at: 100% lands one row below the plot, under the 1px inner half of the
+    // bars' gap stroke, which then shows as a surface-coloured line between bar and zero line.
+    // Lifting it 1px puts it on the bars' base, as the horizontal zero line already is.
+    expect(rule(".sw-chart-gridline[data-zero]")).toMatch(/translate:\s*0 -1px/);
+    expect(rule('.sw-chart[data-orientation="horizontal"] .sw-chart-gridline[data-zero]')).toMatch(
+      /translate:\s*none/,
+    );
+  });
+
+  it("stretches the marks over the plot", () => {
+    const r = rule(".sw-chart-marks");
+    expect(r).toMatch(/position:\s*absolute/);
+    expect(r).toMatch(/overflow:\s*visible/);
+  });
+
+  it("separates bars with a 2px surface stroke that doesn't scale", () => {
+    const r = rule(".sw-chart-bar");
+    expect(r).toMatch(/fill:\s*var\(--series\)/);
+    expect(r).toMatch(/stroke:\s*var\(--chart-surface,\s*var\(--surface-page\)\)/);
+    expect(r).toMatch(/stroke-width:\s*2px/);
+    expect(r).toMatch(/vector-effect:\s*non-scaling-stroke/);
+  });
+
+  it("draws lines 2px and areas at 12%", () => {
+    const line = rule(".sw-chart-line");
+    expect(line).toMatch(/stroke-width:\s*2px/);
+    expect(line).toMatch(/fill:\s*none/);
+    expect(line).toMatch(/vector-effect:\s*non-scaling-stroke/);
+    expect(rule(".sw-chart-area")).toMatch(/fill-opacity:\s*\.?0?\.12/);
+  });
+
+  it("draws markers as 8px HTML squares", () => {
+    const r = rule(".sw-chart-point");
+    expect(r).toMatch(/inline-size:\s*\.5rem/);
+    expect(r).toMatch(/background-color:\s*var\(--series\)/);
+  });
+
+  it("rings a focused mark's hit area", () => {
+    expect(rule(".sw-chart-target:focus-visible")).toMatch(/outline:\s*var\(--focus-width\) solid var\(--accent\)/);
+    expect(rule(".sw-chart-target[data-point]")).toMatch(/inline-size:\s*1\.5rem/);
+  });
+
+  it("raises the tooltip on a hairline-bordered surface, out of the pointer's way", () => {
+    const r = rule(".sw-chart-tooltip");
+    expect(r).toMatch(/background-color:\s*var\(--surface-raised\)/);
+    expect(r).toMatch(/border:\s*1px solid var\(--border\)/);
+    expect(r).toMatch(/pointer-events:\s*none/);
+    expect(rule(".sw-chart-tooltip-row[data-current]")).toMatch(/font-weight:\s*500/);
+  });
+
+  it("toggles the data table with a plus and a minus", () => {
+    expect(rule(".sw-chart-data > summary:before")).toMatch(/content:\s*"\+"/);
+    expect(rule(".sw-chart-data[open] > summary:before")).toMatch(/content:\s*"−"/);
+  });
+
+  it("sizes a sparkline to sit in a line of text", () => {
+    const r = rule(".sw-sparkline");
+    expect(r).toMatch(/inline-size:\s*6rem/);
+    expect(r).toMatch(/block-size:\s*1\.5rem/);
+    expect(r).toMatch(/--series:\s*var\(--chart-1\)/);
+  });
+
+  it("keeps series colours in forced colours, with gaps in the system background", () => {
+    expect(css).toMatch(/\.sw-chart-marks[^{]*\{[^}]*forced-color-adjust:\s*none/);
+    expect(css).toMatch(
+      /@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-chart-bar\s*\{[^}]*stroke:\s*canvas/i,
+    );
+  });
+});

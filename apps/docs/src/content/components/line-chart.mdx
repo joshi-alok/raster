@@ -1,0 +1,51 @@
+---
+title: LineChart
+group: Display
+order: 17
+summary: Lines over ordered categories such as months, with markers, end labels and an optional area.
+interactive: true
+props:
+  - name: caption / data / x / xLabel / series
+    type: as BarChart
+    description: The same data shape as BarChart. Categories are spaced evenly, first to last edge to edge.
+  - name: area
+    type: boolean
+    default: "false"
+    description: Fills under each line in its colour at 12%. Best with one series.
+  - name: domain
+    type: "[number, number]"
+    description: An exact value range. By default, the data's range on nice numbers; lines need not start at zero.
+  - name: highlight / format / interactive
+    type: as BarChart
+    description: One series in colour and the rest muted; value formatting; the focus layer.
+a11y:
+  - The chart is one tab stop. Left and Right move along the line, Up and Down between series, and Home and End jump to the ends.
+  - Each point is named with its series, category and value; a crosshair and tooltip follow focus and the pointer.
+  - Two to four lines are labelled at their ends, as well as in the legend, so no line is identified by colour alone.
+  - Show data opens a table of every value, on both routes.
+---
+import Example from "../../components/Example.astro";
+import NativeExample from "../../components/NativeExample.astro";
+import EnergyUse from "../../demos/line-chart/EnergyUse";
+import energySource from "../../demos/line-chart/EnergyUse.tsx?raw";
+import Highlighted from "../../demos/line-chart/Highlighted";
+import highlightedSource from "../../demos/line-chart/Highlighted.tsx?raw";
+import Visitors from "../../demos/line-chart/Visitors";
+import visitorsSource from "../../demos/line-chart/Visitors.tsx?raw";
+import visitorsHtml from "../../demos/line-chart/visitors.html?raw";
+
+<Example title="Visitors" source={visitorsSource}>
+  <Visitors client:load />
+</Example>
+
+<Example title="Energy use" source={energySource}>
+  <EnergyUse client:load />
+</Example>
+
+<Example title="Highlighted" source={highlightedSource}>
+  <Highlighted client:load />
+</Example>
+
+<NativeExample title="Visitors without React" html={visitorsHtml} />
+
+On narrow screens every other month label is hidden; the table and the tooltip still give each one.

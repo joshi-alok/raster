@@ -137,6 +137,21 @@ for (const combo of COMBOS) {
       await expectSameRendering(page, `slider-max-${variant}`, react, native);
     });
 
+    test("bar chart renders alike", async ({ page }) => {
+      await open(page, "/components/bar-chart/");
+      await expectSameRendering(
+        page,
+        `bar-chart-${variant}`,
+        demo(page, "Projects by year"),
+        demo(page, "Projects by year without React"),
+      );
+    });
+
+    test("line chart renders alike", async ({ page }) => {
+      await open(page, "/components/line-chart/");
+      await expectSameRendering(page, `line-chart-${variant}`, demo(page, "Visitors"), demo(page, "Visitors without React"));
+    });
+
     // NumberField has no parity check: the native route uses the browser's own steppers by design.
   });
 }

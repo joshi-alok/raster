@@ -28,6 +28,8 @@ describe("public API", () => {
       "DatePicker", "DateRangePicker",
       "FileUpload", "formatFileSize", "acceptsFile",
       "DataGrid", "DataGridHeader", "DataGridColumn", "DataGridBody", "DataGridRow", "DataGridCell",
+      "BarChart", "barLayout", "lineLayout", "numberFormatter", "sparklineLayout", "sparklineSummary", "valueAxis",
+      "LineChart", "Sparkline",
       "cx",
     ];
     for (const name of expected) expect(typeof (raster as Record<string, unknown>)[name], name).toBe("function");
