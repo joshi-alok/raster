@@ -298,3 +298,17 @@ Agreed on 2026-11-07. Three components, taking Raster from 58 to 61: **BarChart*
   - keyboard walkthroughs, and the axe sweep and 320px reflow;
   - native-vs-React parity screenshots for a bar chart and a line chart;
   - forced-colours screenshots and visual baselines.
+
+## 17. Settled in Plan 7f
+
+- **Marks in SVG, words in HTML.** One SVG per plot, `viewBox="0 0 100 100"` with `preserveAspectRatio="none"` and non-scaling strokes, so marks stretch with the box and lines stay 2px. Ticks, end labels, gridlines, focus targets and the tooltip are HTML placed by percentage custom properties (`--at`, `--x`, `--y`, `--w`, `--h`), so text never stretches. Axis labels share one grid cell, so an axis is as wide as its longest label. Geometry is pure functions over `d3-scale`; paths are written directly.
+- **The native route is generated.** The docs' plain-HTML examples are the React components' output (`htmlSnippet`), and a test keeps them equal (`UPDATE_CHART_HTML=1` rewrites them). Parity screenshots show 0 pixels of difference. A native chart is static: no focus layer, no tooltip; its data table works without script.
+- **The palette is checked, not judged.** `checkChartPalette` holds every theme and mode to the OKLCH lightness band, chroma ≥ 0.10, colour-blind ΔE ≥ 8 and normal ΔE ≥ 15 between neighbours, and 3:1 on every surface. The tokens tests run it on every theme, so a palette that fails fails `pnpm verify`; it is exported for themes made outside Raster.
+- **One tab stop.** The marks are a `role="group"` named by the caption; each mark is a `role="img"` span named "Series, category: value" with a roving tabindex. Left and Right move across categories, Up and Down across series (swapped for horizontal bars), Home and End go to the ends. Alt, Ctrl and Meta combinations are left to the browser. Escape dismisses the tooltip. The tab stop and the active mark follow their mark by series key and category label when data changes; if the mark goes, the tab stop returns to the first mark. The tooltip is `aria-hidden`; the mark's name already says what it says.
+- **Hit areas.** The pointer picks the nearest mark anywhere in the plot. The keyboard focus ring sits on the bar itself (a zero bar still shows a thin ring) and on a 24px square at a line point. It does not span the whole band, as §16 had it, because grouped bars' bands would overlap.
+- **Static charts.** `interactive={false}` draws the same figure with no targets, no tabindex and no tooltip, for print and for charts that sit inside another control.
+- **Data must be finite numbers.** Any other value in a series key throws a `TypeError` naming the key; Sparkline does the same. There are no gaps in lines.
+- **End labels** go on line charts of two to four series; one series is named by its caption, five or more by the legend. Without end labels the frame has no third column.
+- **Narrow charts.** Below 32rem the frame hides minor category labels, and on horizontal bars every other value label, by container query.
+- **The zero line sits on the bars' base:** it is nudged up 1px in vertical charts, so positive bars meet it without a gap. Bars below zero show a 1px gap; no docs example has negative values.
+- **Known:** screen-reader announcement of the marks has not been checked by hand with VoiceOver or NVDA. Charts lay out left to right in every writing direction (`direction: ltr` on the frame), since their SVG does not mirror.
