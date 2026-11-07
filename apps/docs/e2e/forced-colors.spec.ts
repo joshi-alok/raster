@@ -22,6 +22,9 @@ const CASES = [
   { path: "/components/file-upload/", title: "Proofs", name: "file-upload" },
   { path: "/components/data-grid/", title: "Projects", name: "data-grid" },
   { path: "/components/data-grid/", title: "Projects without React", name: "data-grid-native" },
+  { path: "/components/bar-chart/", title: "Hours by phase", name: "bar-chart-stacked" },
+  { path: "/components/line-chart/", title: "Visitors", name: "line-chart" },
+  { path: "/components/sparkline/", title: "In a table", name: "sparkline" },
 ];
 
 for (const c of CASES) {
