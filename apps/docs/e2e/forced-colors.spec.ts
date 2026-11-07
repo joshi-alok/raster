@@ -20,6 +20,8 @@ const CASES = [
   { path: "/components/calendar/", title: "Booking", name: "range-calendar" },
   { path: "/components/date-picker/", title: "Delivery date", name: "date-picker" },
   { path: "/components/file-upload/", title: "Proofs", name: "file-upload" },
+  { path: "/components/data-grid/", title: "Projects", name: "data-grid" },
+  { path: "/components/data-grid/", title: "Projects without React", name: "data-grid-native" },
 ];
 
 for (const c of CASES) {

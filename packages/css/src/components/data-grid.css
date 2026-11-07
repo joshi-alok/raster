@@ -1,0 +1,309 @@
+/*
+ * DataGrid: a table to sort, select from and resize.
+ * React route: React Aria Table (class "sw-table sw-data-grid") inside ResizableTableContainer
+ * (.sw-data-grid-scroll), with a .sw-data-grid-caption above that names it.
+ * Native route: <table class="sw-table sw-data-grid"> in the same wrapper, with sort links
+ * (.sw-data-grid-sort) in the headers, aria-sort on the current one, and checkbox inputs in the first
+ * column. Both routes carry .sw-table, so cells, hairlines and type match Table.
+ */
+.sw-data-grid-wrap {
+  display: grid;
+  gap: var(--space-3);
+  min-inline-size: 0;
+}
+
+.sw-data-grid-caption {
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-label-size);
+  letter-spacing: var(--text-label-tracking);
+  line-height: var(--text-label-leading);
+  text-transform: uppercase;
+}
+
+.sw-data-grid-scroll {
+  overflow: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.sw-data-grid {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/*
+ * The native table takes its content's width, at least its region's, and scrolls rather than
+ * squeezing: squeezed, cells wrap and the selection column shrinks below the offset the sticky
+ * column sits at. React Aria sizes its own table inline (width: min-content, fixed layout).
+ */
+table.sw-data-grid {
+  inline-size: max-content;
+  min-inline-size: 100%;
+}
+
+.sw-data-grid :is(th, td) {
+  position: relative;
+}
+
+.sw-data-grid thead th {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 2;
+  background-color: var(--surface-page);
+  will-change: transform;
+}
+
+/*
+ * will-change gives each sticky cell its own layer from the start. Without it, at the fractional
+ * row offsets fluid type produces, Chrome drew the native grid's sticky cells a pixel higher on
+ * some loads than on others.
+ */
+.sw-data-grid :is(.sw-data-grid-select, .sw-data-grid-sticky) {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 1;
+  background-color: var(--surface-page);
+  will-change: transform;
+}
+
+.sw-data-grid thead :is(.sw-data-grid-select, .sw-data-grid-sticky) {
+  z-index: 3;
+}
+
+.sw-data-grid-selectable .sw-data-grid-sticky {
+  inset-inline-start: var(--target-min);
+}
+
+/* React Aria sizes its select column in pixels (44), whatever the root font size. */
+.sw-data-grid-selectable[data-rac] .sw-data-grid-sticky {
+  inset-inline-start: 44px;
+}
+
+/* The sticky column's edge, drawn as a border so it moves with the cell and survives forced colours. */
+.sw-data-grid .sw-data-grid-sticky::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  border-inline-end: 1px solid var(--border);
+}
+
+/*
+ * No block padding: on the React route the checkbox's 44px label target sets the row height, centred
+ * on the row's text. The native route's bare input is an 18px target, spaced a row apart.
+ */
+.sw-data-grid .sw-data-grid-select {
+  inline-size: var(--target-min);
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.sw-data-grid .sw-data-grid-select :is(.sw-checkbox, input[type="checkbox"]) {
+  justify-content: center;
+  margin: 0;
+}
+
+.sw-data-grid input[type="checkbox"] {
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Inside .sw-data-grid, to outweigh Table's start alignment on th and td. */
+.sw-data-grid .sw-data-grid-numeric {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+/* Mono figures are for the numbers: a numeric column's header keeps the header type, as in Table. */
+.sw-data-grid thead .sw-data-grid-numeric {
+  font-family: inherit;
+}
+
+/* Native row headers are th; keep them at the body weight, as React's row header cells are. */
+.sw-data-grid tbody th {
+  font-weight: inherit;
+}
+
+.sw-data-grid-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sw-data-grid-numeric .sw-data-grid-head {
+  justify-content: flex-end;
+}
+
+.sw-data-grid-column[data-allows-sorting] {
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .sw-data-grid-column[data-allows-sorting]:hover,
+  .sw-data-grid-sort:hover {
+    color: var(--text-primary);
+  }
+}
+
+.sw-data-grid :is(.sw-data-grid-column, .sw-data-grid-cell, .sw-data-grid-row)[data-focus-visible] {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: calc(-1 * var(--focus-width));
+}
+
+/* A header's focus rests on its label (so Enter sorts, not resizes); ring the label. */
+.sw-data-grid-label:focus-visible {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+/* Native sort links */
+.sw-data-grid-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Sort chevrons, drawn with borders: a muted pair when sortable, one in the text colour when sorted. */
+.sw-data-grid-sort-icon {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  inline-size: 0.5rem;
+  block-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.sw-data-grid-sort-icon::before,
+.sw-data-grid-sort-icon::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0.0625rem;
+  inline-size: 0.3125rem;
+  block-size: 0.3125rem;
+  border-block-start: 1.5px solid currentColor;
+  border-inline-start: 1.5px solid currentColor;
+}
+
+.sw-data-grid-sort-icon::before {
+  inset-block-start: 0.125rem;
+  transform: rotate(45deg);
+}
+
+.sw-data-grid-sort-icon::after {
+  inset-block-end: 0.125rem;
+  transform: rotate(225deg);
+}
+
+.sw-data-grid-sort-icon[data-direction] {
+  color: var(--text-primary);
+}
+
+.sw-data-grid-sort-icon[data-direction="ascending"]::after {
+  display: none;
+}
+
+.sw-data-grid-sort-icon[data-direction="descending"]::before {
+  display: none;
+}
+
+/* Selected rows: a fill and a 2px bar at the inline start, as well as the ticked checkbox. */
+.sw-data-grid-row[data-selected] > *,
+.sw-data-grid tr:has(> td > input[type="checkbox"]:checked) > * {
+  background-color: var(--accent-subtle);
+  color: var(--on-accent-subtle);
+}
+
+.sw-data-grid-row[data-selected] > :first-child::before,
+.sw-data-grid tr:has(> td > input[type="checkbox"]:checked) > :first-child::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  border-inline-start: 2px solid var(--accent);
+}
+
+/* Resize handle: a 24px-wide hit area at the header's inline end, drawn as a 1px line. */
+.sw-data-grid-resizer {
+  position: absolute;
+  inset-block: var(--space-2);
+  inset-inline-end: 0;
+  inline-size: 1.5rem;
+  cursor: col-resize;
+  touch-action: none;
+  outline: none;
+}
+
+.sw-data-grid-resizer::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  border-inline-end: 1px solid var(--border-strong);
+}
+
+.sw-data-grid-resizer:is([data-hovered], [data-resizing])::before {
+  border-inline-end: 2px solid var(--accent);
+}
+
+.sw-data-grid-resizer[data-focus-visible] {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: calc(-1 * var(--focus-width));
+}
+
+/*
+ * Virtualised, React Aria draws divs with grid roles instead of th and td, so Table's cell rules
+ * don't reach them: the cells take the same padding, hairlines and header type by class. Rows have
+ * a fixed height and each cell fills the wrapper React Aria positions it in, so cells centre their
+ * content instead of padding it.
+ */
+.sw-data-grid-virtualized :is(.sw-data-grid-column, .sw-data-grid-cell) {
+  display: flex;
+  block-size: 100%;
+  align-items: center;
+  padding-inline: var(--space-4);
+  border-block-end: 1px solid var(--border);
+}
+
+/*
+ * Each virtualised cell sits in its own positioned wrapper, the row's direct child, which takes the
+ * selected fill and bar. Sticky can't pin inside a wrapper its own size, and an opaque cell would
+ * hide the fill, so the select and sticky cells stay in flow and clear. Sticky columns are not
+ * supported when virtualised.
+ */
+.sw-data-grid-virtualized :is(.sw-data-grid-select, .sw-data-grid-sticky) {
+  position: static;
+  background-color: transparent;
+  will-change: auto;
+}
+
+.sw-data-grid-virtualized .sw-data-grid-column {
+  border-block-end-color: var(--text-primary);
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--surface-page);
+  color: var(--text-secondary);
+}
+
+.sw-data-grid-virtualized .sw-data-grid-select {
+  justify-content: center;
+  padding-inline: 0;
+}
+
+.sw-data-grid-virtualized .sw-data-grid-numeric {
+  justify-content: flex-end;
+}
+
+@media (forced-colors: active) {
+  .sw-data-grid-row[data-selected] > *,
+  .sw-data-grid tr:has(> td > input[type="checkbox"]:checked) > * {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+}

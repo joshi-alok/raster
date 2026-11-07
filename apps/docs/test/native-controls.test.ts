@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from "vitest";
-import { installSearchClear, installSliderOutputs } from "../src/lib/native-controls";
+import { installSearchClear, installSelectAll, installSliderOutputs } from "../src/lib/native-controls";
 
 let uninstall: () => void = () => undefined;
 afterEach(() => {
@@ -106,5 +106,76 @@ describe("installSliderOutputs", () => {
     input.value = "30";
     input.dispatchEvent(new Event("input", { bubbles: true }));
     expect(document.querySelector("output")?.value).toBe("30");
+  });
+});
+
+describe("installSelectAll", () => {
+  function grid(rowsHtml = `
+          <tr><td><input type="checkbox" name="project" value="a" /></td><td>A</td></tr>
+          <tr><td><input type="checkbox" name="project" value="b" /></td><td>B</td></tr>`) {
+    document.body.innerHTML = `
+      <form><table class="sw-table sw-data-grid">
+        <thead><tr><th><input type="checkbox" data-select-all aria-label="Select all projects" /></th><th>Project</th></tr></thead>
+        <tbody>${rowsHtml}
+        </tbody>
+      </table></form>`;
+    uninstall = installSelectAll(document);
+    const all = document.querySelector<HTMLInputElement>("[data-select-all]") as HTMLInputElement;
+    const rows = [...document.querySelectorAll<HTMLInputElement>("tbody input")];
+    return { all, rows };
+  }
+
+  it("checks and clears every row from the header checkbox", () => {
+    const { all, rows } = grid();
+    all.click();
+    expect(rows.every((box) => box.checked)).toBe(true);
+    all.click();
+    expect(rows.some((box) => box.checked)).toBe(false);
+  });
+
+  it("shows a partial selection as indeterminate and a full one as checked", () => {
+    const { all, rows } = grid();
+    rows[0].click();
+    expect(all.indeterminate).toBe(true);
+    expect(all.checked).toBe(false);
+    rows[1].click();
+    expect(all.indeterminate).toBe(false);
+    expect(all.checked).toBe(true);
+  });
+
+  it("shows the selection the page loads with", () => {
+    const { all } = grid(`
+          <tr><td><input type="checkbox" checked /></td><td>A</td></tr>
+          <tr><td><input type="checkbox" /></td><td>B</td></tr>`);
+    expect(all.indeterminate).toBe(true);
+    expect(all.checked).toBe(false);
+  });
+
+  it("shows the selection again after the form resets", async () => {
+    const { all, rows } = grid();
+    rows[0].click();
+    document.querySelector("form")?.reset();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(all.indeterminate).toBe(false);
+    expect(all.checked).toBe(false);
+  });
+
+  it("ignores disabled rows: Select all leaves them, and all enabled rows count as all", () => {
+    const { all, rows } = grid(`
+          <tr><td><input type="checkbox" /></td><td>A</td></tr>
+          <tr><td><input type="checkbox" disabled /></td><td>B</td></tr>`);
+    all.click();
+    expect(rows[1].checked).toBe(false);
+    all.click();
+    rows[0].click();
+    expect(all.checked).toBe(true);
+    expect(all.indeterminate).toBe(false);
+  });
+
+  it("leaves React Aria's grids alone", () => {
+    const { all, rows } = grid();
+    document.querySelector("table")?.setAttribute("data-rac", "");
+    all.click();
+    expect(rows.some((box) => box.checked)).toBe(false);
   });
 });

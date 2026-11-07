@@ -51,6 +51,20 @@ export { ComboBox, ComboBoxItem, type ComboBoxItemProps, type ComboBoxProps } fr
 export { Calendar, type CalendarProps, RangeCalendar, type RangeCalendarProps } from "./forms/Calendar";
 export { DatePicker, type DatePickerProps, DateRangePicker, type DateRangePickerProps } from "./forms/DatePicker";
 export { acceptsFile, FileUpload, type FileUploadEntry, type FileUploadProps, formatFileSize } from "./forms/FileUpload";
+export {
+  DataGrid,
+  DataGridBody,
+  type DataGridBodyProps,
+  DataGridCell,
+  type DataGridCellProps,
+  DataGridColumn,
+  type DataGridColumnProps,
+  DataGridHeader,
+  type DataGridHeaderProps,
+  type DataGridProps,
+  DataGridRow,
+  type DataGridRowProps,
+} from "./display/DataGrid";
 export type { Tone } from "./display/tones";
 export { Dialog, type DialogProps, DialogTrigger } from "./overlays/Dialog";
 export { Popover, type PopoverProps } from "./overlays/Popover";

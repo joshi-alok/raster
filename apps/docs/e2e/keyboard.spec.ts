@@ -490,6 +490,8 @@ test("calendar: arrows move by day; an unavailable weekend day cannot be chosen"
   const selected = calendar.locator(".sw-calendar-cell[data-selected]");
   await expect(selected).toHaveText("12");
   await selected.focus();
+  // Under load React Aria can register focus a beat late; arrows before then move nothing.
+  await expect(selected).toHaveAttribute("data-focused", "true");
   await page.keyboard.press("ArrowRight");
   await page.keyboard.press("Enter");
   await expect(selected).toHaveText("13");
@@ -543,4 +545,101 @@ test("file upload, native: the labelled file input takes files", async ({ page }
   const input = example(page, "Proofs without React").getByLabel("Proofs", { exact: true });
   await input.setInputFiles({ name: "index.pdf", mimeType: "application/pdf", buffer: Buffer.from("%PDF-1.7") });
   await expect(input).toHaveJSProperty("files.length", 1);
+});
+
+test("data grid, React: arrows move, Space selects a row, Enter on a header sorts", async ({ page }) => {
+  await page.goto("/components/data-grid/");
+  await waitForIslands(page);
+  const grid = example(page, "Projects").getByRole("grid", { name: "Studio projects" });
+  // React Aria enters the grid on the selected row (Linie 7, sixth by name), not the first.
+  const linie = grid.getByRole("row", { name: /^Linie 7/ });
+  await tabTo(page, linie);
+  await page.keyboard.press("ArrowDown");
+  const next = grid.getByRole("row", { name: /^Parkleitsystem/ });
+  await expect(next).toBeFocused();
+  await page.keyboard.press("Space");
+  await expect(next).toHaveAttribute("aria-selected", "true");
+  await expect(linie).toHaveAttribute("aria-selected", "true");
+  // Into the row: its checkbox, then Project, Client, Discipline, Year; up past six rows to the header.
+  for (let i = 0; i < 5; i++) await page.keyboard.press("ArrowRight");
+  await expect(next.getByRole("gridcell", { name: "2023" })).toBeFocused();
+  for (let i = 0; i < 7; i++) await page.keyboard.press("ArrowUp");
+  const year = grid.getByRole("columnheader", { name: "Year" });
+  await expect(year.locator(".sw-data-grid-label")).toBeFocused();
+  await expect(year).toHaveAttribute("aria-sort", "none");
+  await page.keyboard.press("Enter");
+  await expect(year).toHaveAttribute("aria-sort", "ascending");
+  await expect(grid.getByRole("columnheader", { name: "Project" })).toHaveAttribute("aria-sort", "none");
+  await expect(grid.getByRole("rowheader").first()).toHaveText("Seebad");
+  await page.keyboard.press("Enter");
+  await expect(year).toHaveAttribute("aria-sort", "descending");
+  await expect(grid.getByRole("rowheader").first()).toHaveText("Plakatsammlung");
+});
+
+// A header's focus goes to its first focusable child (React Aria's focusMode "child"). DataGridColumn
+// makes the label that child, so Enter sorts even when the column also holds a resize handle.
+test("data grid, React: Enter on a sortable, resizable header (Project) sorts it", async ({ page }) => {
+  await page.goto("/components/data-grid/");
+  await waitForIslands(page);
+  const grid = example(page, "Projects").getByRole("grid", { name: "Studio projects" });
+  await tabTo(page, grid.getByRole("row", { name: /^Linie 7/ }));
+  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("ArrowRight");
+  for (let i = 0; i < 6; i++) await page.keyboard.press("ArrowUp");
+  const project = grid.getByRole("columnheader", { name: "Project" });
+  await expect(project.locator(".sw-data-grid-label")).toBeFocused();
+  await expect(project).toHaveAttribute("aria-sort", "ascending");
+  await page.keyboard.press("Enter");
+  await expect(project).toHaveAttribute("aria-sort", "descending", { timeout: 3000 });
+});
+
+test("data grid, React: a column resizes from the keyboard", async ({ page }) => {
+  await page.goto("/components/data-grid/");
+  await waitForIslands(page);
+  const grid = example(page, "Projects").getByRole("grid", { name: "Studio projects" });
+  const client = grid.getByRole("columnheader", { name: "Client" });
+  const before = (await client.boundingBox())?.width ?? 0;
+  await tabTo(page, grid.getByRole("row", { name: /^Linie 7/ }));
+  // The checkbox, Project, Client; then up past five rows (Linie 7 is sixth) to the header.
+  for (let i = 0; i < 3; i++) await page.keyboard.press("ArrowRight");
+  for (let i = 0; i < 6; i++) await page.keyboard.press("ArrowUp");
+  // Focus lands on the header's label; ArrowRight moves on to its resize handle's hidden range input.
+  await expect(client.locator(".sw-data-grid-label")).toBeFocused();
+  await page.keyboard.press("ArrowRight");
+  const handle = client.locator(".sw-data-grid-resizer input");
+  await expect(handle).toBeFocused();
+  // Enter starts resizing, each ArrowRight adds 10px, Enter ends it.
+  await page.keyboard.press("Enter");
+  await expect(client).toHaveAttribute("data-resizing", "true");
+  for (let i = 0; i < 4; i++) await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("Enter");
+  await expect(client).not.toHaveAttribute("data-resizing", "true");
+  const after = (await client.boundingBox())?.width ?? 0;
+  expect(after).toBeGreaterThan(before);
+});
+
+test("data grid, React: a virtualised grid draws only the rows in view", async ({ page }) => {
+  await page.goto("/components/data-grid/");
+  await waitForIslands(page);
+  const grid = example(page, "Archive").getByRole("grid", { name: "Archive, 5,000 entries" });
+  await expect(grid).toHaveAttribute("aria-rowcount", "5001");
+  const drawn = await grid.getByRole("row").count();
+  expect(drawn).toBeGreaterThan(5);
+  expect(drawn).toBeLessThan(60);
+});
+
+test("data grid, native: sort links carry aria-sort; Select all checks every row and shows a partial selection", async ({ page }) => {
+  await page.goto("/components/data-grid/");
+  const grid = example(page, "Projects without React").getByRole("table", { name: "Studio projects" });
+  await expect(grid.getByRole("columnheader", { name: /Project/ })).toHaveAttribute("aria-sort", "ascending");
+  await expect(grid.getByRole("link", { name: /^Project ?, sort descending$/ })).toHaveAttribute("href", "?sort=name&dir=desc");
+  const all = grid.getByRole("checkbox", { name: "Select all projects" });
+  const rows = grid.locator('tbody input[type="checkbox"]');
+  // The page loads with Klangraum checked, so Select all starts partial, before any change.
+  await expect.poll(() => all.evaluate((el: HTMLInputElement) => el.indeterminate)).toBe(true);
+  await all.check();
+  for (const box of await rows.all()) await expect(box).toBeChecked();
+  await rows.first().uncheck();
+  await expect(all).not.toBeChecked();
+  expect(await all.evaluate((el: HTMLInputElement) => el.indeterminate)).toBe(true);
 });

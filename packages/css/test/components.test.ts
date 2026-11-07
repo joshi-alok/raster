@@ -1087,3 +1087,132 @@ describe("file upload", () => {
     expect(rule(".sw-file-name")).toMatch(/text-overflow:\s*ellipsis/);
   });
 });
+
+describe("data grid", () => {
+  it("scrolls inside its own region", () => {
+    expect(rule(".sw-data-grid-scroll")).toMatch(/overflow:\s*auto/);
+  });
+
+  it("keeps cell borders on sticky cells by not collapsing them", () => {
+    const r = rule(".sw-data-grid");
+    expect(r).toMatch(/border-collapse:\s*separate/);
+    expect(r).toMatch(/border-spacing:\s*0/);
+  });
+
+  it("sticks the header row to the top on a solid background", () => {
+    const r = rule(".sw-data-grid thead th");
+    expect(r).toMatch(/position:\s*sticky/);
+    expect(r).toMatch(/inset-block-start:\s*0/);
+    expect(r).toMatch(/background-color:\s*var\(--surface-page\)/);
+  });
+
+  it("sticks the selection column and the sticky column to the inline start", () => {
+    const r = rule(".sw-data-grid :is(.sw-data-grid-select, .sw-data-grid-sticky)");
+    expect(r).toMatch(/position:\s*sticky/);
+    expect(r).toMatch(/inset-inline-start:\s*0/);
+    // Own layer from the start, so the cells land on the same pixel on every load.
+    expect(r).toMatch(/will-change:\s*transform/);
+    expect(rule(".sw-data-grid-selectable .sw-data-grid-sticky")).toMatch(/inset-inline-start:\s*var\(--target-min\)/);
+  });
+
+  it("lets the native table scroll at its content's width instead of squeezing its columns", () => {
+    const r = rule("table.sw-data-grid");
+    expect(r).toMatch(/inline-size:\s*max-content/);
+    expect(r).toMatch(/min-inline-size:\s*100%/);
+  });
+
+  it("centres the selection checkbox on the row without adding block padding to its 44px target", () => {
+    const r = rule(".sw-data-grid .sw-data-grid-select");
+    expect(r).toMatch(/inline-size:\s*var\(--target-min\)/);
+    expect(r).toMatch(/padding:\s*0/);
+    expect(r).toMatch(/vertical-align:\s*middle/);
+  });
+
+  it("ends the sticky column with a hairline drawn as a border", () => {
+    expect(rule(".sw-data-grid .sw-data-grid-sticky:after")).toMatch(/border-inline-end:\s*1px solid var\(--border\)/);
+  });
+
+  // Scoped to the grid: a lone .sw-data-grid-numeric loses to Table's `.sw-table :is(th, td)`
+  // text-align: start, and the numbers stayed start-aligned in the screenshots.
+  it("aligns numbers at the end in tabular mono", () => {
+    const r = rule(".sw-data-grid .sw-data-grid-numeric");
+    expect(r).toMatch(/text-align:\s*end/);
+    expect(r).toMatch(/font-family:\s*var\(--font-mono\)/);
+  });
+
+  it("draws the sort chevrons with borders and hides the unused one when sorted", () => {
+    // Lightning CSS joins the grouped ::before/::after rule onto one line and drops currentColor,
+    // the default border colour, from the shorthand.
+    expect(css).toMatch(
+      /\.sw-data-grid-sort-icon::?before,\s*\.sw-data-grid-sort-icon::?after\s*\{[^}]*border-block-start:\s*1\.5px solid(?:\s+currentColor)?\s*;/i,
+    );
+    // Lightning CSS merges these two rules, which have the same body, into one grouped rule.
+    expect(css).toMatch(
+      /\.sw-data-grid-sort-icon\[data-direction="?ascending"?\]::?after,\s*\.sw-data-grid-sort-icon\[data-direction="?descending"?\]::?before\s*\{[^}]*display:\s*none/,
+    );
+  });
+
+  it("marks a selected row with a fill and a 2px bar on both routes", () => {
+    expect(css).toMatch(
+      /\.sw-data-grid-row\[data-selected\] > \*,\s*\.sw-data-grid tr:has\( > td > input\[type="?checkbox"?\]:checked\) > \*\s*\{[^}]*background-color:\s*var\(--accent-subtle\)/,
+    );
+    expect(css).toMatch(/:first-child:before\s*\{[^}]*border-inline-start:\s*2px solid var\(--accent\)/);
+  });
+
+  it("draws the resize handle as a border with a 24px hit area", () => {
+    expect(rule(".sw-data-grid-resizer")).toMatch(/inline-size:\s*1\.5rem/);
+    expect(rule(".sw-data-grid-resizer:before")).toMatch(/border-inline-end:\s*1px solid var\(--border-strong\)/);
+  });
+
+  // Virtualised, React Aria draws divs with grid roles, not th and td, so the Table cell rules
+  // cannot reach them: the grid gives its own cells the same padding, hairlines and header type.
+  it("styles virtualised cells by class, since they are divs", () => {
+    const cells = rule(".sw-data-grid-virtualized :is(.sw-data-grid-column, .sw-data-grid-cell)");
+    expect(cells).toMatch(/padding-inline:\s*var\(--space-4\)/);
+    expect(cells).toMatch(/border-block-end:\s*1px solid var\(--border\)/);
+    expect(cells).toMatch(/align-items:\s*center/);
+    expect(cells).toMatch(/block-size:\s*100%/);
+    const head = rule(".sw-data-grid-virtualized .sw-data-grid-column");
+    expect(head).toMatch(/border-block-end-color:\s*var\(--text-primary\)/);
+    expect(head).toMatch(/color:\s*var\(--text-secondary\)/);
+    // Divs miss base.css's th weight; restore it.
+    expect(head).toMatch(/font-weight:\s*500/);
+    expect(css).not.toMatch(/\.sw-data-grid-virtualized :is\(th, td\)/);
+  });
+
+  it("keeps numeric headers in the header type, and row headers at the body weight, on both routes", () => {
+    expect(rule(".sw-data-grid thead .sw-data-grid-numeric")).toMatch(/font-family:\s*inherit/);
+    expect(rule(".sw-data-grid tbody th")).toMatch(/font-weight:\s*inherit/);
+  });
+
+  // Sticky cells get their own layer, which snaps to whole pixels; every header cell needs one, or the
+  // corner cells' rule sits a pixel off the rest of the header's rule.
+  it("puts every sticky header cell on its own layer, so the header rule stays straight", () => {
+    expect(rule(".sw-data-grid thead th")).toMatch(/will-change:\s*transform/);
+  });
+
+  it("rings a header's label when it holds the keyboard focus", () => {
+    expect(rule(".sw-data-grid-label:focus-visible")).toMatch(/outline:\s*var\(--focus-width\) solid var\(--accent\)/);
+  });
+
+  // Virtualised, each cell sits in its own positioned wrapper (the row's direct child, which takes the
+  // selected fill and bar). Sticky can't pin inside a wrapper its own size, and an opaque sticky cell
+  // would hide the fill, so the select and sticky cells stay in flow and clear.
+  it("lets a virtualised row's selected fill show through its select and sticky cells", () => {
+    const r = rule(".sw-data-grid-virtualized :is(.sw-data-grid-select, .sw-data-grid-sticky)");
+    expect(r).toMatch(/position:\s*static/);
+    expect(r).toMatch(/background-color:\s*(?:transparent|#0000)/);
+  });
+
+  // React Aria sizes the select column in pixels (44), so the sticky column's offset is 44px there,
+  // whatever the root font size; the native select column is var(--target-min), and so is its offset.
+  it("offsets the sticky column by the React select column's pixel width", () => {
+    expect(rule(".sw-data-grid-selectable[data-rac] .sw-data-grid-sticky")).toMatch(/inset-inline-start:\s*44px/);
+  });
+
+  it("keeps selected rows visible in forced colours", () => {
+    expect(css).toMatch(
+      /@media \(forced-colors: active\)\s*\{[\s\S]*?\.sw-data-grid-row\[data-selected\] > \*[^{]*\{[^}]*forced-color-adjust:\s*none[^}]*background-color:\s*highlight/i,
+    );
+  });
+});
