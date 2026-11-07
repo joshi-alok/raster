@@ -137,10 +137,14 @@
   border-block-start: 1px solid var(--border);
 }
 
-/* The zero line sits above the bars it starts. */
+/*
+ * The zero line sits above the bars it starts, on their base row: lifted 1px, since a top border
+ * at 100% would fall below the plot and leave the bars' inner gap stroke showing above it.
+ */
 .sw-chart-gridline[data-zero] {
   z-index: 1;
   border-block-start-color: var(--text-primary);
+  translate: 0 -1px;
 }
 
 .sw-chart[data-orientation="horizontal"] .sw-chart-gridline {
@@ -151,8 +155,10 @@
   border-inline-start: 1px solid var(--border);
 }
 
+/* A start border at 0% already lies on the bars' first column. */
 .sw-chart[data-orientation="horizontal"] .sw-chart-gridline[data-zero] {
   border-inline-start-color: var(--text-primary);
+  translate: none;
 }
 
 .sw-chart-marks {

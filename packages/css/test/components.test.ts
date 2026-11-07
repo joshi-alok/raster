@@ -1258,6 +1258,16 @@ describe("charts", () => {
     );
   });
 
+  it("lays the zero line over the bars' base, on the plot's own edge row or column", () => {
+    // A top border at --at: 100% lands one row below the plot, under the 1px inner half of the
+    // bars' gap stroke, which then shows as a surface-coloured line between bar and zero line.
+    // Lifting it 1px puts it on the bars' base, as the horizontal zero line already is.
+    expect(rule(".sw-chart-gridline[data-zero]")).toMatch(/translate:\s*0 -1px/);
+    expect(rule('.sw-chart[data-orientation="horizontal"] .sw-chart-gridline[data-zero]')).toMatch(
+      /translate:\s*none/,
+    );
+  });
+
   it("stretches the marks over the plot", () => {
     const r = rule(".sw-chart-marks");
     expect(r).toMatch(/position:\s*absolute/);
