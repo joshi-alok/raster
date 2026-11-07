@@ -337,7 +337,7 @@ Guidance is part of the docs, held to the same checks as the components: usage i
   - errors say what happened and what to do next, with no blame, no "Error:" prefix and no exclamation marks;
   - British spelling;
   - dates written as "7 November 2026";
-  - a space between a number and its unit;
+  - a space between a number and its unit, but not before %;
   - "…" only on actions that ask for more input.
 - **The content check.** A test runs the rules a script can check over the docs' own copy: component and pattern frontmatter (summary, use, avoid), example titles, and the labels and text in the demos.
   - Rules it checks: sentence case (with an allowlist of proper nouns and component names), no "click here", no "!", no "Error:" prefix, no "...", no listed American spellings, and no generic button labels ("OK", "Submit", "Yes", "No").
