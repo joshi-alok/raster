@@ -151,6 +151,51 @@ describe("BarChart", () => {
     expect(container.querySelector(".sw-chart-tooltip")).toBeNull();
   });
 
+  it("leaves Alt, Ctrl and Meta arrow shortcuts to the browser, and dismisses the tooltip with Escape", async () => {
+    const user = userEvent.setup();
+    const { container } = bar();
+    await user.tab();
+    await user.keyboard("{Alt>}{ArrowRight}{/Alt}{Meta>}{End}{/Meta}{Control>}{ArrowRight}{/Control}");
+    expect(document.activeElement).toHaveAttribute("aria-label", "Built, 2023: 4");
+    const target = document.activeElement as HTMLElement;
+    expect(fireEvent.keyDown(target, { key: "ArrowRight", altKey: true })).toBe(true);
+    expect(container.querySelector(".sw-chart-tooltip")).not.toBeNull();
+    await user.keyboard("{Escape}");
+    expect(container.querySelector(".sw-chart-tooltip")).toBeNull();
+    expect(document.activeElement).toBe(target);
+  });
+
+  it("drops the tooltip when the data no longer has the active mark", async () => {
+    const user = userEvent.setup();
+    const { container, rerender } = bar();
+    await user.tab();
+    await user.keyboard("{End}");
+    expect(container.querySelector(".sw-chart-tooltip-title")).toHaveTextContent("2024");
+    rerender(<BarChart caption="Projects by year" data={DATA.slice(0, 1)} x="year" xLabel="Year" series={SERIES} />);
+    expect(container.querySelector(".sw-chart-tooltip")).toBeNull();
+    const marks = [...container.querySelectorAll(".sw-chart-target")];
+    expect(marks.map((m) => m.getAttribute("tabindex"))).toEqual(["0", "-1"]);
+  });
+
+  it("follows the active mark by series and category when the data changes around it", async () => {
+    const user = userEvent.setup();
+    const { container, rerender } = bar();
+    await user.tab();
+    const earlier = [{ year: "2022", built: 1, planned: 1 }, ...DATA];
+    rerender(<BarChart caption="Projects by year" data={earlier} x="year" xLabel="Year" series={SERIES} />);
+    expect(container.querySelector(".sw-chart-tooltip-title")).toHaveTextContent("2023");
+    expect(container.querySelector('[tabindex="0"]')).toHaveAttribute("aria-label", "Built, 2023: 4");
+  });
+
+  it("anchors the tooltip at the value end of a negative horizontal bar", async () => {
+    const user = userEvent.setup();
+    const { container } = bar({ orientation: "horizontal", data: [{ year: "2023", built: -4, planned: 2 }] });
+    await user.tab();
+    const target = document.activeElement as HTMLElement;
+    const tooltip = container.querySelector(".sw-chart-tooltip") as HTMLElement;
+    expect(tooltip.style.getPropertyValue("--x")).toBe(target.style.getPropertyValue("--x"));
+  });
+
   it("draws without the focus layer when not interactive", () => {
     const { container } = bar({ interactive: false });
     expect(container.querySelector(".sw-chart-targets")).toBeNull();
@@ -277,6 +322,11 @@ describe("Sparkline", () => {
     expect(container.querySelector(".sw-sparkline-area")).not.toBeNull();
     render(<Sparkline data={[]} label="Revenue" />);
     expect(screen.getByRole("img", { name: "Revenue: no data" }).querySelector(".sw-sparkline-point")).toBeNull();
+  });
+
+  it("refuses a value that is not a finite number", () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    expect(() => render(<Sparkline data={[1, Number.NaN]} label="Visits" />)).toThrow(TypeError);
   });
 
   it("formats the summary, forwards ref and merges className", () => {

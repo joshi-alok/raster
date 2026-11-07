@@ -1232,6 +1232,11 @@ describe("charts", () => {
     expect(r).toMatch(/direction:\s*ltr/);
   });
 
+  it("leaves no end-label column, and no gap for it, when a chart has no end labels", () => {
+    expect(rule(".sw-chart-frame")).toMatch(/grid-template-columns:\s*auto minmax\(0,\s*1fr\);/);
+    expect(css).toMatch(/\.sw-chart-frame:has\(\s*>\s*\.sw-chart-ends\)\s*\{[^}]*grid-template-columns:\s*auto minmax\(0,\s*1fr\) auto/);
+  });
+
   it("positions ticks by percentage within their axis", () => {
     expect(rule('.sw-chart-axis[data-axis="y"] .sw-chart-tick')).toMatch(/inset-block-start:\s*var\(--at\)/);
     expect(rule('.sw-chart-axis[data-axis="x"] .sw-chart-tick')).toMatch(/inset-inline-start:\s*var\(--at\)/);

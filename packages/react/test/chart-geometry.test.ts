@@ -197,3 +197,11 @@ describe("numberFormatter", () => {
     expect(numberFormatter("de-DE")(12345.678)).toBe("12.345,68");
   });
 });
+
+describe("one category", () => {
+  it("centres a single point on a line and in a sparkline", () => {
+    const layout = lineLayout({ data: [{ m: "Jan", v: 3 }], x: "m", series: [{ key: "v", label: "V" }] });
+    expect(layout.categories[0].at).toBe(50);
+    expect(sparklineLayout([3]).last?.x).toBe(50);
+  });
+});

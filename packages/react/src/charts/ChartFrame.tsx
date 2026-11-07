@@ -33,6 +33,7 @@ export interface AxisLabel {
 export type ChartProps = Omit<ComponentPropsWithRef<"figure">, "children"> & {
   /** Names the chart: shown above it, and names its marks' group. */
   caption: ReactNode;
+  /** Every series key must hold a finite number in every datum; anything else throws a TypeError. */
   data: readonly ChartDatum[];
   /** The key in each datum that holds its category, such as "year". */
   x: string;
@@ -111,14 +112,28 @@ export function ChartFrame({
   ...rest
 }: FrameProps) {
   const captionId = useId();
-  const [focusIndex, setFocusIndex] = useState(0);
-  const [active, setActive] = useState<number | null>(null);
+  // The tab stop and the active mark are held by series key and category label, not by index, so
+  // they follow their mark when data changes around it, and lapse when it goes.
+  const [focusKey, setFocusKey] = useState<string | null>(null);
+  const [activeKey, setActiveKey] = useState<string | null>(null);
   const targets = useRef<(HTMLSpanElement | null)[]>([]);
-  const current = Math.min(focusIndex, Math.max(0, marks.length - 1));
-  const activeMark = interactive && active !== null ? (marks[active] ?? null) : null;
+  const keyOf = (m: Mark) => `${series[m.series].key}\u0000${String(data[m.category][x])}`;
+  const keys = marks.map(keyOf);
+  const found = focusKey === null ? -1 : keys.indexOf(focusKey);
+  const current = found < 0 ? 0 : found;
+  const active = activeKey === null ? -1 : keys.indexOf(activeKey);
+  const activeMark = interactive && active >= 0 ? marks[active] : null;
   const name = (m: Mark) => `${series[m.series].label}, ${String(data[m.category][x])}: ${format(m.value)}`;
+  const setActive = (i: number | null) => setActiveKey(i === null ? null : keys[i]);
+  const setFocusIndex = (i: number) => setFocusKey(keys[i]);
 
   function onKeyDown(event: KeyboardEvent) {
+    // Alt, Ctrl and Meta with these keys are the browser's and the system's shortcuts.
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.key === "Escape") {
+      if (activeKey !== null) setActiveKey(null);
+      return;
+    }
     const next = stepMark(marks, current, event.key, orientation);
     if (next === null) return;
     event.preventDefault();
@@ -254,8 +269,9 @@ function ChartTooltip({
   highlight?: string;
   format: (value: number) => string;
 }) {
-  // Above the bar's top or the point; for horizontal bars, above the bar's end.
-  const tipX = orientation === "horizontal" ? mark.x + mark.width : mark.x + mark.width / 2;
+  // Above the bar's top or the point; for horizontal bars, above the bar's value end.
+  const tipX =
+    orientation === "horizontal" ? (mark.value < 0 ? mark.x : mark.x + mark.width) : mark.x + mark.width / 2;
   const align = tipX < 25 ? "start" : tipX > 75 ? "end" : "center";
   const datum = data[mark.category];
   return (

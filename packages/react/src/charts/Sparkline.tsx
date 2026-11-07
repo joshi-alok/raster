@@ -4,6 +4,7 @@ import { useChartFormat } from "./ChartFrame";
 import { sparklineLayout, sparklineSummary } from "./geometry";
 
 export type SparklineProps = Omit<ComponentPropsWithRef<"span">, "children" | "aria-label"> & {
+  /** Finite numbers; anything else throws a TypeError. */
   data: readonly number[];
   /** What the values are, such as "Revenue, 12 months". The image is named with this and a summary. */
   label: string;

@@ -335,6 +335,7 @@ export interface SparklineLayout {
 
 /** A sparkline fills its box: the lowest value at the foot, the highest at the top. */
 export function sparklineLayout(values: readonly number[]): SparklineLayout {
+  if (!values.every(Number.isFinite)) throw new TypeError("A sparkline's values must be finite numbers.");
   if (values.length === 0) return { path: "", area: "", last: null };
   let lo = Math.min(...values);
   let hi = Math.max(...values);
