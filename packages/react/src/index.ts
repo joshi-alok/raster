@@ -66,6 +66,8 @@ export {
   type DataGridRowProps,
 } from "./display/DataGrid";
 export { BarChart, type BarChartProps } from "./charts/BarChart";
+export { LineChart, type LineChartProps } from "./charts/LineChart";
+export { Sparkline, type SparklineProps } from "./charts/Sparkline";
 export type { ChartProps } from "./charts/ChartFrame";
 export {
   barLayout,

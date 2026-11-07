@@ -2,7 +2,7 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createRef } from "react";
 import { beforeAll, describe, expect, it, vi } from "vitest";
-import { BarChart, type BarChartProps } from "../src";
+import { BarChart, type BarChartProps, LineChart, type LineChartProps, Sparkline } from "../src";
 import { expectAccessible } from "./axe";
 
 beforeAll(() => {
@@ -188,5 +188,101 @@ describe("BarChart", () => {
   it("passes the structural accessibility check", async () => {
     const { container } = bar();
     await expectAccessible(container);
+  });
+});
+
+const MONTHS = [
+  { m: "Jan", a: 10, b: 30 },
+  { m: "Feb", a: 20, b: 25 },
+  { m: "Mar", a: 15, b: 40 },
+];
+const AB = [
+  { key: "a", label: "Zürich" },
+  { key: "b", label: "Basel" },
+];
+
+function line(props: Partial<LineChartProps> = {}) {
+  return render(<LineChart caption="Visitors" data={MONTHS} x="m" xLabel="Month" series={AB} {...props} />);
+}
+
+describe("LineChart", () => {
+  it("draws a 2px path per series, a marker per value, and no area unless asked", () => {
+    const { container } = line();
+    expect(container.querySelector("figure")).toHaveAttribute("data-chart", "line");
+    const paths = container.querySelectorAll("path.sw-chart-line");
+    expect(paths).toHaveLength(2);
+    expect(paths[0]).toHaveAttribute("d", "M0,100L50,66.6667L100,83.3333");
+    expect(paths[0].closest("g")).toHaveAttribute("data-series", "1");
+    expect(container.querySelectorAll(".sw-chart-point")).toHaveLength(6);
+    expect(container.querySelector("path.sw-chart-area")).toBeNull();
+    const { container: filled } = line({ area: true });
+    expect(filled.querySelectorAll("path.sw-chart-area")).toHaveLength(2);
+  });
+
+  it("labels the ends of two to four lines, and not one or five", () => {
+    const { container } = line();
+    expect([...container.querySelectorAll(".sw-chart-end")].map((e) => e.textContent)).toEqual(["Zürich", "Basel"]);
+    const { container: one } = line({ series: [AB[0]] });
+    expect(one.querySelector(".sw-chart-ends")).toBeNull();
+    const keys = ["a", "b", "c", "d", "e"];
+    const wide = MONTHS.map((d) => ({ ...d, c: 1, d: 2, e: 3 }));
+    const { container: many } = line({ data: wide, series: keys.map((key) => ({ key, label: key })) });
+    expect(many.querySelector(".sw-chart-ends")).toBeNull();
+  });
+
+  it("takes an exact domain", () => {
+    const { container } = line({ domain: [0, 50] });
+    expect(ticks(container, "y")).toEqual(["0", "10", "20", "30", "40", "50"]);
+  });
+
+  it("names points and moves between them; the focused point grows and a crosshair marks it", async () => {
+    const user = userEvent.setup();
+    const { container } = line();
+    await user.tab();
+    expect(document.activeElement).toHaveAttribute("aria-label", "Zürich, Jan: 10");
+    expect(document.activeElement).toHaveAttribute("data-point");
+    await user.keyboard("{ArrowRight}{ArrowDown}");
+    expect(document.activeElement).toHaveAttribute("aria-label", "Basel, Feb: 25");
+    expect(container.querySelectorAll(".sw-chart-point[data-active]")).toHaveLength(1);
+    expect(container.querySelector(".sw-chart-crosshair")).toHaveStyle({ "--x": "50%" });
+  });
+
+  it("draws the highlighted series last, on top", () => {
+    const { container } = line({ highlight: "a" });
+    const groups = [...container.querySelectorAll("svg g")];
+    expect(groups.map((g) => g.getAttribute("data-series"))).toEqual(["2", "1"]);
+    expect(groups[0]).toHaveAttribute("data-muted");
+  });
+
+  it("forwards ref and merges className", () => {
+    const ref = createRef<HTMLElement>();
+    line({ ref, className: "extra" });
+    expect(ref.current).toHaveClass("sw-chart", "extra");
+  });
+});
+
+describe("Sparkline", () => {
+  it("is one image named with a summary of the trend", () => {
+    render(<Sparkline data={[4.1, 3.8, 5, 6.3]} label="Revenue, 12 months" />);
+    const spark = screen.getByRole("img", { name: "Revenue, 12 months: from 4.1 to 6.3, low 3.8, high 6.3" });
+    expect(spark).toHaveClass("sw-sparkline");
+    expect(spark.querySelector("path.sw-sparkline-line")).toHaveAttribute("d", "M0,88L33.3333,100L66.6667,52L100,0");
+    expect(spark.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+    expect(spark.querySelector(".sw-sparkline-point")).toHaveStyle({ "--x": "100%", "--y": "0%" });
+    expect(spark.querySelector(".sw-sparkline-area")).toBeNull();
+  });
+
+  it("fills the area when asked, and says when there is no data", () => {
+    const { container } = render(<Sparkline data={[1, 2]} label="Visits" area />);
+    expect(container.querySelector(".sw-sparkline-area")).not.toBeNull();
+    render(<Sparkline data={[]} label="Revenue" />);
+    expect(screen.getByRole("img", { name: "Revenue: no data" }).querySelector(".sw-sparkline-point")).toBeNull();
+  });
+
+  it("formats the summary, forwards ref and merges className", () => {
+    const ref = createRef<HTMLSpanElement>();
+    render(<Sparkline ref={ref} className="extra" data={[1, 2]} label="Cost" format={(v) => `CHF ${v}`} />);
+    expect(ref.current).toHaveClass("sw-sparkline", "extra");
+    expect(ref.current).toHaveAttribute("aria-label", "Cost: from CHF 1 to CHF 2, low CHF 1, high CHF 2");
   });
 });
