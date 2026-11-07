@@ -231,3 +231,70 @@ Agreed on 2026-11-06. One component, taking Raster from 57 to 58. Table stays fo
 - **The native route needs one optional script,** for Select all. Without it every row checkbox still works and submits. It syncs the header on load, on `pageshow` and after a form reset, since indeterminate can't be written in HTML, and ignores disabled rows. The native checkbox is an 18px target spaced a row apart; React's is a 44px label.
 - **No parity screenshots:** native checkboxes and link headers cannot match React Aria's rendering.
 - **Known:** a 1px seam where the React grid's sticky column edge crosses the header rule.
+
+## 16. Plan 7f design: Charts
+
+Agreed on 2026-11-07. Three components, taking Raster from 58 to 61: **BarChart** (vertical or horizontal, grouped or stacked), **LineChart** (optionally with an area fill) and **Sparkline** (a small inline trend for Stat and table cells). No pie, donut or scatter; never two y-axes; bar values always start at zero.
+
+**SVG for marks, HTML for words.** Bars, lines and areas are one SVG stretched over the plot (`viewBox="0 0 100 100"`, `preserveAspectRatio="none"`); lines keep their 2px with `vector-effect: non-scaling-stroke`. Tick labels, gridlines, category labels, the legend, line markers, end labels and the tooltip are HTML positioned by percentages. Charts therefore reflow to any width without JavaScript and their text never scales. The geometry is pure functions over `d3-scale` and `d3-shape`, exported for servers that render without React.
+
+| Feature | HTML route | React route |
+|---|---|---|
+| Drawing | The documented markup, written by a server: `figure.sw-chart` with the SVG, HTML labels and a data table | `BarChart`, `LineChart`, `Sparkline` compute the same markup from `data`, `x` and `series` |
+| Data table | `<details class="sw-chart-data">` "Show data" holding a `sw-table` | The same, generated |
+| Reading values | The table, and the visible labels | Plus one Tab stop: arrows move between marks, Home/End jump; each mark is named ("Built, 2022: 4"); a tooltip follows focus and hover |
+
+**Colour.**
+- New roles: `chart-1` to `chart-6` and `chart-muted`, defined for each theme and mode.
+- The order is fixed: blue, orange, teal, plum, olive, rose. Zürich's blue is its cobalt.
+- A series takes its slot in the order the app lists it. Slots are never cycled: a seventh series is an error, and the app folds the rest into "Other".
+- `highlight` keeps one series in its colour and draws the rest in `chart-muted`.
+- Status colours are never used for series.
+- A test in `@raster/tokens` holds every set to these checks in both modes. The thresholds come from the data-visualisation method.
+  - **Lightness:** OKLCH L between 0.43 and 0.77 in light mode, between 0.48 and 0.67 in dark mode.
+  - **Chroma:** at least 0.10.
+  - **Separation for colour-blind readers:** adjacent slots at least 8 apart (ΔE in OKLab ×100). Protanopia and deuteranopia are simulated with Machado 2009 at severity 1.0.
+  - **Separation for full-colour readers:** adjacent slots at least 15 apart.
+  - **Contrast:** at least 3:1 against every surface.
+
+| Theme / mode | 1 | 2 | 3 | 4 | 5 | 6 | muted |
+|---|---|---|---|---|---|---|---|
+| Alpine light | #2E6DB4 | #C8661A | #00897B | #8E4FA6 | #9A8A10 | #C2457A | #B4BFC8 |
+| Alpine dark | #4A8AD4 | #D07A35 | #1A9E8F | #A26BC0 | #A39418 | #D2638F | #4A5763 |
+| Zürich light | #2F4BD8 | #C8661A | #00897B | #8E4FA6 | #9A8A10 | #C2457A | #BDB7AA |
+| Zürich dark | #7086F0 | #D07A35 | #1A9E8F | #A26BC0 | #A39418 | #D2638F | #55524C |
+
+**Visual rules:**
+- **Bars:** flat with square ends. A 2px gap in the chart's surface colour separates adjacent bars and stacked segments; it is drawn as a non-scaling stroke in `--chart-surface`, which defaults to `surface-page`.
+- **Lines:** 2px, with round joins. Markers are 8px squares in the series colour, drawn in HTML. An area fill is the series colour at 12% opacity.
+- **Grid and type:**
+  - Gridlines are `border` hairlines; the zero line is `text-primary`.
+  - Ticks and category labels are mono at label size in `text-secondary`, with tabular figures. There are about five ticks, on nice numbers.
+- **Legend:** shown top-left with square swatches when there are two or more series.
+  - Lines with four or fewer series are also labelled at their ends.
+  - Text never takes a series colour.
+- **Size:** the plot is `--chart-height` tall (default 16rem) and fills its column.
+- **Focus and tooltip:**
+  - A focused mark shows the focus ring on its hit area. Hit areas span the whole band, wider than the bar or marker.
+  - The tooltip is `surface-raised` with a hairline border. It shows the category and every series' value at that category, the active series in weight 500. It is hidden from assistive technology, because the focused mark's name already says the same.
+- **Sparkline:**
+  - 6rem × 1.5rem, a 2px line in `chart-1` with an 8px square marker on the last point.
+  - It is one image named with a summary: "Revenue, 12 months: from 4.1 to 6.3, low 3.8, high 6.3".
+- **Forced colours:** marks keep their series colours (`forced-color-adjust: none`); text, gridlines and the tooltip follow system colours.
+- **Motion:** none, beyond the tooltip's fade, which reduced motion removes.
+
+**Testing:**
+- Token tests: the colour checks above and the role count.
+- Unit tests for the geometry: nice ticks, bands, stacking with negatives, line points, hit testing and the Sparkline summary.
+- CSS contract tests.
+- React tests:
+  - classes, `ref` forwarding and `className` merging;
+  - mark names, roving focus with arrows, Home and End;
+  - the tooltip;
+  - the six-series limit;
+  - the generated table.
+- A docs test proves each committed native HTML example is exactly what the React component renders without interaction.
+- Browser tests:
+  - keyboard walkthroughs, and the axe sweep and 320px reflow;
+  - native-vs-React parity screenshots for a bar chart and a line chart;
+  - forced-colours screenshots and visual baselines.
