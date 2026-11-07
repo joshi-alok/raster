@@ -1,0 +1,426 @@
+/*
+ * Charts: BarChart, LineChart and Sparkline.
+ * SVG draws the marks, stretched over the plot (viewBox 0 0 100 100, preserveAspectRatio none).
+ * HTML draws every word, placed by percentages in custom properties (--at, --x, --y, --w, --h),
+ * so a chart reflows to any width without script and its text never scales.
+ * --chart-height sets the plot's height (16rem); --chart-surface is the colour behind the chart,
+ * used for the gaps between bars (the page surface by default).
+ */
+.sw-chart {
+  display: grid;
+  gap: var(--space-3);
+  min-inline-size: 0;
+  margin: 0;
+  container-type: inline-size;
+}
+
+/* Series colours, by slot (spec §16). They are never cycled: a chart holds at most six. */
+.sw-chart [data-series="1"] { --series: var(--chart-1); }
+.sw-chart [data-series="2"] { --series: var(--chart-2); }
+.sw-chart [data-series="3"] { --series: var(--chart-3); }
+.sw-chart [data-series="4"] { --series: var(--chart-4); }
+.sw-chart [data-series="5"] { --series: var(--chart-5); }
+.sw-chart [data-series="6"] { --series: var(--chart-6); }
+.sw-chart [data-muted] { --series: var(--chart-muted); }
+
+.sw-chart-caption {
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-label-size);
+  letter-spacing: var(--text-label-tracking);
+  line-height: var(--text-label-leading);
+  text-transform: uppercase;
+}
+
+/* Legend: square swatches in the series colour; the words stay in the text colour. */
+.sw-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-secondary);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-leading);
+}
+
+.sw-chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sw-chart-swatch {
+  flex: none;
+  inline-size: 0.625rem;
+  block-size: 0.625rem;
+  background-color: var(--series);
+}
+
+/*
+ * The frame: the y axis, the plot and the end labels on the first row; the x axis below the plot.
+ * Charts lay out left to right in every writing direction, because their SVG never mirrors.
+ */
+.sw-chart-frame {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-rows: var(--chart-height, 16rem) auto;
+  column-gap: var(--space-3);
+  row-gap: var(--space-2);
+  direction: ltr;
+}
+
+/*
+ * Axis labels share one grid cell, so the axis is as wide or tall as its longest label, and are
+ * moved into place by relative offsets, which resolve against the cell (the plot's height or width).
+ */
+.sw-chart-axis {
+  display: grid;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-label-size);
+  line-height: var(--text-label-leading);
+  font-variant-numeric: tabular-nums;
+}
+
+.sw-chart-axis[data-axis="y"] {
+  grid-column: 1;
+  grid-row: 1;
+  justify-items: end;
+}
+
+.sw-chart-axis[data-axis="x"] {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.sw-chart-tick {
+  grid-area: 1 / 1;
+  position: relative;
+  white-space: nowrap;
+}
+
+.sw-chart-axis[data-axis="y"] .sw-chart-tick {
+  align-self: start;
+  inset-block-start: var(--at);
+  translate: 0 -50%;
+}
+
+.sw-chart-axis[data-axis="x"] .sw-chart-tick {
+  justify-self: start;
+  inset-inline-start: var(--at);
+  translate: -50% 0;
+}
+
+@container (inline-size < 32rem) {
+  .sw-chart-tick[data-minor] {
+    visibility: hidden;
+  }
+}
+
+.sw-chart-plot {
+  position: relative;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.sw-chart-gridline {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: var(--at);
+  border-block-start: 1px solid var(--border);
+}
+
+/* The zero line sits above the bars it starts. */
+.sw-chart-gridline[data-zero] {
+  z-index: 1;
+  border-block-start-color: var(--text-primary);
+}
+
+.sw-chart[data-orientation="horizontal"] .sw-chart-gridline {
+  inset-block: 0;
+  inset-inline: auto;
+  inset-inline-start: var(--at);
+  border-block-start: 0;
+  border-inline-start: 1px solid var(--border);
+}
+
+.sw-chart[data-orientation="horizontal"] .sw-chart-gridline[data-zero] {
+  border-inline-start-color: var(--text-primary);
+}
+
+.sw-chart-marks {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+}
+
+/* Flat bars with square ends, separated by a 2px gap in the surface colour. */
+.sw-chart-bar {
+  fill: var(--series);
+  stroke: var(--chart-surface, var(--surface-page));
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+.sw-chart-line {
+  fill: none;
+  stroke: var(--series);
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.sw-chart-area {
+  fill: var(--series);
+  fill-opacity: 0.12;
+}
+
+/* Markers are HTML, so they stay square however the plot stretches. */
+.sw-chart-point {
+  position: absolute;
+  inset-inline-start: var(--x);
+  inset-block-start: var(--y);
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  translate: -50% -50%;
+  background-color: var(--series);
+  box-shadow: 0 0 0 2px var(--chart-surface, var(--surface-page));
+}
+
+.sw-chart-point[data-active] {
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+}
+
+.sw-chart-crosshair {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--x);
+  border-inline-start: 1px solid var(--border-strong);
+  pointer-events: none;
+}
+
+/* End labels for lines with two to four series, with a short stroke of the series colour. */
+.sw-chart-ends {
+  display: grid;
+  grid-column: 3;
+  grid-row: 1;
+  color: var(--text-secondary);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-leading);
+}
+
+.sw-chart-end {
+  display: inline-flex;
+  grid-area: 1 / 1;
+  position: relative;
+  align-self: start;
+  align-items: center;
+  gap: var(--space-2);
+  inset-block-start: var(--at);
+  translate: 0 -50%;
+  white-space: nowrap;
+}
+
+.sw-chart-end::before {
+  content: "";
+  inline-size: 0.75rem;
+  border-block-start: 2px solid var(--series);
+}
+
+/* The focus layer (React): one hit area per mark; the plot itself takes pointer events. */
+.sw-chart-targets {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.sw-chart-target {
+  position: absolute;
+  inset-inline-start: var(--x);
+  inset-block-start: var(--y);
+  inline-size: var(--w);
+  block-size: var(--h);
+  outline: none;
+}
+
+.sw-chart-target[data-point] {
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  translate: -50% -50%;
+}
+
+.sw-chart-target:focus-visible {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+.sw-chart-tooltip {
+  position: absolute;
+  z-index: 2;
+  inset-inline-start: var(--x);
+  inset-block-start: var(--y);
+  translate: -50% calc(-100% - var(--space-2));
+  display: grid;
+  gap: var(--space-1);
+  min-inline-size: 8rem;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-overlay);
+  color: var(--text-primary);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-leading);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.sw-chart-tooltip[data-align="start"] {
+  translate: 0 calc(-100% - var(--space-2));
+}
+
+.sw-chart-tooltip[data-align="end"] {
+  translate: -100% calc(-100% - var(--space-2));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sw-chart-tooltip {
+    animation: sw-chart-fade var(--dur-fast) var(--ease-standard);
+  }
+}
+
+@keyframes sw-chart-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.sw-chart-tooltip-title {
+  margin: 0;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-label-size);
+  letter-spacing: var(--text-label-tracking);
+  text-transform: uppercase;
+}
+
+.sw-chart-tooltip-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sw-chart-tooltip-row[data-current] {
+  font-weight: 500;
+}
+
+.sw-chart-tooltip-value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+/* The data table, behind "Show data". */
+.sw-chart-data > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  inline-size: fit-content;
+  min-block-size: var(--target-min);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-label-size);
+  letter-spacing: var(--text-label-tracking);
+  text-transform: uppercase;
+  list-style: none;
+  cursor: pointer;
+}
+
+.sw-chart-data > summary::-webkit-details-marker {
+  display: none;
+}
+
+.sw-chart-data > summary::before {
+  content: "+";
+}
+
+.sw-chart-data[open] > summary::before {
+  content: "−";
+}
+
+.sw-chart-data > summary:focus-visible {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+/* Sparkline: a trend in a line of text, a 2px line with a square on its last point. */
+.sw-sparkline {
+  --series: var(--chart-1);
+  position: relative;
+  display: inline-block;
+  inline-size: 6rem;
+  block-size: 1.5rem;
+  vertical-align: middle;
+  direction: ltr;
+}
+
+.sw-sparkline svg {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+}
+
+.sw-sparkline-line {
+  fill: none;
+  stroke: var(--series);
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.sw-sparkline-area {
+  fill: var(--series);
+  fill-opacity: 0.12;
+}
+
+.sw-sparkline-point {
+  position: absolute;
+  inset-inline-start: var(--x);
+  inset-block-start: var(--y);
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  translate: -50% -50%;
+  background-color: var(--series);
+}
+
+/*
+ * Forced colours forces SVG fill and stroke and drops backgrounds, which would erase which series
+ * is which. Marks, swatches, markers and sparklines keep their colours; text, gridlines and the
+ * tooltip follow the system colours. The data table carries the values either way.
+ */
+.sw-chart-marks,
+.sw-chart-swatch,
+.sw-chart-point,
+.sw-chart-end::before,
+.sw-sparkline {
+  forced-color-adjust: none;
+}
+
+@media (forced-colors: active) {
+  .sw-chart-bar {
+    stroke: Canvas;
+  }
+
+  .sw-chart-point {
+    box-shadow: 0 0 0 2px Canvas;
+  }
+}
