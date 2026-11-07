@@ -1239,7 +1239,15 @@ describe("charts", () => {
   });
 
   it("hides minor category labels when the chart is narrow", () => {
-    expect(css).toMatch(/@container \(inline-size < 32rem\)\s*\{\s*\.sw-chart-tick\[data-minor\]\s*\{[^}]*visibility:\s*hidden/);
+    // Lightning CSS joins this selector with the horizontal value labels' rule, which hides the same way.
+    expect(css).toMatch(/@container \(inline-size < 32rem\)\s*\{\s*\.sw-chart-tick\[data-minor\][^{]*\{[^}]*visibility:\s*hidden/);
+  });
+
+  it("hides every other value label along horizontal bars when the chart is narrow", () => {
+    // Six labels such as "100k" collide in a 20rem chart; the gridlines stay.
+    expect(css).toMatch(
+      /@container \(inline-size < 32rem\)\s*\{[^@]*\.sw-chart\[data-orientation="?horizontal"?\] \.sw-chart-axis\[data-axis="?x"?\] \.sw-chart-tick:nth-child\(2n\)\s*\{[^}]*visibility:\s*hidden/,
+    );
   });
 
   it("draws gridlines as hairlines and the zero line in the text colour", () => {

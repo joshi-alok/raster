@@ -1,0 +1,68 @@
+---
+title: BarChart
+group: Display
+order: 16
+summary: Bars from zero, grouped or stacked, vertical or horizontal, with the data one click away.
+interactive: true
+props:
+  - name: caption
+    type: ReactNode
+    description: Required. Shown above the chart; names its marks.
+  - name: data / x / xLabel
+    type: "Record<string, string | number>[] / string / string"
+    description: One object per category. x is the key holding the category; xLabel heads that column in the data table.
+  - name: series
+    type: "{ key, label }[]"
+    description: Up to six, coloured in this order. Fold the rest into "Other".
+  - name: orientation
+    type: '"vertical" | "horizontal"'
+    default: '"vertical"'
+    description: Horizontal bars suit long category names and ranked lists.
+  - name: stacked
+    type: boolean
+    default: "false"
+    description: One bar per category, its series stacked; negative values stack downward.
+  - name: highlight
+    type: string
+    description: A series key. That series keeps its colour; the rest turn muted.
+  - name: format
+    type: "(value: number) => string"
+    description: Formats ticks, names, the tooltip and the table. Defaults to the reader's locale.
+  - name: interactive
+    type: boolean
+    default: "true"
+    description: The focus layer. Turn it off for print, email or server-only output.
+a11y:
+  - The chart is one tab stop. Left and Right move between categories, Up and Down between series (the other way round for horizontal bars), and Home and End jump to the ends.
+  - 'Each bar is named with its series, category and value, such as "Built, 2023: 4"; a tooltip shows the same to sighted keyboard and pointer users.'
+  - Show data opens a real table of every value, on both routes.
+  - Series colours are checked for colour-blind readers and contrast, and a legend names them, so colour never carries identity alone.
+  - Without React, the server writes the same markup; there are no tooltips, and the table carries the values.
+---
+import Example from "../../components/Example.astro";
+import NativeExample from "../../components/NativeExample.astro";
+import BudgetByDiscipline from "../../demos/bar-chart/BudgetByDiscipline";
+import budgetSource from "../../demos/bar-chart/BudgetByDiscipline.tsx?raw";
+import HoursByPhase from "../../demos/bar-chart/HoursByPhase";
+import hoursSource from "../../demos/bar-chart/HoursByPhase.tsx?raw";
+import ProjectsByYear from "../../demos/bar-chart/ProjectsByYear";
+import projectsSource from "../../demos/bar-chart/ProjectsByYear.tsx?raw";
+import projectsHtml from "../../demos/bar-chart/projects-by-year.html?raw";
+
+<Example title="Projects by year" source={projectsSource}>
+  <ProjectsByYear client:load />
+</Example>
+
+<Example title="Budget by discipline" source={budgetSource}>
+  <BudgetByDiscipline client:load />
+</Example>
+
+<Example title="Hours by phase" source={hoursSource}>
+  <HoursByPhase client:load />
+</Example>
+
+<NativeExample title="Projects by year without React" html={projectsHtml} />
+
+The native chart is the markup above, written by your server. The geometry the components use is exported (`barLayout`, `valueAxis`) for servers that run JavaScript.
+
+Bars always start at zero, and a chart has one value axis. For two measures on different scales, draw two charts. For a single headline figure, use Stat.

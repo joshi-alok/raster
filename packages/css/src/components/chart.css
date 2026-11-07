@@ -117,6 +117,11 @@
   .sw-chart-tick[data-minor] {
     visibility: hidden;
   }
+
+  /* Value labels along horizontal bars (such as "100k") collide too; their gridlines stay. */
+  .sw-chart[data-orientation="horizontal"] .sw-chart-axis[data-axis="x"] .sw-chart-tick:nth-child(2n) {
+    visibility: hidden;
+  }
 }
 
 .sw-chart-plot {

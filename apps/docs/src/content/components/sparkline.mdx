@@ -1,0 +1,40 @@
+---
+title: Sparkline
+group: Display
+order: 18
+summary: A small trend that sits in a line of text, beside a Stat or in a table cell.
+props:
+  - name: data
+    type: number[]
+    description: The values, oldest first.
+  - name: label
+    type: string
+    description: Required. What the values are; the image is named with it and a summary.
+  - name: area
+    type: boolean
+    default: "false"
+    description: Fills under the line.
+  - name: format
+    type: "(value: number) => string"
+    description: Formats the values in the summary.
+a11y:
+  - 'A sparkline is one image, named with its label, its first and last values and its range, such as "Revenue, last 9 months, CHF millions: from 4.1 to 6.3, low 3.8, high 6.3".'
+  - It has no axes or table. When the exact values matter, use LineChart.
+---
+import Example from "../../components/Example.astro";
+import NativeExample from "../../components/NativeExample.astro";
+import InAStat from "../../demos/sparkline/InAStat";
+import statSource from "../../demos/sparkline/InAStat.tsx?raw";
+import InATable from "../../demos/sparkline/InATable";
+import tableSource from "../../demos/sparkline/InATable.tsx?raw";
+import revenueHtml from "../../demos/sparkline/revenue.html?raw";
+
+<Example title="In a stat" source={statSource}>
+  <InAStat />
+</Example>
+
+<Example title="In a table" source={tableSource}>
+  <InATable />
+</Example>
+
+<NativeExample title="Revenue without React" html={revenueHtml} />
