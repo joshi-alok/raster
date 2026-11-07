@@ -65,6 +65,19 @@ export {
   DataGridRow,
   type DataGridRowProps,
 } from "./display/DataGrid";
+export { BarChart, type BarChartProps } from "./charts/BarChart";
+export type { ChartProps } from "./charts/ChartFrame";
+export {
+  barLayout,
+  type ChartDatum,
+  type ChartSeries,
+  lineLayout,
+  MAX_SERIES,
+  numberFormatter,
+  sparklineLayout,
+  sparklineSummary,
+  valueAxis,
+} from "./charts/geometry";
 export type { Tone } from "./display/tones";
 export { Dialog, type DialogProps, DialogTrigger } from "./overlays/Dialog";
 export { Popover, type PopoverProps } from "./overlays/Popover";
