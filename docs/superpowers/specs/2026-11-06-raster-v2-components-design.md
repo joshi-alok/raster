@@ -236,7 +236,7 @@ Agreed on 2026-11-06. One component, taking Raster from 57 to 58. Table stays fo
 
 Agreed on 2026-11-07. Three components, taking Raster from 58 to 61: **BarChart** (vertical or horizontal, grouped or stacked), **LineChart** (optionally with an area fill) and **Sparkline** (a small inline trend for Stat and table cells). No pie, donut or scatter; never two y-axes; bar values always start at zero.
 
-**SVG for marks, HTML for words.** Bars, lines and areas are one SVG stretched over the plot (`viewBox="0 0 100 100"`, `preserveAspectRatio="none"`); lines keep their 2px with `vector-effect: non-scaling-stroke`. Tick labels, gridlines, category labels, the legend, line markers, end labels and the tooltip are HTML positioned by percentages. Charts therefore reflow to any width without JavaScript and their text never scales. The geometry is pure functions over `d3-scale` and `d3-shape`, exported for servers that render without React.
+**SVG for marks, HTML for words.** Bars, lines and areas are one SVG stretched over the plot (`viewBox="0 0 100 100"`, `preserveAspectRatio="none"`); lines keep their 2px with `vector-effect: non-scaling-stroke`. Tick labels, gridlines, category labels, the legend, line markers, end labels and the tooltip are HTML positioned by percentages. Charts therefore reflow to any width without JavaScript and their text never scales. The geometry is pure functions over `d3-scale` (nice ticks and bands; the straight-segment paths are written directly), exported for servers that render without React.
 
 | Feature | HTML route | React route |
 |---|---|---|
