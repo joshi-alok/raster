@@ -7,6 +7,7 @@ export const ROLES = [
   "warning", "on-warning", "warning-subtle", "on-warning-subtle",
   "danger", "on-danger", "danger-subtle", "on-danger-subtle",
   "brand-signal",
+  "chart-1", "chart-2", "chart-3", "chart-4", "chart-5", "chart-6", "chart-muted",
 ] as const;
 
 export type Role = (typeof ROLES)[number];
@@ -49,6 +50,14 @@ export const alpine: Theme = {
     "danger-subtle": ["#FBE7E4", "#6E1F14"],
     "on-danger-subtle": ["#6E1F14", "#F08A78"],
     "brand-signal": ["#7FA7C9", "#9DC0DE"],
+    // Charts (spec §16): series slots in a fixed order, checked by chart-palette.ts.
+    "chart-1": ["#2E6DB4", "#4A8AD4"],
+    "chart-2": ["#C8661A", "#D07A35"],
+    "chart-3": ["#00897B", "#1A9E8F"],
+    "chart-4": ["#8E4FA6", "#A26BC0"],
+    "chart-5": ["#9A8A10", "#A39418"],
+    "chart-6": ["#C2457A", "#D2638F"],
+    "chart-muted": ["#B4BFC8", "#4A5763"],
   },
 };
 
@@ -81,6 +90,13 @@ export const zurich: Theme = {
     "danger-subtle": ["#FBE5E1", "#6F180D"],
     "on-danger-subtle": ["#6F180D", "#F2836F"],
     "brand-signal": ["#E5341D", "#F2836F"],
+    "chart-1": ["#2F4BD8", "#7086F0"],
+    "chart-2": ["#C8661A", "#D07A35"],
+    "chart-3": ["#00897B", "#1A9E8F"],
+    "chart-4": ["#8E4FA6", "#A26BC0"],
+    "chart-5": ["#9A8A10", "#A39418"],
+    "chart-6": ["#C2457A", "#D2638F"],
+    "chart-muted": ["#BDB7AA", "#55524C"],
   },
 };
 
