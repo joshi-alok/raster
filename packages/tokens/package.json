@@ -16,7 +16,7 @@
     "access": "public"
   },
   "files": ["dist", "README.md"],
-  "sideEffects": false,
+  "sideEffects": ["*.css"],
   "type": "module",
   "exports": {
     ".": {

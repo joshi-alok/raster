@@ -7,7 +7,9 @@ on:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # Superseded pull request runs are cancelled; runs on main finish, so a production deploy is
+  # never stopped between the docs and the studio.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -93,8 +95,10 @@ jobs:
   deploy:
     name: Deploy to Cloudflare
     needs: [check, docs-e2e, studio-e2e]
-    # Secrets are not available to pull requests from forks; those get no preview.
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    # Secrets are not available to pull requests from forks or from Dependabot; those get no preview.
+    if: >-
+      github.event_name == 'push' ||
+      (github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]')
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -128,6 +132,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           SUBDOMAIN: ${{ vars.WORKERS_SUBDOMAIN }}
         run: |
+          if [ -z "$SUBDOMAIN" ]; then
+            echo "::warning::Set the WORKERS_SUBDOMAIN repository variable to post preview links."
+            exit 0
+          fi
           alias="pr-${{ github.event.number }}"
           body="Previews: [docs](https://${alias}-raster-docs.${SUBDOMAIN}.workers.dev/) · [studio](https://${alias}-raster-studio.${SUBDOMAIN}.workers.dev/)"
           gh pr comment ${{ github.event.number }} --body "$body" --edit-last --create-if-none
