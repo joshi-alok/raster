@@ -3,6 +3,14 @@ title: Banner
 group: Display
 order: 8
 summary: A page-level message strip below the header, with a tone rule, an icon and an optional dismiss button.
+use:
+  - Tell people about something that affects the whole page or service, such as maintenance.
+  - Sum up the errors in a form, above it.
+avoid:
+  - text: A note within the content.
+    instead: callout
+  - text: The result of a single action.
+    instead: toast
 interactive: true
 props:
   - name: tone

@@ -3,6 +3,13 @@ title: Skeleton
 group: Display
 order: 7
 summary: Placeholder blocks in the shape of the content that is loading, with a slow pulse.
+use:
+  - Hold the shape of content while it loads.
+avoid:
+  - text: A task of known length.
+    instead: progress-bar
+  - text: An area with nothing to show.
+    instead: empty-state
 props:
   - name: shape
     type: '"text" | "heading" | "block"'

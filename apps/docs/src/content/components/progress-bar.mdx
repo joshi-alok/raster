@@ -3,6 +3,13 @@ title: ProgressBar
 group: Display
 order: 5
 summary: How far a task has got, when its length is known, as a 4px bar with the value in mono.
+use:
+  - Show how far a task of known length has got.
+avoid:
+  - text: Content loading in place.
+    instead: skeleton
+  - text: A measurement that is not progress.
+    instead: meter
 props:
   - name: label
     type: ReactNode

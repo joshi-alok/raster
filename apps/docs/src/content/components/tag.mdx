@@ -3,6 +3,13 @@ title: Tag
 group: Display
 order: 3
 summary: A short status or category label on a tinted, fully rounded background.
+use:
+  - Label an item with its status or category.
+avoid:
+  - text: A label people select to filter.
+    instead: tag-group
+  - text: A count.
+    instead: badge
 props:
   - name: tone
     type: '"neutral" | "accent" | "success" | "warning" | "danger"'

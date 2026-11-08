@@ -3,6 +3,13 @@ title: LineChart
 group: Display
 order: 17
 summary: Lines over ordered categories such as months, with markers, end labels and an optional area.
+use:
+  - Show how values change over ordered categories, such as months.
+avoid:
+  - text: Categories with no order.
+    instead: bar-chart
+  - text: A trend beside a figure or in a table.
+    instead: sparkline
 interactive: true
 props:
   - name: caption / data / x / xLabel / series
