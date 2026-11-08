@@ -367,3 +367,46 @@ Guidance is part of the docs, held to the same checks as the components: usage i
   - The checker cannot judge voice, or whether a button names its outcome. It only rejects generic labels.
   - Number, unit and date formats are not checked.
   - VoiceOver and NVDA have not been tried by hand on the enquiry form's error summary or the search count.
+
+## 20. Plan 9 design: Distribution
+
+Decided with the user: a public GitHub repository (`joshi-alok/raster`), Cloudflare for hosting, the `@raster` npm scope, and design-tool tokens rather than a drawn Figma library.
+
+- **Publishable packages.** `@raster/tokens`, `@raster/css` and `@raster/react` lose `private` and gain the MIT licence, `repository`, `files`, `publishConfig` and a README each.
+  - Tokens and React build with tsdown into one ESM file each, with bundled type declarations. React's file starts with `"use client"`. Today's `tsc` output has extensionless relative imports, which Node and Vite SSR cannot resolve; the tokens package exports its TypeScript source.
+  - `@raster/react` takes `@raster/css` as a peer dependency.
+  - A pack check packs the three tarballs into a fresh project, then:
+    - imports them in Node;
+    - renders a component to a string;
+    - typechecks a consumer under both `Bundler` and `NodeNext` resolution;
+    - resolves the CSS files.
+
+    `publint` checks each package's exports. `pnpm verify` runs the pack check.
+- **Releases.** Changesets, with the three packages in one fixed group, so they always share a version, starting at 0.1.0.
+  - The release workflow keeps a "Version packages" PR open; merging it publishes.
+  - Publishing packs with pnpm, which rewrites `workspace:` ranges, then runs `npm publish` on each tarball with provenance, through npm trusted publishing (OIDC, no token). Versions already on the registry are skipped.
+  - The first publish is manual, because trusted publishing can only be set up for a package that exists.
+- **CI and baselines.** Linux is the only baseline platform; the macOS set is deleted.
+  - Every e2e run, local or CI, runs inside Playwright's Docker image at the pinned version. Locally, `pnpm e2e` and `pnpm baselines` do this, with the container's `node_modules` kept apart from the host's.
+  - GitHub Actions runs build, lint, typecheck, unit tests and the pack check on every PR and every push to main. It then runs the docs e2e in four shards and the studio e2e, inside the same image.
+  - Full-page screenshots also get `maxDiffPixels: 100`, the cap §9 deferred to this track.
+- **Hosting.** The docs site and Studio Achse deploy as two Cloudflare Workers with static assets (`raster-docs`, `raster-studio`), from the CI workflow once every check passes.
+  - A push to main deploys production on `workers.dev`.
+  - A pull request uploads a preview version with the alias `pr-<number>`, and a comment posts its URLs.
+  - The docs site gains a 404 page.
+- **Design-tool tokens.** The tokens build writes DTCG files (format 2025.10) into `dist/design-tools/`, one file per mode, as Figma's variables import expects:
+  - `raster-<theme>-<light|dark>.tokens.json`: role colours, scales and radius;
+  - `raster-size-<mobile|desktop>.tokens.json`: the fluid scales resolved at 360px and 1440px, plus fixed sizes, weights, leading, durations and easings.
+
+  The docs serve the same files for download. Values with no DTCG type are left out: shadows, the scrim and `light-dark()`.
+- **Get started.** A new page, linked first in the header after Principles, covers:
+  - installing from npm;
+  - loading fonts;
+  - choosing a theme and mode;
+  - the plain-HTML and React routes;
+  - importing the token files into Figma.
+- **Done by the user, as checkpoints.** Each is an outside service the build cannot act on alone:
+  - creating the GitHub repository and approving the first push;
+  - creating the npm organisation and doing the first publish;
+  - adding the Cloudflare token and account id as repository secrets.
+- **Not in Plan 9:** a Figma component library, a custom domain, Storybook, and versioned docs.
