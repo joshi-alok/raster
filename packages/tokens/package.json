@@ -24,7 +24,8 @@
       "default": "./dist/index.js"
     },
     "./tokens.css": "./dist/tokens.css",
-    "./tokens.json": "./dist/tokens.json"
+    "./tokens.json": "./dist/tokens.json",
+    "./design-tools/*": "./dist/design-tools/*"
   },
   "scripts": {
     "build": "tsx src/build.ts && tsdown",

@@ -63,6 +63,7 @@ for (const file of [
   "@raster/css/motion.css",
   "@raster/tokens/tokens.css",
   "@raster/tokens/tokens.json",
+  "@raster/tokens/design-tools/raster-alpine-light.tokens.json",
 ]) require.resolve(file);
 console.log("pack check: the packages import, render and resolve");
 `,

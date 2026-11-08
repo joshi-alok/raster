@@ -1,6 +1,6 @@
 const ROOT_PX = 16;
-const VIEWPORT_MIN = 360;
-const VIEWPORT_MAX = 1440;
+export const VIEWPORT_MIN = 360;
+export const VIEWPORT_MAX = 1440;
 
 const fmt = (n: number): string => String(Number(n.toFixed(4)));
 
@@ -34,7 +34,7 @@ export const TYPE_STEPS = {
 } as const satisfies Record<string, TypeStep>;
 
 /** [minPx, maxPx] per spacing step; steps 7–9 grow with the viewport. */
-const SPACE: ReadonlyArray<readonly [number, number]> = [
+export const SPACE: ReadonlyArray<readonly [number, number]> = [
   [4, 4], [8, 8], [12, 12], [16, 16], [24, 24], [32, 32], [40, 48], [48, 64], [64, 96],
 ];
 
