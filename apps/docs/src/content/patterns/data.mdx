@@ -1,0 +1,27 @@
+---
+title: Data
+summary: A figure for the headline, a chart for the shape, a table for the values, and a grid only when people work with the rows.
+rules:
+  - Lead with the one or two figures that matter, in Stat, each with how it changed.
+  - Add a Sparkline beside a figure when its trend matters more than its values.
+  - Use a chart for the shape of the data, a BarChart for amounts and a LineChart for change over time; keep the values one click away.
+  - Use a Table for values people read and compare; align numbers at the end in tabular figures.
+  - Use a DataGrid only when people sort, select or act on rows.
+  - Caption every table and chart with what it shows and its units, such as "Hours, this quarter".
+components:
+  - stat
+  - sparkline
+  - bar-chart
+  - line-chart
+  - table
+  - data-grid
+---
+import Example from "../../components/Example.astro";
+import Overview from "../../demos/patterns/Overview";
+import overviewSource from "../../demos/patterns/Overview.tsx?raw";
+
+## Examples
+
+<Example title="Quarterly overview" source={overviewSource} of={Overview}>
+  <Overview />
+</Example>

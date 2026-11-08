@@ -1,0 +1,44 @@
+---
+title: Errors and feedback
+summary: Say each message once, in the place nearest its cause, and say what happened and what to do next.
+rules:
+  - Put an error beside its cause, under the field it belongs to.
+  - Use a Banner for problems with the whole page or service, and to sum up a form's errors.
+  - Use a Toast to confirm the result of an action, and never for something people must act on.
+  - Use a Dialog only to confirm an action that cannot be undone.
+  - Write what happened and what to do next, such as "Two pages could not be published. Check the build log and try again."
+  - Do not blame people, and do not write "Error:" or use exclamation marks.
+components:
+  - field
+  - banner
+  - toast
+  - dialog
+  - callout
+---
+import DataTable from "../../components/DataTable.astro";
+import Example from "../../components/Example.astro";
+import Confirmation from "../../demos/patterns/Confirmation";
+import confirmationSource from "../../demos/patterns/Confirmation.tsx?raw";
+import FieldAndPageErrors from "../../demos/patterns/FieldAndPageErrors";
+import fieldAndPageErrorsSource from "../../demos/patterns/FieldAndPageErrors.tsx?raw";
+
+## Which to use
+
+<DataTable id="channels-caption" caption="Where a message goes" columns={["Message", "Use", "Lasts"]}>
+  <tr><td>A field's value is wrong</td><td>The field's error</td><td>Until it is fixed</td></tr>
+  <tr><td>A form has errors</td><td>Banner above the form, linking to each field</td><td>Until the form is sent again</td></tr>
+  <tr><td>The page or service has a problem</td><td>Banner</td><td>Until it is resolved or dismissed</td></tr>
+  <tr><td>An action worked</td><td>Toast</td><td>Five seconds</td></tr>
+  <tr><td>An action cannot be undone</td><td>Dialog, before the action</td><td>Until people choose</td></tr>
+  <tr><td>A note or warning within the content</td><td>Callout</td><td>Always shown</td></tr>
+</DataTable>
+
+## Examples
+
+<Example title="Field and page errors" source={fieldAndPageErrorsSource} of={FieldAndPageErrors}>
+  <FieldAndPageErrors />
+</Example>
+
+<Example title="Confirmation" source={confirmationSource}>
+  <Confirmation client:load />
+</Example>
