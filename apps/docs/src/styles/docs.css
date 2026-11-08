@@ -459,3 +459,30 @@
   max-inline-size: 22.5rem;
   border: 1px solid var(--border);
 }
+
+/* Usage: two columns, "Use it to" and "Avoid it for", each hung from a hairline. */
+.docs-usage {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--space-6);
+  max-inline-size: 72ch;
+}
+
+.docs-usage section {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  padding-block-start: var(--space-3);
+  border-block-start: 1px solid var(--border-strong);
+}
+
+.docs-usage h3 {
+  margin: 0;
+}
+
+.docs-usage ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-inline-start: 1.25em;
+}
