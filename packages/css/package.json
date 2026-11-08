@@ -1,11 +1,27 @@
 {
   "name": "@raster/css",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "description": "Raster's CSS: Swiss International Style components that work in plain HTML.",
+  "license": "MIT",
+  "author": "Raster contributors",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshi-alok/raster.git",
+    "directory": "packages/css"
+  },
+  "bugs": "https://github.com/joshi-alok/raster/issues",
+  "keywords": ["design-system", "swiss", "css", "react", "design-tokens"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["dist", "README.md"],
+  "sideEffects": ["*.css"],
   "type": "module",
   "exports": {
     ".": "./dist/raster.css",
     "./raster.css": "./dist/raster.css",
+    "./raster.min.css": "./dist/raster.min.css",
     "./motion.css": "./dist/motion.css"
   },
   "scripts": {
@@ -13,12 +29,10 @@
     "test": "pnpm --filter @raster/tokens run build && vitest run",
     "lint": "stylelint \"src/**/*.css\""
   },
-  "dependencies": {
-    "@raster/tokens": "workspace:*"
-  },
   "devDependencies": {
     "@fontsource-variable/geist": "5.3.0",
     "@fontsource-variable/geist-mono": "5.3.0",
+    "@raster/tokens": "workspace:*",
     "lightningcss": "1.33.0",
     "stylelint": "16.26.1",
     "vitest": "3.2.7"

@@ -1,15 +1,34 @@
 {
   "name": "@raster/tokens",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "description": "Raster's design tokens: two themes with light and dark modes, as CSS, JSON and design-tool files.",
+  "license": "MIT",
+  "author": "Raster contributors",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshi-alok/raster.git",
+    "directory": "packages/tokens"
+  },
+  "bugs": "https://github.com/joshi-alok/raster/issues",
+  "keywords": ["design-system", "swiss", "css", "react", "design-tokens"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["dist", "README.md"],
+  "sideEffects": ["*.css"],
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
     "./tokens.css": "./dist/tokens.css",
-    "./tokens.json": "./dist/tokens.json"
+    "./tokens.json": "./dist/tokens.json",
+    "./design-tools/*": "./dist/design-tools/*"
   },
   "scripts": {
-    "build": "tsx src/build.ts",
+    "build": "tsx src/build.ts && tsdown",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

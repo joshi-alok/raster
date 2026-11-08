@@ -3,6 +3,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { checkTheme, formatViolations } from "./contrast";
 import { tokensCss } from "./emit-css";
+import { designToolFiles } from "./emit-design-tools";
 import { tokensJson } from "./emit-json";
 import { themes } from "./themes";
 
@@ -16,4 +17,8 @@ const dist = resolve(dirname(fileURLToPath(import.meta.url)), "../dist");
 mkdirSync(dist, { recursive: true });
 writeFileSync(resolve(dist, "tokens.css"), tokensCss());
 writeFileSync(resolve(dist, "tokens.json"), `${JSON.stringify(tokensJson(), null, 2)}\n`);
-console.log(`Wrote dist/tokens.css and dist/tokens.json (${themes.length} themes, 0 contrast violations)`);
+mkdirSync(resolve(dist, "design-tools"), { recursive: true });
+for (const [file, content] of Object.entries(designToolFiles())) {
+  writeFileSync(resolve(dist, "design-tools", file), `${JSON.stringify(content, null, 2)}\n`);
+}
+console.log(`Wrote dist/tokens.css, dist/tokens.json and dist/design-tools/ (${themes.length} themes, 0 contrast violations)`);

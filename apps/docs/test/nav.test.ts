@@ -25,9 +25,13 @@ describe("ariaCurrent", () => {
   });
 
   it("has a Patterns section between Components and Templates", () => {
-    expect(NAV.map((i) => i.label)).toEqual(["Principles", "Foundations", "Components", "Patterns", "Templates", "Themes"]);
+    expect(NAV.map((i) => i.label)).toEqual(["Principles", "Get started", "Foundations", "Components", "Patterns", "Templates", "Themes"]);
     expect(ariaCurrent("/patterns/", item("Patterns"))).toBe("page");
     expect(ariaCurrent("/patterns/forms/", item("Patterns"))).toBe("true");
+  });
+
+  it("has a Get started page after Principles", () => {
+    expect(ariaCurrent("/get-started/", item("Get started"))).toBe("page");
   });
 
   it("lists Content style under Foundations", () => {

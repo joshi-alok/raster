@@ -9,7 +9,7 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? "list" : [["list"], ["html", { open: "never" }]],
   use: { baseURL: `http://localhost:${PORT}`, trace: "retain-on-failure" },
-  // Baselines are per platform (…-darwin.png); regenerate them on a new OS with --update-snapshots.
+  // Baselines are Linux only (…-linux.png), made in Playwright's Docker image: `pnpm baselines`.
   snapshotPathTemplate: "{testDir}/__screenshots__/{arg}-{platform}{ext}",
   expect: {
     // Under a loaded machine an element can take longer than the default 5s to settle before

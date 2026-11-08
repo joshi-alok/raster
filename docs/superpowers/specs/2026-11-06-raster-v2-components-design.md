@@ -367,3 +367,79 @@ Guidance is part of the docs, held to the same checks as the components: usage i
   - The checker cannot judge voice, or whether a button names its outcome. It only rejects generic labels.
   - Number, unit and date formats are not checked.
   - VoiceOver and NVDA have not been tried by hand on the enquiry form's error summary or the search count.
+
+## 20. Plan 9 design: Distribution
+
+Decided with the user: a public GitHub repository (`joshi-alok/raster`), Cloudflare for hosting, the `@raster` npm scope, and design-tool tokens rather than a drawn Figma library.
+
+- **Publishable packages.** `@raster/tokens`, `@raster/css` and `@raster/react` lose `private` and gain the MIT licence, `repository`, `files`, `publishConfig` and a README each.
+  - Tokens and React build with tsdown into one ESM file each, with bundled type declarations. React's file starts with `"use client"`. Today's `tsc` output has extensionless relative imports, which Node and Vite SSR cannot resolve; the tokens package exports its TypeScript source.
+  - `@raster/react` takes `@raster/css` as a peer dependency.
+  - A pack check packs the three tarballs into a fresh project, then:
+    - imports them in Node;
+    - renders a component to a string;
+    - typechecks a consumer under both `Bundler` and `NodeNext` resolution;
+    - resolves the CSS files.
+
+    `publint` checks each package's exports. `pnpm verify` runs the pack check.
+- **Releases.** Changesets, with the three packages in one fixed group, so they always share a version, starting at 0.1.0.
+  - The release workflow keeps a "Version packages" PR open; merging it publishes.
+  - Publishing packs with pnpm, which rewrites `workspace:` ranges, then runs `npm publish` on each tarball with provenance, through npm trusted publishing (OIDC, no token). Versions already on the registry are skipped.
+  - The first publish is manual, because trusted publishing can only be set up for a package that exists.
+- **CI and baselines.** Linux is the only baseline platform; the macOS set is deleted.
+  - Every e2e run, local or CI, runs inside Playwright's Docker image at the pinned version. Locally, `pnpm e2e` and `pnpm baselines` do this, with the container's `node_modules` kept apart from the host's.
+  - GitHub Actions runs build, lint, typecheck, unit tests and the pack check on every PR and every push to main. It then runs the docs e2e in four shards and the studio e2e, inside the same image.
+  - Full-page screenshots also get `maxDiffPixels: 100`, the cap §9 deferred to this track.
+- **Hosting.** The docs site and Studio Achse deploy as two Cloudflare Workers with static assets (`raster-docs`, `raster-studio`), from the CI workflow once every check passes.
+  - A push to main deploys production on `workers.dev`.
+  - A pull request uploads a preview version with the alias `pr-<number>`, and a comment posts its URLs.
+  - The docs site gains a 404 page.
+- **Design-tool tokens.** The tokens build writes DTCG files (format 2025.10) into `dist/design-tools/`, one file per mode, as Figma's variables import expects:
+  - `raster-<theme>-<light|dark>.tokens.json`: role colours, scales and radius;
+  - `raster-size-<mobile|desktop>.tokens.json`: the fluid scales resolved at 360px and 1440px, plus fixed sizes, weights, leading, durations and easings.
+
+  The docs serve the same files for download. Values with no DTCG type are left out: shadows, the scrim and `light-dark()`.
+- **Get started.** A new page, linked first in the header after Principles, covers:
+  - installing from npm;
+  - loading fonts;
+  - choosing a theme and mode;
+  - the plain-HTML and React routes;
+  - importing the token files into Figma.
+- **Done by the user, as checkpoints.** Each is an outside service the build cannot act on alone:
+  - creating the GitHub repository and approving the first push;
+  - creating the npm organisation and doing the first publish;
+  - adding the Cloudflare token and account id as repository secrets.
+- **Not in Plan 9:** a Figma component library, a custom domain, Storybook, and versioned docs.
+
+## 21. Settled in Plan 9
+
+- **One bundle per package.** Tokens and React build with tsdown (0.23.7) into `dist/index.js` and one bundled `index.d.ts`. The `tsc` output had extensionless relative imports that Node and Vite SSR cannot resolve; the bundle has none. The React bundle's first line is `"use client"`. Dependencies stay external.
+  - The pack check installs the packed tarballs into a fresh project, then:
+    - imports them in Node;
+    - renders a Button on the server;
+    - typechecks a consumer under `Bundler` and `NodeNext` with `skipLibCheck: false`;
+    - resolves every CSS and design-tool export.
+
+    `publint --strict` passes for all three packages.
+  - `@raster/css` and `@raster/tokens` declare `"sideEffects": ["*.css"]`, so a bundler keeps a bare CSS import. `@raster/css` inlines the tokens at build time, so `@raster/tokens` is only its dev dependency.
+- **Releases.** Changesets 3 with one fixed group. A minor changeset on any package moves all three to the same minor; the React package's peer dependency on `@raster/css` does not force a major.
+  - `scripts/publish.mjs` packs with pnpm, which rewrites `workspace:` ranges, and publishes each tarball with `npm publish`, adding `--provenance` on CI.
+  - It skips versions already on npm and carries on past a failing package, then exits 1.
+  - It tags every version on npm that has no git tag, so a re-run repairs a partial publish.
+  - The release workflow runs only after CI succeeds on a push to main.
+  - The first publish is manual: Task 9 of the plan, after the merge.
+- **Linux baselines.** The 1,443 macOS baselines were replaced by 1,443 Linux ones, with the same names. `pnpm baselines` takes about 12 minutes on this machine (Intel i7, Docker Desktop), and a full `pnpm e2e` 10–14 minutes, docs and studio together. Every parity screenshot still matches at 0 pixels on Linux; no tolerance changed. Full-page template screenshots also carry `maxDiffPixels: 100`.
+- **The Docker runner.** Playwright's 1.64.1 image ships Node 26, which no longer bundles corepack. `scripts/e2e-docker.sh` installs corepack once into a cached volume and enables only pnpm. Every workspace package's `node_modules` is a named volume, so Linux binaries never reach the host's tree. CI's container jobs instead put the repository's Node 22 first with `setup-node`.
+- **CI.** One `check` job (build, lint, typecheck, unit tests, pack check), docs e2e in 4 shards, and studio e2e, all inside the pinned Playwright image.
+  - The pack check fails if `ci.yml`'s image tag and `@playwright/test` differ.
+  - Runs on main are never cancelled, so a deploy is not cut off between docs and studio.
+  - Typical run time: not yet measured (Task 9).
+- **Load flakes.** In the Plan 9 verify run, the four axe checks on the long manifesto template hit the 30s test timeout. They take about 6s each alone, and passed 12 of 12 when re-run. CI retries a failed test once.
+- **Hosting.** Two Workers with static assets, `raster-docs` and `raster-studio`; both configs pass `wrangler deploy --dry-run` (Wrangler 4.158.0). Pull requests from this repository get `pr-<n>` preview versions and a comment with links once the `WORKERS_SUBDOMAIN` variable is set. Not yet deployed (Task 9).
+- **Copy rendering.** Astro's HTML compression drops a line break between text and an element that starts the next source line ("JavaScript.<code>"). Six such joins were fixed, four of them older than Plan 9, and a test now reads every built page for them.
+- **Known gaps:**
+  - no Figma component library;
+  - no custom domain;
+  - the design-tool files leave out shadows, the scrim and `light-dark()`;
+  - Figma's variables import has not been tried by hand with the files;
+  - CI, the deploys and trusted publishing are proven only once the repository is on GitHub.
