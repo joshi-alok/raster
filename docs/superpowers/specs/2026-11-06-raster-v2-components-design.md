@@ -349,3 +349,21 @@ Guidance is part of the docs, held to the same checks as the components: usage i
   - Navigation tests cover Patterns.
   - The accessibility, reflow and axe checks reach the new pages because they are built.
   - Visual baselines cover the pattern examples in four combinations at three widths.
+
+## 19. Settled in Plan 8
+
+- **Usage is frontmatter, and required.** Every component entry has `use` (strings) and `avoid` (`{ text, instead? }`), each with at least one item. An `instead` is a component id or `patterns/<id>`. It renders as "Use Select instead." or "See the Forms pattern." The page throws at build time on an `instead` that names nothing, and a unit test checks every link, so a broken one fails both the build and `pnpm verify`.
+- **Patterns are a content collection ordered by `PATTERNS`.** `src/lib/guidance.ts` lists the five ids and titles in order, and a test keeps them equal to the pages, titles included. The frontmatter has no `order`, unlike §18's sketch. Examples reuse `Example`: static ones show generated HTML, interactive ones show React, and there are no parity screenshots. The pattern screenshots use a taller viewport, so the forms example is not cut off at the fold.
+- **The enquiry form names its focus target.** On a failed or successful send, focus moves to the status region, named by its message ("Fix 2 fields to send the enquiry"). The Banners inside drop their live-region roles, so the message is read once, not twice. The project search announces its result count in a visually hidden status.
+- **The copy check.** `src/lib/content-style.ts` holds the rules. Tests run them on component and pattern frontmatter, example titles, and every demo's copy: attributes, including expressions and template literals; object-literal keys such as `title` and `change`; text between tags; and Button labels. The rules are:
+  - no exclamation marks, "click here", "Error:" prefixes or three dots;
+  - British spellings, from a list;
+  - sentence case, except names, acronyms, proper nouns and quoted text, with possessives and plurals allowed;
+  - no generic button labels.
+
+  A full stop or question mark ends a sentence, even inside a closing bracket or quote; a colon does not. `PROPER_NOUNS` holds real proper nouns only (places, people, weekdays, key names); copy that fails is reworded, never allowlisted. The check caused six rewordings, one of them in a visible demo (the figure caption now uses numerals).
+- **Moving every example down moved some tests.** The Usage section pushed examples below the fold. The file-upload drop test now scrolls the zone into view before its CDP drag, and 11 forced-colour baselines were regenerated for a one-pixel change at their bottom edge.
+- **Known gaps:**
+  - The checker cannot judge voice, or whether a button names its outcome. It only rejects generic labels.
+  - Number, unit and date formats are not checked.
+  - VoiceOver and NVDA have not been tried by hand on the enquiry form's error summary or the search count.
