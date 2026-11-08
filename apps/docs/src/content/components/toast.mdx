@@ -3,6 +3,16 @@ title: Toast
 group: Overlay and navigation
 order: 4
 summary: A brief, announced message about the result of an action, stacked at the edge of the screen.
+use:
+  - Confirm the result of an action, such as "Saved" or "Sent".
+  - Report a failure that belongs to no single field.
+avoid:
+  - text: Errors in a form's fields.
+    instead: field
+  - text: A message people must act on before going on.
+    instead: dialog
+  - text: A message about the whole page.
+    instead: banner
 interactive: true
 props:
   - name: ToastRegion queue

@@ -3,6 +3,13 @@ title: Media
 group: Display
 order: 10
 summary: An image, video or drawing in a frame of fixed ratio, so the page does not shift as it loads.
+use:
+  - Hold an image or a video at a fixed ratio, so the page does not shift as it loads.
+avoid:
+  - text: An image the text refers to by its caption.
+    instead: figure
+  - text: A person.
+    instead: avatar
 props:
   - name: ratio
     type: '"1:1" | "4:3" | "3:2" | "16:9" | "21:9"'

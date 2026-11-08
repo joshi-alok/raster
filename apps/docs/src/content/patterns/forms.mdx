@@ -1,0 +1,37 @@
+---
+title: Forms
+summary: One column of labelled fields, checked when sent, with every error said once beside its field and once in a summary above.
+rules:
+  - Lay fields out in one column, in the order people think of the answers.
+  - Give every field a visible label. Placeholders are examples, never labels.
+  - Say which fields are required in their description, and mark the rest optional.
+  - Check the form when it is sent, not while people type.
+  - Show each error under its field, saying what to do, such as "Enter your name."
+  - Above the form, sum up the errors in a Banner, with each error a link to its field, and move focus to the summary.
+  - Use one primary button, named for the outcome, such as "Send enquiry".
+components:
+  - text-field
+  - text-area
+  - select
+  - radio-group
+  - field
+  - banner
+  - button
+---
+import Example from "../../components/Example.astro";
+import EnquiryForm from "../../demos/patterns/EnquiryForm";
+import enquiryFormSource from "../../demos/patterns/EnquiryForm.tsx?raw";
+import ErrorSummary from "../../demos/patterns/ErrorSummary";
+import errorSummarySource from "../../demos/patterns/ErrorSummary.tsx?raw";
+
+## Examples
+
+Send the form empty to see the errors, then fill it in to send it.
+
+<Example title="Project enquiry" source={enquiryFormSource}>
+  <EnquiryForm client:load />
+</Example>
+
+<Example title="Error summary" source={errorSummarySource} of={ErrorSummary}>
+  <ErrorSummary />
+</Example>

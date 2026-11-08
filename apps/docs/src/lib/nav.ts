@@ -9,6 +9,7 @@ export const NAV: NavItem[] = [
   { href: "/", label: "Principles" },
   { href: "/foundations/grid/", label: "Foundations", section: "/foundations/" },
   { href: "/components/", label: "Components", section: "/components/" },
+  { href: "/patterns/", label: "Patterns", section: "/patterns/" },
   { href: "/templates/", label: "Templates", section: "/templates/" },
   { href: "/themes/", label: "Themes" },
 ];
@@ -18,6 +19,7 @@ export const FOUNDATIONS: NavItem[] = [
   { href: "/foundations/type/", label: "Type" },
   { href: "/foundations/colour/", label: "Colour" },
   { href: "/foundations/motion/", label: "Motion" },
+  { href: "/foundations/content/", label: "Content style" },
 ];
 
 const withSlash = (path: string) => (path.endsWith("/") ? path : `${path}/`);

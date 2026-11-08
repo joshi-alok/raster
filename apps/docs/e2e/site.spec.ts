@@ -86,7 +86,7 @@ test("on a phone the header shows a Menu button instead of the links, and the me
   await header.getByRole("button", { name: "Menu" }).click();
   const menu = page.getByRole("dialog", { name: "Menu" });
   const links = menu.getByRole("navigation", { name: "Main" }).getByRole("link");
-  await expect(links).toHaveText(["Principles", "Foundations", "Components", "Templates", "Themes"]);
+  await expect(links).toHaveText(["Principles", "Foundations", "Components", "Patterns", "Templates", "Themes"]);
   await expect(menu.getByRole("link", { name: "Components" })).toHaveAttribute("aria-current", "page");
   expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
 });

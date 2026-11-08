@@ -1,0 +1,50 @@
+---
+import { getCollection, render } from "astro:content";
+import DocPage from "../../layouts/DocPage.astro";
+import { componentHref } from "../../lib/components";
+import { sortPatterns } from "../../lib/guidance";
+
+export async function getStaticPaths() {
+  const entries = sortPatterns(await getCollection("patterns"));
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, summary, rules, components } = entry.data;
+const titles = new Map((await getCollection("components")).map((c) => [c.id, c.data.title]));
+const used = components.map((id) => {
+  const name = titles.get(id);
+  if (name === undefined) throw new Error(`Pattern ${entry.id} lists "${id}", which is not a component.`);
+  return { href: componentHref(id), name };
+});
+---
+<DocPage title={title} description={summary} eyebrow="Patterns">
+  <nav slot="before-title" aria-label="Breadcrumbs">
+    <ol class="sw-breadcrumbs">
+      <li class="sw-breadcrumb">
+        <a class="sw-link" href="/patterns/">Patterns</a>
+        <span class="sw-breadcrumb-separator" aria-hidden="true">/</span>
+      </li>
+      <li class="sw-breadcrumb"><span class="sw-link" aria-current="page">{title}</span></li>
+    </ol>
+  </nav>
+
+  <h2>Rules</h2>
+  <ol class="docs-rules sw-measure">{rules.map((rule) => <li>{rule}</li>)}</ol>
+
+  <Content />
+
+  <h2>Components</h2>
+  <ul class="docs-component-list">
+    {
+      used.map((c) => (
+        <li>
+          <a class="sw-link" href={c.href}>
+            {c.name}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</DocPage>

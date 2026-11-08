@@ -3,6 +3,13 @@ title: Tooltip
 group: Overlay and navigation
 order: 3
 summary: A short inverted label that describes a control on hover and on keyboard focus.
+use:
+  - Name a control that shows only an icon, on hover and on focus.
+avoid:
+  - text: Information people need to finish a task.
+    instead: text
+  - text: Content people interact with.
+    instead: popover
 interactive: true
 props:
   - name: children

@@ -3,6 +3,13 @@ title: Rule
 group: Layout
 order: 6
 summary: A hairline thematic break, in default, strong or signal weight.
+use:
+  - Mark a thematic break between blocks of content.
+avoid:
+  - text: Space between page regions.
+    instead: section
+  - text: Grouping content on a surface.
+    instead: card
 props:
   - name: variant
     type: '"default" | "strong" | "signal"'

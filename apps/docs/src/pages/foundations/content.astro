@@ -1,0 +1,66 @@
+---
+import DataTable from "../../components/DataTable.astro";
+import FoundationsNav from "../../components/FoundationsNav.astro";
+import DocPage from "../../layouts/DocPage.astro";
+
+const PAIRS: [string, string][] = [
+  ["Send enquiry", "Submit"],
+  ["Delete project", "OK"],
+  ["Enter your name.", "Error: name is required!"],
+  ["Two pages could not be published. Check the build log and try again.", "Oops! Something went wrong."],
+  ["Read the type guide", "Click here"],
+  ["Save as…", "Save as..."],
+  ["7 November 2026", "11/7/2026"],
+  ["12 kg, 40%, CHF 1,200", "12kg, 40 percent, 1200 CHF"],
+];
+---
+<DocPage
+  title="Content style"
+  eyebrow="Foundations"
+  description="Words are part of the grid. Write plainly, say what happens, and keep every label and message as short as it can be while still being clear."
+>
+  <FoundationsNav slot="aside" />
+
+  <h2>Voice</h2>
+  <div class="sw-measure">
+    <p>Plain and direct, in the second person. Say what something does, not how impressive it is. Prefer short words and short sentences; one idea a sentence.</p>
+    <p>Write in British English: colour, centre, organise, catalogue.</p>
+  </div>
+
+  <h2>Capitals</h2>
+  <div class="sw-measure">
+    <p>Sentence case everywhere: page titles, headings, labels, buttons, captions and tabs. Capitals start sentences and proper nouns, and component names keep theirs: "Use a DataGrid".</p>
+  </div>
+
+  <h2>Actions</h2>
+  <div class="sw-measure">
+    <p>A button starts with a verb and names the outcome: "Send enquiry", "Delete project". A link names where it goes: "Read the type guide". End an action with "…" only when it asks for more input before it happens.</p>
+  </div>
+
+  <h2>Messages and errors</h2>
+  <div class="sw-measure">
+    <p>Say what happened, then what to do next. Do not blame people, do not apologise at length, and do not write "Error:" or use exclamation marks. A field's error says what to enter: "Enter an email address such as name@studio.ch." See the <a class="sw-link" href="/patterns/errors-and-feedback/">Errors and feedback pattern</a> for where each message goes.</p>
+  </div>
+
+  <h2>Numbers, dates and units</h2>
+  <div class="sw-measure">
+    <p>Write dates as "7 November 2026", or "7 Nov" where space is tight. Use the 24-hour clock: 14:30. Put a space between a number and its unit, but not before %: 12 kg, 40%. Put the currency first: CHF 1,200. Use numerals for every number in an interface.</p>
+  </div>
+
+  <h2>Write this, not that</h2>
+  <DataTable id="content-pairs-caption" caption="Examples" columns={["Write", "Not"]}>
+    {
+      PAIRS.map(([good, bad]) => (
+        <tr>
+          <td>{good}</td>
+          <td>{bad}</td>
+        </tr>
+      ))
+    }
+  </DataTable>
+
+  <h2>Checked by a test</h2>
+  <div class="sw-measure">
+    <p>A test reads the docs' own copy (component summaries and usage, pattern rules, example titles, and the labels, text and buttons in every demo) and fails on title case, "click here", exclamation marks, an "Error:" prefix, three dots for an ellipsis, American spellings and buttons labelled "OK", "Submit", "Yes" or "No". The rules live in <code>apps/docs/src/lib/content-style.ts</code>.</p>
+  </div>
+</DocPage>

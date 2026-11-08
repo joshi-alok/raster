@@ -3,6 +3,15 @@ title: Popover
 group: Overlay and navigation
 order: 9
 summary: A small panel anchored to the button that opens it, for extra detail or a few controls.
+use:
+  - Show extra detail, or a few controls, anchored to the button that opens them.
+avoid:
+  - text: A short name for a control.
+    instead: tooltip
+  - text: A task that needs focus held until it is done.
+    instead: dialog
+  - text: A list of actions.
+    instead: menu
 interactive: true
 props:
   - name: title

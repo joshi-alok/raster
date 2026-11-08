@@ -10,6 +10,12 @@ const prop = z.object({
   description: z.string(),
 });
 
+const avoidItem = z.object({
+  text: z.string(),
+  /** A component id ("select") or a pattern ("patterns/forms") to use instead. */
+  instead: z.string().optional(),
+});
+
 const components = defineCollection({
   loader: glob({ pattern: "*.mdx", base: "./src/content/components" }),
   schema: z.object({
@@ -18,6 +24,10 @@ const components = defineCollection({
     /** Position within the group. */
     order: z.number().int(),
     summary: z.string(),
+    /** What the component is for. */
+    use: z.array(z.string()).min(1),
+    /** What it is not for, and what to use instead. */
+    avoid: z.array(avoidItem).min(1),
     /** Needs a React island (client:*) in Astro to respond to input. */
     interactive: z.boolean().default(false),
     props: z.array(prop).min(1),
@@ -25,4 +35,16 @@ const components = defineCollection({
   }),
 });
 
-export const collections = { components };
+const patterns = defineCollection({
+  loader: glob({ pattern: "*.mdx", base: "./src/content/patterns" }),
+  schema: z.object({
+    title: z.string(),
+    summary: z.string(),
+    /** Numbered rules, shown before the examples. */
+    rules: z.array(z.string()).min(1),
+    /** Component ids the pattern uses, linked at the foot of the page. */
+    components: z.array(z.string()).min(1),
+  }),
+});
+
+export const collections = { components, patterns };

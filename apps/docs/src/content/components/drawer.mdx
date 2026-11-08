@@ -3,6 +3,13 @@ title: Drawer
 group: Overlay and navigation
 order: 10
 summary: A modal panel docked to the inline end or the bottom edge, for details and filters beside the current page.
+use:
+  - Show details, filters or a form beside the page people are working on.
+avoid:
+  - text: A decision that must be made before going on.
+    instead: dialog
+  - text: Section navigation on wide screens.
+    instead: side-nav
 interactive: true
 props:
   - name: title

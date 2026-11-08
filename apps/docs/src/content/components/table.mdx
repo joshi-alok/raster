@@ -3,6 +3,13 @@ title: Table
 group: Display
 order: 2
 summary: A data table with a required caption that scrolls inside its own region on small screens; numeric cells use tabular figures.
+use:
+  - Show records with the same fields, for people to read and compare.
+avoid:
+  - text: Data people sort and select.
+    instead: data-grid
+  - text: Layout.
+    instead: grid
 props:
   - name: caption
     type: ReactNode

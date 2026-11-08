@@ -3,6 +3,11 @@ title: Meter
 group: Display
 order: 6
 summary: A measurement within a known range, coloured by how good it is and named when it is high or low.
+use:
+  - Show a measurement within a known range, such as storage used.
+avoid:
+  - text: The progress of a task.
+    instead: progress-bar
 props:
   - name: label
     type: ReactNode

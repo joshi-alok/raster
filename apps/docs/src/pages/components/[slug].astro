@@ -3,6 +3,7 @@ import { getCollection, render } from "astro:content";
 import PropsTable from "../../components/PropsTable.astro";
 import DocPage from "../../layouts/DocPage.astro";
 import { componentHref, neighbours, sortComponents } from "../../lib/components";
+import { usageLink } from "../../lib/guidance";
 
 export async function getStaticPaths() {
   const entries = sortComponents(await getCollection("components"));
@@ -14,7 +15,15 @@ export async function getStaticPaths() {
 
 const { entry, previous, next } = Astro.props;
 const { Content } = await render(entry);
-const { title, group, summary, interactive, props, a11y } = entry.data;
+const { title, group, summary, interactive, props, a11y, use, avoid } = entry.data;
+const componentTitles = new Map((await getCollection("components")).map((c) => [c.id, c.data.title]));
+const avoidItems = avoid.map((item) => {
+  const link = item.instead === undefined ? null : usageLink(item.instead, componentTitles);
+  if (item.instead !== undefined && link === null) {
+    throw new Error(`${entry.id}: avoid item "${item.text}" points to "${item.instead}", which is not a component or pattern.`);
+  }
+  return { text: item.text, link };
+});
 ---
 <DocPage title={title} description={summary} eyebrow={group}>
   <nav slot="before-title" aria-label="Breadcrumbs">
@@ -33,6 +42,34 @@ const { title, group, summary, interactive, props, a11y } = entry.data;
       </p>
     )
   }
+
+  <h2>Usage</h2>
+  <div class="docs-usage">
+    <section aria-labelledby="usage-use">
+      <h3 id="usage-use" class="sw-type-label sw-text-secondary">Use it to</h3>
+      <ul>{use.map((item) => <li>{item}</li>)}</ul>
+    </section>
+    <section aria-labelledby="usage-avoid">
+      <h3 id="usage-avoid" class="sw-type-label sw-text-secondary">Avoid it for</h3>
+      <ul>
+        {
+          avoidItems.map((item) => (
+            <li>
+              {item.text}
+              {item.link && (
+                <>
+                  {" "}
+                  <a class="sw-link" href={item.link.href}>
+                    {item.link.text}
+                  </a>
+                </>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
 
   <h2>Examples</h2>
   <Content />

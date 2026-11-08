@@ -3,6 +3,15 @@ title: Select
 group: Forms
 order: 4
 summary: Picks one option from a list that opens in a popover, themed with its surroundings.
+use:
+  - Choose one option from a list in a form.
+avoid:
+  - text: Five or fewer options that should all be visible.
+    instead: radio-group
+  - text: A long list people would rather type to find.
+    instead: combobox
+  - text: A list of actions.
+    instead: menu
 interactive: true
 props:
   - name: label

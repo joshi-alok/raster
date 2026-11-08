@@ -1,0 +1,31 @@
+---
+title: Empty states
+summary: An empty area says why it is empty and offers the one next step, whether nothing exists yet, nothing matches or everything is done.
+rules:
+  - Say why the area is empty in the title, such as "No projects yet" or "No projects match these filters".
+  - Add one sentence on what to do next, and at most one action.
+  - On first use, the action creates the first item.
+  - When nothing matches, the action clears the search or the filters, and the title repeats what was searched for.
+  - When everything is done, say so and offer nothing to do.
+  - While content loads, show a Skeleton, not an empty state.
+components:
+  - empty-state
+  - search-field
+  - button
+  - skeleton
+---
+import Example from "../../components/Example.astro";
+import FirstUse from "../../demos/patterns/FirstUse";
+import firstUseSource from "../../demos/patterns/FirstUse.tsx?raw";
+import NoMatches from "../../demos/patterns/NoMatches";
+import noMatchesSource from "../../demos/patterns/NoMatches.tsx?raw";
+
+## Examples
+
+<Example title="First use" source={firstUseSource} of={FirstUse}>
+  <FirstUse />
+</Example>
+
+<Example title="No matches" source={noMatchesSource}>
+  <NoMatches client:load />
+</Example>

@@ -3,6 +3,13 @@ title: Callout
 group: Display
 order: 4
 summary: A static message in the page flow, with an icon and an optional title, in four tones.
+use:
+  - Draw attention to a note, a tip or a warning within the content.
+avoid:
+  - text: A message about the whole page.
+    instead: banner
+  - text: The result of an action.
+    instead: toast
 props:
   - name: tone
     type: '"info" | "success" | "warning" | "danger"'

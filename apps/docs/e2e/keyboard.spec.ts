@@ -527,6 +527,8 @@ test("file upload, React: a dropped file is added; a wrong type is refused with 
   const notes = testInfo.outputPath("notes.txt");
   await writeFile(plan, "%PDF-1.7");
   await writeFile(notes, "notes");
+  // CDP drag events land at viewport coordinates, so the zone must be on screen when measured.
+  await field.locator(".sw-file-drop").scrollIntoViewIfNeeded();
   const box = await field.locator(".sw-file-drop").boundingBox();
   if (!box) throw new Error("The drop zone has no box");
   const at = { x: box.x + box.width / 2, y: box.y + box.height / 2 };

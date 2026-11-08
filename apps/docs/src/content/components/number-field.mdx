@@ -3,6 +3,13 @@ title: NumberField
 group: Forms
 order: 11
 summary: A number with step buttons, for quantities and other small whole numbers.
+use:
+  - Enter a quantity or another small whole number.
+avoid:
+  - text: Numbers that are identifiers, such as a postcode.
+    instead: text-field
+  - text: A value whose place in a range matters more than the number.
+    instead: slider
 interactive: true
 props:
   - name: label

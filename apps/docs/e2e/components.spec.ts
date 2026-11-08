@@ -15,6 +15,9 @@ for (const path of componentPages) {
     const title = (await page.locator("h1").textContent())?.trim() ?? "";
     const crumbs = page.getByRole("navigation", { name: "Breadcrumbs", exact: true });
     await expect(crumbs.locator('[aria-current="page"]')).toHaveText(title);
+    await expect(page.getByRole("heading", { level: 2, name: "Usage" })).toBeVisible();
+    await expect(page.getByRole("region", { name: "Use it to" }).getByRole("listitem").first()).toBeVisible();
+    await expect(page.getByRole("region", { name: "Avoid it for" }).getByRole("listitem").first()).toBeVisible();
 
     const examples = page.locator("figure.docs-example");
     expect(await examples.count()).toBeGreaterThan(0);
@@ -33,4 +36,10 @@ test("static examples show the HTML they render", async ({ page }) => {
   const html = page.getByRole("region", { name: "HTML code: Variants" });
   await expect(html).toContainText('<button data-variant="primary" class="sw-button" type="button">Save</button>');
   await expect(html).not.toContainText("react-aria");
+});
+
+test("an avoid item links to the component to use instead", async ({ page }) => {
+  await page.goto("/components/button/");
+  await page.getByRole("link", { name: "Use Link instead." }).click();
+  await expect(page).toHaveURL(/\/components\/link\/$/);
 });

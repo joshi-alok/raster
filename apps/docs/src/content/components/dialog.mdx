@@ -3,6 +3,16 @@ title: Dialog
 group: Overlay and navigation
 order: 1
 summary: A modal window over a scrim that holds focus until it is closed.
+use:
+  - Ask for a decision or a short task that must be finished before going on.
+  - Confirm an action that cannot be undone.
+avoid:
+  - text: Details or filters beside the current page.
+    instead: drawer
+  - text: A few controls anchored to a button.
+    instead: popover
+  - text: The result of an action.
+    instead: toast
 interactive: true
 props:
   - name: title

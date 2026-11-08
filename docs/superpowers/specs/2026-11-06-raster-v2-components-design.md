@@ -312,3 +312,58 @@ Agreed on 2026-11-07. Three components, taking Raster from 58 to 61: **BarChart*
 - **Narrow charts.** Below 32rem the frame hides minor category labels, and on horizontal bars every other value label, by container query.
 - **The zero line sits on the bars' base:** it is nudged up 1px in vertical charts, so positive bars meet it without a gap. Bars below zero show a 1px gap; no docs example has negative values.
 - **Known:** screen-reader announcement of the marks has not been checked by hand with VoiceOver or NVDA. Charts lay out left to right in every writing direction (`direction: ltr` on the frame), since their SVG does not mirror.
+
+## 18. Plan 8 design: Guidance
+
+Guidance is part of the docs, held to the same checks as the components: usage is structured data the build requires, patterns are composed from the real components, and content style is checked by a test.
+
+- **Usage on every component page.** Each component's frontmatter gains two required lists:
+  - `use`: what the component is for.
+  - `avoid`: what it is not for. Each item is `{ text, instead? }`, where `instead` names a component or pattern by id.
+
+  The page shows them as a "Usage" section after the lead and before Examples, in two columns, "Use it to" and "Avoid it for". An `instead` renders as a "Use Select instead" link. A test checks that every `instead` names a page that exists.
+- **Patterns.** A new "Patterns" section in the top navigation, between Components and Templates, with an index and five pages:
+  - Forms;
+  - Navigation;
+  - Data;
+  - Empty states;
+  - Errors and feedback.
+
+  Each page is an MDX entry in a `patterns` collection (title, order, summary, the components it uses). It has a short intro, numbered rules, one or two live examples built only from Raster components, and links to those components. Examples use the same `Example` frame as component pages: static ones show the HTML they render, generated from React; interactive ones show React only. There are no parity screenshots.
+- **Content style.** A "Content" page under Foundations. It covers:
+  - voice: plain, direct, second person;
+  - sentence case;
+  - buttons start with a verb and name the outcome;
+  - errors say what happened and what to do next, with no blame, no "Error:" prefix and no exclamation marks;
+  - British spelling;
+  - dates written as "7 November 2026";
+  - a space between a number and its unit, but not before %;
+  - "…" only on actions that ask for more input.
+- **The content check.** A test runs the rules a script can check over the docs' own copy: component and pattern frontmatter (summary, use, avoid), example titles, and the labels and text in the demos.
+  - Rules it checks: sentence case (with an allowlist of proper nouns and component names), no "click here", no "!", no "Error:" prefix, no "...", no listed American spellings, and no generic button labels ("OK", "Submit", "Yes", "No").
+  - Copy that breaks a rule is fixed, not allowlisted.
+- **Tests:**
+  - The content schema requires both usage lists on all 60 pages.
+  - The `instead` links resolve.
+  - Every component page shows its Usage section.
+  - Navigation tests cover Patterns.
+  - The accessibility, reflow and axe checks reach the new pages because they are built.
+  - Visual baselines cover the pattern examples in four combinations at three widths.
+
+## 19. Settled in Plan 8
+
+- **Usage is frontmatter, and required.** Every component entry has `use` (strings) and `avoid` (`{ text, instead? }`), each with at least one item. An `instead` is a component id or `patterns/<id>`. It renders as "Use Select instead." or "See the Forms pattern." The page throws at build time on an `instead` that names nothing, and a unit test checks every link, so a broken one fails both the build and `pnpm verify`.
+- **Patterns are a content collection ordered by `PATTERNS`.** `src/lib/guidance.ts` lists the five ids and titles in order, and a test keeps them equal to the pages, titles included. The frontmatter has no `order`, unlike §18's sketch. Examples reuse `Example`: static ones show generated HTML, interactive ones show React, and there are no parity screenshots. The pattern screenshots use a taller viewport, so the forms example is not cut off at the fold.
+- **The enquiry form names its focus target.** On a failed or successful send, focus moves to the status region, named by its message ("Fix 2 fields to send the enquiry"). The Banners inside drop their live-region roles, so the message is read once, not twice. The project search announces its result count in a visually hidden status.
+- **The copy check.** `src/lib/content-style.ts` holds the rules. Tests run them on component and pattern frontmatter, example titles, and every demo's copy: attributes, including expressions and template literals; object-literal keys such as `title` and `change`; text between tags; and Button labels. The rules are:
+  - no exclamation marks, "click here", "Error:" prefixes or three dots;
+  - British spellings, from a list;
+  - sentence case, except names, acronyms, proper nouns and quoted text, with possessives and plurals allowed;
+  - no generic button labels.
+
+  A full stop or question mark ends a sentence, even inside a closing bracket or quote; a colon does not. `PROPER_NOUNS` holds real proper nouns only (places, people, weekdays, key names); copy that fails is reworded, never allowlisted. The check caused six rewordings, one of them in a visible demo (the figure caption now uses numerals).
+- **Moving every example down moved some tests.** The Usage section pushed examples below the fold. The file-upload drop test now scrolls the zone into view before its CDP drag, and 11 forced-colour baselines were regenerated for a one-pixel change at their bottom edge.
+- **Known gaps:**
+  - The checker cannot judge voice, or whether a button names its outcome. It only rejects generic labels.
+  - Number, unit and date formats are not checked.
+  - VoiceOver and NVDA have not been tried by hand on the enquiry form's error summary or the search count.

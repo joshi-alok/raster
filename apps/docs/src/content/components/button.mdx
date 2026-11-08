@@ -3,6 +3,16 @@ title: Button
 group: Actions
 order: 1
 summary: Triggers an action. Secondary is the default; use at most one primary per view.
+use:
+  - Trigger an action on the current page, such as saving or sending.
+  - Submit a form, with one primary button per view.
+avoid:
+  - text: Going to another page.
+    instead: link
+  - text: An action shown only as an icon.
+    instead: icon-button
+  - text: Choosing between options.
+    instead: segmented-control
 interactive: true
 props:
   - name: variant

@@ -3,6 +3,13 @@ title: EmptyState
 group: Display
 order: 9
 summary: What to show when there is nothing to show, on a hanging layout with one sentence and one action.
+use:
+  - Say why an area is empty and what to do next.
+avoid:
+  - text: Content that is still loading.
+    instead: skeleton
+  - text: A failure to load.
+    instead: patterns/errors-and-feedback
 props:
   - name: title
     type: ReactNode
