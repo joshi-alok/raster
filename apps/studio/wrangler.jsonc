@@ -1,0 +1,13 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "raster-studio",
+  "compatibility_date": "2026-11-01",
+  // Static assets only: no Worker script. Astro writes every page as <path>/index.html.
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  },
+  "workers_dev": true,
+  "preview_urls": true
+}

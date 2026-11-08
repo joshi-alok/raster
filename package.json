@@ -26,6 +26,7 @@
   "devDependencies": {
     "@changesets/cli": "3.0.3",
     "publint": "0.3.25",
-    "tsdown": "0.23.7"
+    "tsdown": "0.23.7",
+    "wrangler": "4.158.0"
   }
 }

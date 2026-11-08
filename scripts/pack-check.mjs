@@ -2,11 +2,17 @@
 // tarballs into a fresh project, and uses them there as a consumer would. Then publint checks
 // every package's exports.
 import { execFileSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
+
+// CI's e2e jobs run in Playwright's image; its tag must match the pinned @playwright/test.
+const playwright = JSON.parse(readFileSync(join(root, "apps/docs/package.json"), "utf8")).devDependencies["@playwright/test"];
+const ci = readFileSync(join(root, ".github/workflows/ci.yml"), "utf8");
+if (!ci.includes(`playwright:v${playwright}-noble`)) throw new Error(`ci.yml's Playwright image must be v${playwright}-noble`);
+
 const PACKAGES = ["tokens", "css", "react"];
 const run = (cmd, args, cwd) => execFileSync(cmd, args, { cwd, stdio: "inherit" });
 
