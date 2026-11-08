@@ -410,3 +410,36 @@ Decided with the user: a public GitHub repository (`joshi-alok/raster`), Cloudfl
   - creating the npm organisation and doing the first publish;
   - adding the Cloudflare token and account id as repository secrets.
 - **Not in Plan 9:** a Figma component library, a custom domain, Storybook, and versioned docs.
+
+## 21. Settled in Plan 9
+
+- **One bundle per package.** Tokens and React build with tsdown (0.23.7) into `dist/index.js` and one bundled `index.d.ts`. The `tsc` output had extensionless relative imports that Node and Vite SSR cannot resolve; the bundle has none. The React bundle's first line is `"use client"`. Dependencies stay external.
+  - The pack check installs the packed tarballs into a fresh project, then:
+    - imports them in Node;
+    - renders a Button on the server;
+    - typechecks a consumer under `Bundler` and `NodeNext` with `skipLibCheck: false`;
+    - resolves every CSS and design-tool export.
+
+    `publint --strict` passes for all three packages.
+  - `@raster/css` and `@raster/tokens` declare `"sideEffects": ["*.css"]`, so a bundler keeps a bare CSS import. `@raster/css` inlines the tokens at build time, so `@raster/tokens` is only its dev dependency.
+- **Releases.** Changesets 3 with one fixed group. A minor changeset on any package moves all three to the same minor; the React package's peer dependency on `@raster/css` does not force a major.
+  - `scripts/publish.mjs` packs with pnpm, which rewrites `workspace:` ranges, and publishes each tarball with `npm publish`, adding `--provenance` on CI.
+  - It skips versions already on npm and carries on past a failing package, then exits 1.
+  - It tags every version on npm that has no git tag, so a re-run repairs a partial publish.
+  - The release workflow runs only after CI succeeds on a push to main.
+  - The first publish is manual: Task 9 of the plan, after the merge.
+- **Linux baselines.** The 1,443 macOS baselines were replaced by 1,443 Linux ones, with the same names. `pnpm baselines` takes about 12 minutes on this machine (Intel i7, Docker Desktop), and a full `pnpm e2e` 10–14 minutes, docs and studio together. Every parity screenshot still matches at 0 pixels on Linux; no tolerance changed. Full-page template screenshots also carry `maxDiffPixels: 100`.
+- **The Docker runner.** Playwright's 1.64.1 image ships Node 26, which no longer bundles corepack. `scripts/e2e-docker.sh` installs corepack once into a cached volume and enables only pnpm. Every workspace package's `node_modules` is a named volume, so Linux binaries never reach the host's tree. CI's container jobs instead put the repository's Node 22 first with `setup-node`.
+- **CI.** One `check` job (build, lint, typecheck, unit tests, pack check), docs e2e in 4 shards, and studio e2e, all inside the pinned Playwright image.
+  - The pack check fails if `ci.yml`'s image tag and `@playwright/test` differ.
+  - Runs on main are never cancelled, so a deploy is not cut off between docs and studio.
+  - Typical run time: not yet measured (Task 9).
+- **Load flakes.** In the Plan 9 verify run, the four axe checks on the long manifesto template hit the 30s test timeout. They take about 6s each alone, and passed 12 of 12 when re-run. CI retries a failed test once.
+- **Hosting.** Two Workers with static assets, `raster-docs` and `raster-studio`; both configs pass `wrangler deploy --dry-run` (Wrangler 4.158.0). Pull requests from this repository get `pr-<n>` preview versions and a comment with links once the `WORKERS_SUBDOMAIN` variable is set. Not yet deployed (Task 9).
+- **Copy rendering.** Astro's HTML compression drops a line break between text and an element that starts the next source line ("JavaScript.<code>"). Six such joins were fixed, four of them older than Plan 9, and a test now reads every built page for them.
+- **Known gaps:**
+  - no Figma component library;
+  - no custom domain;
+  - the design-tool files leave out shadows, the scrim and `light-dark()`;
+  - Figma's variables import has not been tried by hand with the files;
+  - CI, the deploys and trusted publishing are proven only once the repository is on GitHub.
