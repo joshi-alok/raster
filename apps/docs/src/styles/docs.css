@@ -486,3 +486,24 @@
   margin: 0;
   padding-inline-start: 1.25em;
 }
+
+/* The enquiry form's status region takes focus by script; it needs no ring of its own. */
+.docs-form-status:focus {
+  outline: none;
+}
+
+.docs-form-status:empty {
+  display: none;
+}
+
+/* A pattern's rules: numbered in mono, hung from the reading measure. */
+.docs-rules {
+  display: grid;
+  gap: var(--space-3);
+  padding-inline-start: 2em;
+}
+
+.docs-rules li::marker {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}

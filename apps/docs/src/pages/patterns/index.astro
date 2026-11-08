@@ -1,0 +1,25 @@
+---
+import { getCollection } from "astro:content";
+import DocPage from "../../layouts/DocPage.astro";
+import { patternHref, sortPatterns } from "../../lib/guidance";
+
+const entries = sortPatterns(await getCollection("patterns"));
+---
+<DocPage
+  title="Patterns"
+  eyebrow="Patterns"
+  description="How the components work together on common tasks: forms, navigation, data, empty areas and errors. Each pattern gives its rules, then shows them working."
+>
+  <ul class="docs-component-list">
+    {
+      entries.map((entry) => (
+        <li>
+          <a class="sw-link" href={patternHref(entry.id)}>
+            {entry.data.title}
+          </a>
+          <span class="sw-type-caption sw-text-secondary">{entry.data.summary}</span>
+        </li>
+      ))
+    }
+  </ul>
+</DocPage>

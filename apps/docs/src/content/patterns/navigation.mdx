@@ -1,0 +1,27 @@
+---
+title: Navigation
+summary: The header for the site's sections, SideNav within a section, Breadcrumbs for the path, Tabs for views in place and Pagination for long lists.
+rules:
+  - Put the site's main sections in the header, five to seven at most.
+  - Use SideNav within a section that has more pages than fit in the header.
+  - Add Breadcrumbs when pages sit two or more levels deep.
+  - Use Tabs only to switch views of the same content in place; links that load pages belong in SideNav.
+  - Use Pagination for long lists, and keep the page in the address so it can be shared.
+  - Mark the current page with aria-current, in every navigation that lists it.
+  - For the steps of a process, number the steps in the page heading, such as "Step 2 of 4", and use Back and Continue buttons.
+components:
+  - header
+  - side-nav
+  - breadcrumbs
+  - tabs
+  - pagination
+---
+import Example from "../../components/Example.astro";
+import SectionPage from "../../demos/patterns/SectionPage";
+import sectionPageSource from "../../demos/patterns/SectionPage.tsx?raw";
+
+## Examples
+
+<Example title="A page within a section" source={sectionPageSource}>
+  <SectionPage client:load />
+</Example>

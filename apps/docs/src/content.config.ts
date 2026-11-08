@@ -35,4 +35,16 @@ const components = defineCollection({
   }),
 });
 
-export const collections = { components };
+const patterns = defineCollection({
+  loader: glob({ pattern: "*.mdx", base: "./src/content/patterns" }),
+  schema: z.object({
+    title: z.string(),
+    summary: z.string(),
+    /** Numbered rules, shown before the examples. */
+    rules: z.array(z.string()).min(1),
+    /** Component ids the pattern uses, linked at the foot of the page. */
+    components: z.array(z.string()).min(1),
+  }),
+});
+
+export const collections = { components, patterns };
