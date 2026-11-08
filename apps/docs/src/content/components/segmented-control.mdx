@@ -3,6 +3,13 @@ title: SegmentedControl
 group: Forms
 order: 9
 summary: One choice from two to five options shown as a joined row, such as a view or a time range.
+use:
+  - Switch a view or a range between two to five options, applied at once.
+avoid:
+  - text: A choice saved with a form.
+    instead: radio-group
+  - text: Switching between panels of content.
+    instead: tabs
 interactive: true
 props:
   - name: label

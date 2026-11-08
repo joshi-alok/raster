@@ -3,6 +3,15 @@ title: TextField
 group: Forms
 order: 2
 summary: A single-line text input with its label, description and error.
+use:
+  - Enter one line of text, such as a name or an email address.
+avoid:
+  - text: Several lines of text.
+    instead: text-area
+  - text: Searching.
+    instead: search-field
+  - text: Numbers people step up and down.
+    instead: number-field
 interactive: true
 props:
   - name: label

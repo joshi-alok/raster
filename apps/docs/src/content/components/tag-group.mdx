@@ -3,6 +3,14 @@ title: TagGroup
 group: Forms
 order: 8
 summary: Selectable chips for filtering a list by several values at once, or for one choice among a few.
+use:
+  - Filter a list by several values at once.
+  - Choose one of a few short options, shown as chips.
+avoid:
+  - text: A status label people cannot select.
+    instead: tag
+  - text: Switching a view.
+    instead: segmented-control
 interactive: true
 props:
   - name: label

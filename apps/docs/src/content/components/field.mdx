@@ -3,6 +3,13 @@ title: Field
 group: Forms
 order: 1
 summary: The label, description and error that every form control shares, wired together for assistive technology.
+use:
+  - Label, describe and report errors for a control Raster does not provide.
+avoid:
+  - text: A text input.
+    instead: text-field
+  - text: Laying out a whole form.
+    instead: patterns/forms
 interactive: true
 props:
   - name: FieldLabel

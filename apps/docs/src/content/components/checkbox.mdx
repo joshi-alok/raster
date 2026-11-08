@@ -3,6 +3,14 @@ title: Checkbox
 group: Forms
 order: 5
 summary: A single on or off choice, with an indeterminate state for partial selections.
+use:
+  - Turn one option on or off in a form that is saved.
+  - Choose any number of options from a list.
+avoid:
+  - text: A setting that takes effect at once.
+    instead: switch
+  - text: One choice from a short list.
+    instead: radio-group
 interactive: true
 props:
   - name: children
