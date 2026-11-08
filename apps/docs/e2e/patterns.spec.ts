@@ -46,6 +46,9 @@ test("the enquiry form sums up its errors, links to each field, and then sends",
   const summary = form.locator(".docs-form-status");
   await expect(summary).toBeFocused();
   await expect(summary).toContainText("Fix 2 fields to send the enquiry");
+  // Focus reads the summary out by its name; a live region as well would read it twice.
+  await expect(summary).toHaveAccessibleName("Fix 2 fields to send the enquiry");
+  await expect(form.getByRole("alert")).toHaveCount(0);
   await expect(form.getByRole("textbox", { name: "Name" })).toHaveAttribute("aria-invalid", "true");
 
   await summary.getByRole("link", { name: "Enter an email address such as name@studio.ch." }).click();
@@ -56,6 +59,7 @@ test("the enquiry form sums up its errors, links to each field, and then sends",
   await form.getByRole("button", { name: "Send enquiry" }).click();
   await expect(summary).toContainText("Enquiry sent");
   await expect(summary).toBeFocused();
+  await expect(summary).toHaveAccessibleName("Enquiry sent");
 });
 
 test("no matches offers to clear the search, which brings the list back", async ({ page }) => {
@@ -63,8 +67,12 @@ test("no matches offers to clear the search, which brings the list back", async 
   await waitForIslands(page);
   const example = page.locator("figure.docs-example").filter({ hasText: "No matches" });
   await expect(example.getByRole("heading", { name: 'No projects match "Zeppelin"' })).toBeVisible();
+  // The result count is announced as it changes, since the list and the empty state swap silently.
+  const count = example.getByRole("status");
+  await expect(count).toHaveText('No projects match "Zeppelin"');
   // The search field has its own "Clear search" button; use the empty state's action.
   await example.locator(".sw-empty").getByRole("button", { name: "Clear search" }).click();
   await expect(example.getByRole("searchbox", { name: "Search projects" })).toHaveValue("");
   await expect(example.getByRole("listitem")).toHaveCount(5);
+  await expect(count).toHaveText("5 projects");
 });

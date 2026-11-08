@@ -8,7 +8,7 @@ export default function Confirmation() {
     <>
       <Button
         onPress={() =>
-          queue.add({ title: "Project archived", description: "Find it under Archive.", tone: "success" }, { timeout: 5000 })
+          queue.add({ title: "Project archived", description: 'Find it under "Archive".', tone: "success" }, { timeout: 5000 })
         }
       >
         Archive project

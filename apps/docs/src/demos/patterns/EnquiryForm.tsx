@@ -1,4 +1,14 @@
-import { Banner, Button, Radio, RadioGroup, Select, SelectItem, Stack, TextArea, TextField } from "@raster/react";
+import {
+  Banner,
+  Button,
+  Radio,
+  RadioGroup,
+  Select,
+  SelectItem,
+  Stack,
+  TextArea,
+  TextField,
+} from "@raster/react";
 import { type FormEvent, useRef, useState } from "react";
 
 type Errors = Partial<Record<"name" | "email", string>>;
@@ -22,25 +32,36 @@ export default function EnquiryForm() {
   const [sent, setSent] = useState(false);
   const status = useRef<HTMLDivElement>(null);
   const failed = Object.entries(errors) as [keyof Errors, string][];
+  const summaryTitle =
+    failed.length === 0
+      ? undefined
+      : failed.length === 1
+        ? "Fix 1 field to send the enquiry"
+        : `Fix ${failed.length} fields to send the enquiry`;
+  const statusName = summaryTitle ?? (sent ? "Enquiry sent" : undefined);
 
   function onSubmit(event: FormEvent) {
     event.preventDefault();
     const next = validate({ name, email });
     setErrors(next);
     setSent(Object.keys(next).length === 0);
-    // After React draws the summary or the confirmation, move focus to it so it is read out.
+    // After React draws the summary or the confirmation, move focus to it so it is read out. Focus
+    // does the announcing, so the Banners drop their live-region roles; both would read it twice.
     requestAnimationFrame(() => status.current?.focus());
   }
 
   return (
     <form noValidate onSubmit={onSubmit}>
       <Stack gap={5}>
-        <div ref={status} tabIndex={-1} className="docs-form-status">
-          {failed.length > 0 && (
-            <Banner
-              tone="danger"
-              title={failed.length === 1 ? "Fix 1 field to send the enquiry" : `Fix ${failed.length} fields to send the enquiry`}
-            >
+        <div
+          ref={status}
+          tabIndex={-1}
+          className="docs-form-status"
+          role={statusName ? "group" : undefined}
+          aria-label={statusName}
+        >
+          {summaryTitle && (
+            <Banner tone="danger" title={summaryTitle} role={undefined}>
               <ul>
                 {failed.map(([field, message]) => (
                   <li key={field}>
@@ -53,7 +74,7 @@ export default function EnquiryForm() {
             </Banner>
           )}
           {sent && (
-            <Banner tone="success" title="Enquiry sent">
+            <Banner tone="success" title="Enquiry sent" role={undefined}>
               <p>We reply within two working days.</p>
             </Banner>
           )}
@@ -91,7 +112,11 @@ export default function EnquiryForm() {
           <Radio value="middle">CHF 20,000 to 80,000</Radio>
           <Radio value="large">Over CHF 80,000</Radio>
         </RadioGroup>
-        <TextArea label="Brief" description="Optional. Two or three sentences." rows={4} />
+        <TextArea
+          label="Brief"
+          description="Optional. Two or three sentences."
+          rows={4}
+        />
         <div>
           <Button type="submit" variant="primary">
             Send enquiry

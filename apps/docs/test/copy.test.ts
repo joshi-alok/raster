@@ -3,6 +3,7 @@ import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { checkButtonLabel, checkCopy, type CopyIssue, checkSentenceCase } from "../src/lib/content-style";
+import { demoCopy } from "./demo-copy";
 import { entries } from "./frontmatter";
 
 const SRC = fileURLToPath(new URL("../src", import.meta.url));
@@ -57,15 +58,14 @@ describe("the docs' copy follows the content style", () => {
     for (const file of demoFiles()) {
       const where = relative(SRC, file);
       const source = readFileSync(file, "utf8");
-      for (const m of source.matchAll(/\b(label|title|description|errorMessage|aria-label|caption|placeholder)="([^"]+)"/g)) {
-        found.push(...prose(`${where} ${m[1]}`, m[2], m[1] !== "placeholder"));
-      }
-      for (const m of source.matchAll(/>([^<>{}]*\p{L}[^<>{}]*)</gu)) {
-        found.push(...prose(`${where} text`, m[1].trim(), false));
-      }
-      // Attributes may hold arrow functions ("onPress={() => …}"), whose ">" is not the end of the tag.
-      for (const m of source.matchAll(/<Button\b(?:\{[^{}]*\}|[^>{])*>\s*([^<{]+?)\s*<\/Button>/g)) {
-        found.push(...[...checkButtonLabel(m[1]), ...checkSentenceCase(m[1], NAMES)].map((issue) => ({ where: `${where} button`, issue })));
+      for (const { kind, text } of demoCopy(source)) {
+        if (kind === "button") {
+          const issues = [...checkButtonLabel(text), ...checkSentenceCase(text, NAMES)];
+          found.push(...issues.map((issue) => ({ where: `${where} button`, issue })));
+        } else {
+          // Sentence case for labels and titles; running text and placeholders may hold names and examples.
+          found.push(...prose(`${where} ${kind}`, text, kind !== "text" && kind !== "placeholder"));
+        }
       }
     }
     expect(report(found)).toEqual([]);

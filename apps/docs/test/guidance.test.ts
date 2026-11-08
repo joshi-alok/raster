@@ -61,6 +61,10 @@ describe("usage on component pages", () => {
     expect(patterns.map((p) => p.id).sort()).toEqual(PATTERNS.map((p) => p.id).sort());
   });
 
+  it("titles each pattern page as PATTERNS does, so link text and page agree", () => {
+    for (const p of patterns) expect(p.data.title).toBe(PATTERNS.find((q) => q.id === p.id)?.title);
+  });
+
   it("names only real components in each pattern", () => {
     const unknown = patterns.flatMap((p) =>
       (p.data.components as string[]).filter((id) => !titles.has(id)).map((id) => `${p.id}: ${id}`),

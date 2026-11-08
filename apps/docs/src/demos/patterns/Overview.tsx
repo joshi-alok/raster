@@ -28,7 +28,7 @@ export default function Overview() {
           </Stack>
         ))}
       </div>
-      <Table caption="Projects this quarter">
+      <Table caption="Hours and budget used, this quarter">
         <thead>
           <tr>
             <th scope="col">Project</th>

@@ -35,6 +35,18 @@ describe("checkSentenceCase", () => {
     expect(checkSentenceCase("Fix the field. Then send it again.", NAMES)).toEqual([]);
   });
 
+  it("passes possessives and plurals of names, and sentences that end inside brackets or quotes", () => {
+    expect(checkSentenceCase("Read the DataGrid's caption. Raster's tokens and two Selects", NAMES)).toEqual([]);
+    expect(checkSentenceCase("(See the guide.) Then send it", NAMES)).toEqual([]);
+    expect(checkSentenceCase('Write "Saved." Then move on', NAMES)).toEqual([]);
+  });
+
+  it("does not start a sentence after a colon or semicolon", () => {
+    expect(checkSentenceCase("Fix: Type your name", NAMES)).toEqual([
+      { rule: "sentence-case", detail: '"Type" in "Fix: Type your name"' },
+    ]);
+  });
+
   it("flags title case", () => {
     expect(checkSentenceCase("Project Enquiry Form", NAMES)).toEqual([
       { rule: "sentence-case", detail: '"Enquiry" in "Project Enquiry Form"' },

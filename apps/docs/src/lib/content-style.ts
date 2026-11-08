@@ -45,7 +45,9 @@ export const PROPER_NOUNS: ReadonlySet<string> = new Set([
 const GENERIC_LABELS = new Set(["ok", "okay", "submit", "yes", "no", "go", "click here"]);
 
 const withoutCode = (text: string) => text.replace(/`[^`]*`/g, " ");
-const withoutQuotes = (text: string) => text.replace(/"[^"]*"|“[^”]*”|‘[^’]*’/g, " ");
+/** Quoted text is exempt; a full stop or question mark that ends the quote still ends the sentence. */
+const withoutQuotes = (text: string) =>
+  text.replace(/"([^"]*)"|“([^”]*)”|‘([^’]*)’/g, (_, a, b, c) => (/[.?]$/.test(a ?? b ?? c) ? " ." : " "));
 
 export function checkCopy(text: string): CopyIssue[] {
   const t = withoutCode(text);
@@ -62,9 +64,12 @@ export function checkCopy(text: string): CopyIssue[] {
 }
 
 function keepsCapital(word: string, names: ReadonlySet<string>): boolean {
+  // A possessive or plural keeps the name's capital: Raster's, DataGrids.
+  const base = word.replace(/['’]s$/u, "");
+  const known = (w: string) => names.has(w) || PROPER_NOUNS.has(w);
   return (
-    names.has(word) ||
-    PROPER_NOUNS.has(word) ||
+    known(base) ||
+    known(base.replace(/s$/u, "")) ||
     /^[\p{Lu}\d]+s?$/u.test(word) || // acronyms: CSV, URLs, A4
     /\p{Ll}\p{Lu}/u.test(word) || // names with an inner capital: DataGrid, VoiceOver
     /\d/.test(word) ||
@@ -84,7 +89,9 @@ export function checkSentenceCase(text: string, names: ReadonlySet<string>): Cop
       }
       sentenceStart = false;
     }
-    if (/[.?:;]$/.test(raw)) sentenceStart = true;
+    // A sentence ends at a full stop or question mark, even inside a closing bracket or quote; a
+    // colon or semicolon does not end it, so "Fix: Enter Your Name" is still title case.
+    if (/[.?]$/.test(raw.replace(/[)\]"”’']+$/u, ""))) sentenceStart = true;
   }
   return issues;
 }
