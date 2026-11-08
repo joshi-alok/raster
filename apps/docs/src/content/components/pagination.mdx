@@ -3,6 +3,13 @@ title: Pagination
 group: Overlay and navigation
 order: 11
 summary: Links between the pages of a long list, with distant ranges collapsed and the current page underlined.
+use:
+  - Move between the pages of a long list or of search results.
+avoid:
+  - text: The steps of a process.
+    instead: patterns/navigation
+  - text: Switching between panels on one page.
+    instead: tabs
 props:
   - name: page
     type: number

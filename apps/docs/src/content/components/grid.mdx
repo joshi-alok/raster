@@ -3,6 +3,14 @@ title: Grid
 group: Layout
 order: 3
 summary: Four, eight or twelve columns, chosen by the width of the nearest size container.
+use:
+  - Lay out page regions on four, eight or twelve columns.
+  - Align content in different sections to the same columns.
+avoid:
+  - text: One row or column of evenly spaced items.
+    instead: stack
+  - text: Tabular data.
+    instead: table
 props:
   - name: layout
     type: '"hanging" | "split-5-7" | "split-1-2"'

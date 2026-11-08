@@ -3,6 +3,13 @@ title: Breadcrumbs
 group: Overlay and navigation
 order: 7
 summary: The path from the home page to the current page, with mono separators.
+use:
+  - Show where a page sits in a hierarchy two or more levels deep.
+avoid:
+  - text: The steps of a process.
+    instead: patterns/navigation
+  - text: The main sections of a site.
+    instead: header
 props:
   - name: aria-label
     type: string

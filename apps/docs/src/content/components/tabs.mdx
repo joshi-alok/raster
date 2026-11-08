@@ -3,6 +3,13 @@ title: Tabs
 group: Overlay and navigation
 order: 5
 summary: Switches between panels of related content in place, marked by an accent underline and weight.
+use:
+  - Switch between panels of related content in place.
+avoid:
+  - text: Going to other pages.
+    instead: side-nav
+  - text: Choosing a value, such as a view or a time range.
+    instead: segmented-control
 interactive: true
 props:
   - name: selectedKey / defaultSelectedKey

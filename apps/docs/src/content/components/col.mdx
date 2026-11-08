@@ -3,6 +3,11 @@ title: Col
 group: Layout
 order: 4
 summary: A grid item with a span and start for each column count; it is also a size container for nested grids.
+use:
+  - Place an item in a grid, with a span and a start for each column count.
+avoid:
+  - text: Content outside a grid.
+    instead: stack
 props:
   - name: span
     type: "{ 4?: number; 8?: number; 12?: number }"
