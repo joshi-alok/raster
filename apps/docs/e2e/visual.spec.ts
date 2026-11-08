@@ -7,6 +7,7 @@ const WIDTHS = [360, 768, 1440] as const;
 const pages = builtPages();
 const componentPages = pages.filter((p) => /^\/components\/[^/]+\/$/.test(p));
 const templatePages = pages.filter((p) => /^\/templates\/[^/]+\/$/.test(p));
+const patternPages = pages.filter((p) => /^\/patterns\/[^/]+\/$/.test(p));
 /** Long reads: the first screen plus each figure, not a full-page capture (10,000px of text is ~1.5 MB a shot). */
 const LONG_TEMPLATES = new Set(["/templates/manifesto/"]);
 const slug = (path: string) => path.split("/").filter(Boolean).at(-1) ?? "home";
@@ -35,6 +36,22 @@ for (const combo of COMBOS) {
           expect(count).toBeGreaterThan(0);
           for (let i = 0; i < count; i++) {
             await expect(examples.nth(i)).toHaveScreenshot(`${slug(path)}-${i + 1}-${variant}.png`);
+          }
+        });
+      }
+
+      for (const path of patternPages) {
+        test(`pattern ${slug(path)}`, async ({ page }) => {
+          await open(page, path, combo, width);
+          // Pattern examples can be nearly a screen tall. Below the sticky header, the bottom of a
+          // 900px-high viewport would cut one off, so give them room; layout depends only on width.
+          await page.setViewportSize({ width, height: 1600 });
+          await page.addStyleTag({ content: ".docs-example-code { display: none !important; }" });
+          const examples = page.locator("figure.docs-example");
+          const count = await examples.count();
+          expect(count).toBeGreaterThan(0);
+          for (let i = 0; i < count; i++) {
+            await expect(examples.nth(i)).toHaveScreenshot(`pattern-${slug(path)}-${i + 1}-${variant}.png`);
           }
         });
       }

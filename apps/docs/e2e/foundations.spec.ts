@@ -107,3 +107,10 @@ test("the grid overlay draws a baseline", async ({ page }) => {
     .evaluate((el) => getComputedStyle(el).backgroundImage);
   expect(image.match(/repeating-linear-gradient/g)?.length).toBe(2);
 });
+
+test("the content style page is in the Foundations navigation", async ({ page }) => {
+  await page.goto("/foundations/content/");
+  const nav = page.getByRole("navigation", { name: "Foundations" });
+  await expect(nav.getByRole("link", { name: "Content style" })).toHaveAttribute("aria-current", "page");
+  await expect(page.getByRole("table", { name: "Examples" })).toBeVisible();
+});
