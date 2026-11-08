@@ -60,7 +60,9 @@ for (const combo of COMBOS) {
         test(`template ${slug(path)}`, async ({ page }) => {
           await open(page, path, combo, width);
           if (!LONG_TEMPLATES.has(path)) {
-            await expect(page).toHaveScreenshot(`template-${slug(path)}-${variant}.png`, { fullPage: true });
+            // A full page is about 800,000 pixels, so the 0.1% ratio would let a header-sized change (about
+            // 600 pixels) through; cap the count as well (spec §9).
+            await expect(page).toHaveScreenshot(`template-${slug(path)}-${variant}.png`, { fullPage: true, maxDiffPixels: 100 });
             return;
           }
           await expect(page).toHaveScreenshot(`template-${slug(path)}-${variant}.png`);
