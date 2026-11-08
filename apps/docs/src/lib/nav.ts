@@ -19,6 +19,7 @@ export const FOUNDATIONS: NavItem[] = [
   { href: "/foundations/type/", label: "Type" },
   { href: "/foundations/colour/", label: "Colour" },
   { href: "/foundations/motion/", label: "Motion" },
+  { href: "/foundations/content/", label: "Content style" },
 ];
 
 const withSlash = (path: string) => (path.endsWith("/") ? path : `${path}/`);

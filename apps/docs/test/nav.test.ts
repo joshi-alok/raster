@@ -30,6 +30,10 @@ describe("ariaCurrent", () => {
     expect(ariaCurrent("/patterns/forms/", item("Patterns"))).toBe("true");
   });
 
+  it("lists Content style under Foundations", () => {
+    expect(FOUNDATIONS.at(-1)).toEqual({ href: "/foundations/content/", label: "Content style" });
+  });
+
   it("tolerates a missing trailing slash", () => {
     expect(ariaCurrent("/foundations/type", FOUNDATIONS[1])).toBe("page");
   });
