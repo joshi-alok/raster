@@ -11,7 +11,8 @@
     "lint": "pnpm -r run lint",
     "typecheck": "pnpm -r run typecheck",
     "e2e": "pnpm --filter @raster/docs run e2e && pnpm --filter @raster/studio run e2e",
-    "verify": "pnpm build && pnpm lint && pnpm typecheck && pnpm test && pnpm e2e"
+    "verify": "pnpm build && pnpm lint && pnpm typecheck && pnpm test && pnpm pack-check && pnpm e2e",
+    "pack-check": "node scripts/pack-check.mjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -19,6 +20,7 @@
     ]
   },
   "devDependencies": {
+    "publint": "0.3.25",
     "tsdown": "0.23.7"
   }
 }
