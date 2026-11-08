@@ -2,7 +2,9 @@
   "name": "raster",
   "private": true,
   "packageManager": "pnpm@10.33.0",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "build": "pnpm -r run build",
     "test": "pnpm -r run test",
@@ -11,5 +13,12 @@
     "e2e": "pnpm --filter @raster/docs run e2e && pnpm --filter @raster/studio run e2e",
     "verify": "pnpm build && pnpm lint && pnpm typecheck && pnpm test && pnpm e2e"
   },
-  "pnpm": { "onlyBuiltDependencies": ["esbuild"] }
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "devDependencies": {
+    "tsdown": "0.23.7"
+  }
 }
