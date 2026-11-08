@@ -98,3 +98,16 @@ test("on a wide screen the header shows the links and no Menu button", async ({ 
   await expect(header.getByRole("navigation", { name: "Main" })).toBeVisible();
   await expect(header.getByRole("button", { name: "Menu" })).toBeHidden();
 });
+
+test("no built page runs a word into the code or link that follows it", async () => {
+  // Astro's HTML compression drops a line break between text and an element that starts the next
+  // source line, so "needs no JavaScript.\n<code>" builds as "JavaScript.<code>". Read every page.
+  const { readFileSync } = await import("node:fs");
+  const { builtPages } = await import("./pages");
+  const joined: string[] = [];
+  for (const path of builtPages()) {
+    const html = readFileSync(new URL(`../dist${path}index.html`, import.meta.url), "utf8");
+    for (const m of html.matchAll(/[\p{L}.,;:]<(?:code|a|strong|em)[ >][^<]{0,24}/gu)) joined.push(`${path}: ${m[0]}`);
+  }
+  expect(joined).toEqual([]);
+});
