@@ -1,0 +1,75 @@
+---
+import { designToolFiles } from "@raster/tokens";
+import CodeBlock from "../components/CodeBlock.astro";
+import DocPage from "../layouts/DocPage.astro";
+
+const INSTALL = `npm install @raster/css @fontsource-variable/geist @fontsource-variable/geist-mono
+npm install @raster/react react react-dom   # for React`;
+
+const FONTS = `import "@fontsource-variable/geist";
+import "@fontsource-variable/geist-mono";
+import "@raster/css";              // or <link rel="stylesheet" href=".../raster.css">
+import "@raster/css/motion.css";   // optional: the expressive motion tier`;
+
+const THEME = `<html lang="en" data-theme="zurich" data-mode="dark">`;
+
+const HTML = `<button data-variant="primary" class="sw-button" type="button">Send enquiry</button>`;
+
+const REACT = `import { Button } from "@raster/react";
+
+export function Send() {
+  return <Button variant="primary">Send enquiry</Button>;
+}`;
+
+const files = Object.keys(designToolFiles());
+---
+<DocPage
+  title="Get started"
+  eyebrow="Get started"
+  description="Install Raster from npm, load its fonts and stylesheet, choose a theme, then use components in plain HTML or in React."
+>
+  <h2>Install</h2>
+  <p class="sw-measure">
+    <code>@raster/css</code> is the whole visual system and needs no JavaScript.
+    <code>@raster/react</code> adds behaviour through React Aria and uses the same classes. The
+    three packages share one version number.
+  </p>
+  <CodeBlock code={INSTALL} label="Install with npm" />
+
+  <h2>Fonts</h2>
+  <p class="sw-measure">
+    Raster sets type in Geist and Geist Mono. Load both before the stylesheet; the stack falls back
+    to Noto Sans and the system font while they load.
+  </p>
+  <CodeBlock code={FONTS} label="Fonts and stylesheet" />
+
+  <h2>Theme and mode</h2>
+  <p class="sw-measure">
+    Alpine is the default theme. Set <code>data-theme</code> and <code>data-mode</code> on the root,
+    or on any region; without <code>data-mode</code>, the reader's system setting decides. See
+    <a class="sw-link" href="/themes/">Themes</a>.
+  </p>
+  <CodeBlock code={THEME} label="Theme attributes" />
+
+  <h2>HTML and CSS</h2>
+  <p class="sw-measure">
+    Every component page shows the HTML to copy. Interactive parts that HTML alone cannot do, such
+    as a combobox, need React.
+  </p>
+  <CodeBlock code={HTML} label="A button in HTML" />
+
+  <h2>React</h2>
+  <CodeBlock code={REACT} label="A button in React" />
+
+  <h2>Design tools</h2>
+  <p class="sw-measure">
+    These files follow the Design Tokens format, one file per mode. In Figma, import each colour
+    file as a mode of one collection, and both size files as Mobile and Desktop modes of another.
+    The same files ship in <code>@raster/tokens</code> under <code>design-tools/</code>.
+  </p>
+  <ul aria-label="Design-tool files">
+    {files.map((file) => (
+      <li><a class="sw-link" href={`/design-tools/${file}`} download>{file}</a></li>
+    ))}
+  </ul>
+</DocPage>
