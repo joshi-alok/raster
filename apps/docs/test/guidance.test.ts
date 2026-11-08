@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PATTERNS, patternHref, sortPatterns, usageLink } from "../src/lib/guidance";
+import { entries } from "./frontmatter";
 
 const titles = new Map([
   ["select", "Select"],
@@ -30,5 +31,40 @@ describe("patterns", () => {
   it("sorts entries in that order", () => {
     const entries = [{ id: "data" }, { id: "forms" }, { id: "errors-and-feedback" }];
     expect(sortPatterns(entries).map((e) => e.id)).toEqual(["forms", "data", "errors-and-feedback"]);
+  });
+});
+
+describe("usage on component pages", () => {
+  const components = entries("components");
+  const patterns = entries("patterns");
+  const titles = new Map(components.map((c) => [c.id, String(c.data.title)]));
+
+  it("covers all 60 components", () => {
+    expect(components).toHaveLength(60);
+  });
+
+  it.each(components.map((c) => [c.id, c] as const))("%s says when to use it and when not to", (_, c) => {
+    expect(Array.isArray(c.data.use) && c.data.use.length > 0).toBe(true);
+    expect(Array.isArray(c.data.avoid) && c.data.avoid.length > 0).toBe(true);
+  });
+
+  it("points every 'instead' at a page that exists", () => {
+    const broken = components.flatMap((c) =>
+      ((c.data.avoid as { text: string; instead?: string }[] | undefined) ?? [])
+        .filter((a) => a.instead !== undefined && usageLink(a.instead, titles) === null)
+        .map((a) => `${c.id}: ${a.instead}`),
+    );
+    expect(broken).toEqual([]);
+  });
+
+  it("has a page for every pattern in PATTERNS, and no others", () => {
+    expect(patterns.map((p) => p.id).sort()).toEqual(PATTERNS.map((p) => p.id).sort());
+  });
+
+  it("names only real components in each pattern", () => {
+    const unknown = patterns.flatMap((p) =>
+      (p.data.components as string[]).filter((id) => !titles.has(id)).map((id) => `${p.id}: ${id}`),
+    );
+    expect(unknown).toEqual([]);
   });
 });

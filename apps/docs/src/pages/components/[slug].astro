@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 
 const { entry, previous, next } = Astro.props;
 const { Content } = await render(entry);
-const { title, group, summary, interactive, props, a11y, use = [], avoid = [] } = entry.data;
+const { title, group, summary, interactive, props, a11y, use, avoid } = entry.data;
 const componentTitles = new Map((await getCollection("components")).map((c) => [c.id, c.data.title]));
 const avoidItems = avoid.map((item) => {
   const link = item.instead === undefined ? null : usageLink(item.instead, componentTitles);
@@ -43,39 +43,33 @@ const avoidItems = avoid.map((item) => {
     )
   }
 
-  {
-    (use.length > 0 || avoidItems.length > 0) && (
-      <>
-        <h2>Usage</h2>
-        <div class="docs-usage">
-          <section aria-labelledby="usage-use">
-            <h3 id="usage-use" class="sw-type-label sw-text-secondary">Use it to</h3>
-            <ul>{use.map((item) => <li>{item}</li>)}</ul>
-          </section>
-          <section aria-labelledby="usage-avoid">
-            <h3 id="usage-avoid" class="sw-type-label sw-text-secondary">Avoid it for</h3>
-            <ul>
-              {
-                avoidItems.map((item) => (
-                  <li>
-                    {item.text}
-                    {item.link && (
-                      <>
-                        {" "}
-                        <a class="sw-link" href={item.link.href}>
-                          {item.link.text}
-                        </a>
-                      </>
-                    )}
-                  </li>
-                ))
-              }
-            </ul>
-          </section>
-        </div>
-      </>
-    )
-  }
+  <h2>Usage</h2>
+  <div class="docs-usage">
+    <section aria-labelledby="usage-use">
+      <h3 id="usage-use" class="sw-type-label sw-text-secondary">Use it to</h3>
+      <ul>{use.map((item) => <li>{item}</li>)}</ul>
+    </section>
+    <section aria-labelledby="usage-avoid">
+      <h3 id="usage-avoid" class="sw-type-label sw-text-secondary">Avoid it for</h3>
+      <ul>
+        {
+          avoidItems.map((item) => (
+            <li>
+              {item.text}
+              {item.link && (
+                <>
+                  {" "}
+                  <a class="sw-link" href={item.link.href}>
+                    {item.link.text}
+                  </a>
+                </>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
 
   <h2>Examples</h2>
   <Content />

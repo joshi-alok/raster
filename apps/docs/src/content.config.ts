@@ -24,10 +24,10 @@ const components = defineCollection({
     /** Position within the group. */
     order: z.number().int(),
     summary: z.string(),
-    /** What the component is for. Required from Task 7. */
-    use: z.array(z.string()).min(1).optional(),
-    /** What it is not for, and what to use instead. Required from Task 7. */
-    avoid: z.array(avoidItem).min(1).optional(),
+    /** What the component is for. */
+    use: z.array(z.string()).min(1),
+    /** What it is not for, and what to use instead. */
+    avoid: z.array(avoidItem).min(1),
     /** Needs a React island (client:*) in Astro to respond to input. */
     interactive: z.boolean().default(false),
     props: z.array(prop).min(1),
