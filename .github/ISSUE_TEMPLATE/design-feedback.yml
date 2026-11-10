@@ -1,0 +1,34 @@
+name: Design feedback
+description: Something about how Raster looks, reads or feels, or something missing for your work.
+title: "[Design] "
+labels: ["design feedback"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What did you notice?
+      description: One point per issue. Screenshots help.
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where?
+      description: A page link, component name, or token file.
+      placeholder: https://raster-docs.joshi-alok.workers.dev/components/button/
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Theme
+      multiple: true
+      options:
+        - Alpine light
+        - Alpine dark
+        - Zürich light
+        - Zürich dark
+        - Not theme-specific
+  - type: textarea
+    id: need
+    attributes:
+      label: What would work better for you?
+      description: Optional. What you expected, or what you'd need to use Raster on a real project.

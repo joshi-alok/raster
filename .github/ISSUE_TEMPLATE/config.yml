@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Raster docs
+    url: https://raster-docs.joshi-alok.workers.dev/get-started/
+    about: Install steps, components and design-tool token files.

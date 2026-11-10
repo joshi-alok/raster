@@ -1,0 +1,42 @@
+name: Bug or setup problem
+description: Something broken, or installing and using the packages didn't work.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead. Include any error message.
+    validations:
+      required: true
+  - type: dropdown
+    id: package
+    attributes:
+      label: Where
+      multiple: true
+      options:
+        - "@rasterdesign/css"
+        - "@rasterdesign/react"
+        - "@rasterdesign/tokens"
+        - Design-tool token files
+        - Docs site
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Raster version
+      placeholder: "0.1.0"
+  - type: input
+    id: setup
+    attributes:
+      label: Your setup
+      description: Framework and bundler, browser, and any assistive technology involved.
+      placeholder: Next.js 16, Chrome 142, VoiceOver
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps or a small example
+      description: Optional. A link to a repo or sandbox helps most.
+      render: tsx
