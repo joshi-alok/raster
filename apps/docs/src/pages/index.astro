@@ -26,14 +26,14 @@ const PRINCIPLES = [
   {
     number: "05",
     title: "HTML first",
-    body: "The class contract is the API. The React components render exactly the same markup, so a page built with @raster/css alone looks the same as one built with @raster/react.",
+    body: "The class contract is the API. The React components render exactly the same markup, so a page built with @rasterdesign/css alone looks the same as one built with @rasterdesign/react.",
   },
 ];
 
-const CSS_USAGE = `<!-- Paths from the workspace; with a bundler, import "@raster/css/raster.css" instead. -->
-<link rel="stylesheet" href="node_modules/@raster/css/dist/raster.css" />
+const CSS_USAGE = `<!-- Paths from the workspace; with a bundler, import "@rasterdesign/css/raster.css" instead. -->
+<link rel="stylesheet" href="node_modules/@rasterdesign/css/dist/raster.css" />
 <!-- Optional, after raster.css: scroll reveals, page transitions, weight shift -->
-<link rel="stylesheet" href="node_modules/@raster/css/dist/motion.css" />
+<link rel="stylesheet" href="node_modules/@rasterdesign/css/dist/motion.css" />
 
 <main class="sw-container sw-section">
   <div class="sw-grid" data-layout="hanging">
@@ -42,8 +42,8 @@ const CSS_USAGE = `<!-- Paths from the workspace; with a bundler, import "@raste
   </div>
 </main>`;
 
-const REACT_USAGE = `import "@raster/css/raster.css";
-import { Container, Eyebrow, Grid, Heading } from "@raster/react";
+const REACT_USAGE = `import "@rasterdesign/css/raster.css";
+import { Container, Eyebrow, Grid, Heading } from "@rasterdesign/react";
 
 export function Intro() {
   return (
@@ -75,8 +75,8 @@ export function Intro() {
 
   <h2>Get started</h2>
   <p class="sw-measure">
-    Raster ships as three packages: <code>@raster/tokens</code>, <code>@raster/css</code>
-    and <code>@raster/react</code>. <a class="sw-link" href="/get-started/">Get started</a> covers
+    Raster ships as three packages: <code>@rasterdesign/tokens</code>, <code>@rasterdesign/css</code>
+    and <code>@rasterdesign/react</code>. <a class="sw-link" href="/get-started/">Get started</a> covers
     installing them, fonts, themes and design tools.
   </p>
   <p class="sw-type-label sw-text-secondary">HTML and CSS</p>

@@ -1,20 +1,20 @@
-# @raster/react
+# @rasterdesign/react
 
-Raster's React components, built on React Aria for accessibility and styled by `@raster/css`.
+Raster's React components, built on React Aria for accessibility and styled by `@rasterdesign/css`.
 Every component is a client component; the bundle starts with `"use client"`, so it works in
 React Server Components frameworks. React 19 is required.
 
 ## Install
 
-    npm install @raster/react @raster/css @fontsource-variable/geist @fontsource-variable/geist-mono
+    npm install @rasterdesign/react @rasterdesign/css @fontsource-variable/geist @fontsource-variable/geist-mono
 
 ## Use
 
 ```tsx
 import "@fontsource-variable/geist";
 import "@fontsource-variable/geist-mono";
-import "@raster/css";
-import { Button } from "@raster/react";
+import "@rasterdesign/css";
+import { Button } from "@rasterdesign/react";
 
 export function SaveButton() {
   return <Button variant="primary">Save</Button>;

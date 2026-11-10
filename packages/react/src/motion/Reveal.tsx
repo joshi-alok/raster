@@ -11,7 +11,7 @@ export type RevealProps<E extends ElementType = "div"> = PolymorphicProps<
 >;
 
 /**
- * Fades and lifts content in as it scrolls into view. Requires @raster/css/motion.css;
+ * Fades and lifts content in as it scrolls into view. Requires @rasterdesign/css/motion.css;
  * does nothing without it, in browsers without scroll-driven animations, or under reduced motion.
  * Never wrap a ThemeRegion's overlays in it: they portal to <body> and are unaffected anyway.
  */

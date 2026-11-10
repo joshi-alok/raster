@@ -1,4 +1,4 @@
-import { Radio, RadioGroup } from "@raster/react";
+import { Radio, RadioGroup } from "@rasterdesign/react";
 
 export default function Basic() {
   return (

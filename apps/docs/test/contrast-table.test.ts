@@ -1,4 +1,4 @@
-import { contrastPairs, contrastRatio, tokensJson } from "@raster/tokens";
+import { contrastPairs, contrastRatio, tokensJson } from "@rasterdesign/tokens";
 import { describe, expect, it } from "vitest";
 import { contrastTables, formatRatio, type TokensJson } from "../src/lib/contrast-table";
 

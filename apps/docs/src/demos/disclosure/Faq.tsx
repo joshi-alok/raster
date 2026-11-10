@@ -1,4 +1,4 @@
-import { Accordion, Disclosure } from "@raster/react";
+import { Accordion, Disclosure } from "@rasterdesign/react";
 
 export default function Faq() {
   return (

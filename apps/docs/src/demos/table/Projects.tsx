@@ -1,4 +1,4 @@
-import { Table } from "@raster/react";
+import { Table } from "@rasterdesign/react";
 
 export default function Projects() {
   return (

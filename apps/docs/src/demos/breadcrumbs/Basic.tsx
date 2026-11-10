@@ -1,4 +1,4 @@
-import { Breadcrumb, Breadcrumbs } from "@raster/react";
+import { Breadcrumb, Breadcrumbs } from "@rasterdesign/react";
 
 export default function Basic() {
   return (

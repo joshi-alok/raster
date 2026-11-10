@@ -1,4 +1,4 @@
-import { Eyebrow, Grid, Text } from "@raster/react";
+import { Eyebrow, Grid, Text } from "@rasterdesign/react";
 
 export default function Hanging() {
   return (

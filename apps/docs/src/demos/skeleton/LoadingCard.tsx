@@ -1,4 +1,4 @@
-import { Skeleton, Stack } from "@raster/react";
+import { Skeleton, Stack } from "@rasterdesign/react";
 
 export default function LoadingCard() {
   return (

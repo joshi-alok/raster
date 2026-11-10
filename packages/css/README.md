@@ -1,4 +1,4 @@
-# @raster/css
+# @rasterdesign/css
 
 The stylesheet of Raster, a design system in the Swiss International Style. Components are plain
 classes (`sw-button`, `sw-card`, …) that work in HTML with no JavaScript. The tokens are inlined,
@@ -7,15 +7,15 @@ dark modes.
 
 ## Install
 
-    npm install @raster/css @fontsource-variable/geist @fontsource-variable/geist-mono
+    npm install @rasterdesign/css @fontsource-variable/geist @fontsource-variable/geist-mono
 
 ## Use
 
 ```js
 import "@fontsource-variable/geist";
 import "@fontsource-variable/geist-mono";
-import "@raster/css"; // or "@raster/css/raster.min.css"
-import "@raster/css/motion.css"; // optional: scroll and entrance motion
+import "@rasterdesign/css"; // or "@rasterdesign/css/raster.min.css"
+import "@rasterdesign/css/motion.css"; // optional: scroll and entrance motion
 ```
 
 ```html

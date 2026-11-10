@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogTrigger, Stack, TextField } from "@raster/react";
+import { Button, Dialog, DialogTrigger, Stack, TextField } from "@rasterdesign/react";
 
 export default function EditProfile() {
   return (

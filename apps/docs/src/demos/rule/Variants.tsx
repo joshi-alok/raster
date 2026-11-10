@@ -1,4 +1,4 @@
-import { Rule, Stack, Text } from "@raster/react";
+import { Rule, Stack, Text } from "@rasterdesign/react";
 
 export default function Variants() {
   return (

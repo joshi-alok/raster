@@ -11,7 +11,7 @@ const root = dirname(fileURLToPath(import.meta.url));
 const LAYER_ORDER =
   "@layer raster.reset, raster.tokens, raster.base, raster.layout, raster.components, raster.utilities;";
 
-/** Bundle a CSS entry (resolving package imports such as @raster/tokens) into one string. */
+/** Bundle a CSS entry (resolving package imports such as @rasterdesign/tokens) into one string. */
 async function bundle(entry, minify) {
   const { code } = await bundleAsync({
     filename: resolve(root, entry),

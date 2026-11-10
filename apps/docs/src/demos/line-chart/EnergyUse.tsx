@@ -1,4 +1,4 @@
-import { LineChart } from "@raster/react";
+import { LineChart } from "@rasterdesign/react";
 
 const data = [
   { week: "W1", kwh: 412 },

@@ -1,4 +1,4 @@
-import { Breadcrumb, Breadcrumbs, Button, Checkbox, IconButton, Radio, RadioGroup, Stack, TextField } from "@raster/react";
+import { Breadcrumb, Breadcrumbs, Button, Checkbox, IconButton, Radio, RadioGroup, Stack, TextField } from "@rasterdesign/react";
 import { X } from "lucide-react";
 import { describe, expect, it } from "vitest";
 import { cleanMarkup, htmlSnippet } from "../src/lib/html-snippet";

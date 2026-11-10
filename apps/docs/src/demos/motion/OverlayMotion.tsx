@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogTrigger, Stack, Text, Tooltip, TooltipTrigger } from "@raster/react";
+import { Button, Dialog, DialogTrigger, Stack, Text, Tooltip, TooltipTrigger } from "@rasterdesign/react";
 
 export default function OverlayMotion() {
   return (

@@ -8,7 +8,7 @@ import {
   Stack,
   TextArea,
   TextField,
-} from "@raster/react";
+} from "@rasterdesign/react";
 import { type FormEvent, useRef, useState } from "react";
 
 type Errors = Partial<Record<"name" | "email", string>>;

@@ -1,4 +1,4 @@
-import { LineChart } from "@raster/react";
+import { LineChart } from "@rasterdesign/react";
 import { visitors } from "./Visitors";
 
 export default function Highlighted() {

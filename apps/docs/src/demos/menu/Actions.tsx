@@ -1,4 +1,4 @@
-import { Button, Menu, MenuItem, MenuSeparator, MenuTrigger, Stack, Text } from "@raster/react";
+import { Button, Menu, MenuItem, MenuSeparator, MenuTrigger, Stack, Text } from "@rasterdesign/react";
 import { useState } from "react";
 
 export default function Actions() {

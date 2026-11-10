@@ -1,4 +1,4 @@
-import { BarChart, type BarChartProps } from "@raster/react";
+import { BarChart, type BarChartProps } from "@rasterdesign/react";
 
 export const projectsByYear = {
   caption: "Projects by year",

@@ -1,4 +1,4 @@
-import { Breadcrumb, Breadcrumbs, Heading, Pagination, SideNav, SideNavGroup, SideNavLink, Stack, Text } from "@raster/react";
+import { Breadcrumb, Breadcrumbs, Heading, Pagination, SideNav, SideNavGroup, SideNavLink, Stack, Text } from "@rasterdesign/react";
 
 export default function SectionPage() {
   return (

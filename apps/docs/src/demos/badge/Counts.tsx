@@ -1,4 +1,4 @@
-import { Badge, Stack } from "@raster/react";
+import { Badge, Stack } from "@rasterdesign/react";
 
 export default function Counts() {
   return (

@@ -1,4 +1,4 @@
-import { Banner } from "@raster/react";
+import { Banner } from "@rasterdesign/react";
 
 export default function ErrorSummary() {
   return (

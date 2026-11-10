@@ -35,9 +35,9 @@ exec docker run --rm --init --ipc=host \
     pnpm install --frozen-lockfile --store-dir /pnpm-store --config.confirmModulesPurge=false
     pnpm build
     if [ "$#" -gt 0 ]; then
-      pnpm --filter @raster/docs exec playwright test "$@"
+      pnpm --filter @rasterdesign/docs exec playwright test "$@"
     else
-      pnpm --filter @raster/docs exec playwright test
-      pnpm --filter @raster/studio exec playwright test
+      pnpm --filter @rasterdesign/docs exec playwright test
+      pnpm --filter @rasterdesign/studio exec playwright test
     fi
   ' sh "$@"

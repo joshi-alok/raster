@@ -1,4 +1,4 @@
-import { Header, Link } from "@raster/react";
+import { Header, Link } from "@rasterdesign/react";
 
 /** Shown in a 360px frame, so the header is compact at every screen width. */
 export default function Compact() {

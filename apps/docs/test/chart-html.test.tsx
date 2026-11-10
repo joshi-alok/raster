@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { BarChart, LineChart, numberFormatter, Sparkline } from "@raster/react";
+import { BarChart, LineChart, numberFormatter, Sparkline } from "@rasterdesign/react";
 import { describe, expect, it } from "vitest";
 import { projectsByYear } from "../src/demos/bar-chart/ProjectsByYear";
 import { visitors } from "../src/demos/line-chart/Visitors";

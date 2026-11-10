@@ -1,5 +1,5 @@
 import { parseDate } from "@internationalized/date";
-import { DateRangePicker } from "@raster/react";
+import { DateRangePicker } from "@rasterdesign/react";
 
 export default function Period() {
   return (

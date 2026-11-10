@@ -1,4 +1,4 @@
-import { BarChart } from "@raster/react";
+import { BarChart } from "@rasterdesign/react";
 
 const data = [
   { discipline: "Wayfinding", budget: 420 },

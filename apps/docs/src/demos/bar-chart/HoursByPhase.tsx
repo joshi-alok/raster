@@ -1,4 +1,4 @@
-import { BarChart } from "@raster/react";
+import { BarChart } from "@rasterdesign/react";
 
 const data = [
   { project: "Linie 7", research: 120, design: 340, production: 210 },

@@ -1,4 +1,4 @@
-import { Button, DialogTrigger, Link, Popover } from "@raster/react";
+import { Button, DialogTrigger, Link, Popover } from "@rasterdesign/react";
 
 export default function GridUnits() {
   return (

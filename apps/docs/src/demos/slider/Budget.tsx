@@ -1,4 +1,4 @@
-import { Slider } from "@raster/react";
+import { Slider } from "@rasterdesign/react";
 
 export default function Budget() {
   return (

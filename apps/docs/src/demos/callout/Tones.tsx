@@ -1,4 +1,4 @@
-import { Callout, Stack } from "@raster/react";
+import { Callout, Stack } from "@rasterdesign/react";
 
 export default function Tones() {
   return (

@@ -1,4 +1,4 @@
-import { FileUpload, type FileUploadEntry } from "@raster/react";
+import { FileUpload, type FileUploadEntry } from "@rasterdesign/react";
 import { useState } from "react";
 
 export default function Proofs() {

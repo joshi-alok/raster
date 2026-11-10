@@ -1,4 +1,4 @@
-import { Card, Eyebrow, Heading, Link, Stack, Text } from "@raster/react";
+import { Card, Eyebrow, Heading, Link, Stack, Text } from "@rasterdesign/react";
 
 export default function Basic() {
   return (

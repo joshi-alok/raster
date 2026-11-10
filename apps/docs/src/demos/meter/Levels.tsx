@@ -1,4 +1,4 @@
-import { Meter, Stack } from "@raster/react";
+import { Meter, Stack } from "@rasterdesign/react";
 
 export default function Levels() {
   return (

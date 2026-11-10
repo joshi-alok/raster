@@ -1,4 +1,4 @@
-import { Sparkline, Table } from "@raster/react";
+import { Sparkline, Table } from "@rasterdesign/react";
 
 const rows = [
   { project: "Linie 7", hours: [32, 40, 38, 45, 50, 47] },

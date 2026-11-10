@@ -1,21 +1,21 @@
 ---
-import { designToolFiles } from "@raster/tokens";
+import { designToolFiles } from "@rasterdesign/tokens";
 import CodeBlock from "../components/CodeBlock.astro";
 import DocPage from "../layouts/DocPage.astro";
 
-const INSTALL = `npm install @raster/css @fontsource-variable/geist @fontsource-variable/geist-mono
-npm install @raster/react react react-dom   # for React`;
+const INSTALL = `npm install @rasterdesign/css @fontsource-variable/geist @fontsource-variable/geist-mono
+npm install @rasterdesign/react react react-dom   # for React`;
 
 const FONTS = `import "@fontsource-variable/geist";
 import "@fontsource-variable/geist-mono";
-import "@raster/css";              // or <link rel="stylesheet" href=".../raster.css">
-import "@raster/css/motion.css";   // optional: the expressive motion tier`;
+import "@rasterdesign/css";              // or <link rel="stylesheet" href=".../raster.css">
+import "@rasterdesign/css/motion.css";   // optional: the expressive motion tier`;
 
 const THEME = `<html lang="en" data-theme="zurich" data-mode="dark">`;
 
 const HTML = `<button data-variant="primary" class="sw-button" type="button">Send enquiry</button>`;
 
-const REACT = `import { Button } from "@raster/react";
+const REACT = `import { Button } from "@rasterdesign/react";
 
 export function Send() {
   return <Button variant="primary">Send enquiry</Button>;
@@ -30,8 +30,8 @@ const files = Object.keys(designToolFiles());
 >
   <h2>Install</h2>
   <p class="sw-measure">
-    <code>@raster/css</code> is the whole visual system and needs no
-    JavaScript. <code>@raster/react</code> adds behaviour through React Aria and uses the same classes. The
+    <code>@rasterdesign/css</code> is the whole visual system and needs no
+    JavaScript. <code>@rasterdesign/react</code> adds behaviour through React Aria and uses the same classes. The
     three packages share one version number.
   </p>
   <CodeBlock code={INSTALL} label="Install with npm" />
@@ -65,7 +65,7 @@ const files = Object.keys(designToolFiles());
   <p class="sw-measure">
     These files follow the Design Tokens format, one file per mode. In Figma, import each colour
     file as a mode of one collection, and both size files as Mobile and Desktop modes of another.
-    The same files ship in <code>@raster/tokens</code> under <code>design-tools/</code>.
+    The same files ship in <code>@rasterdesign/tokens</code> under <code>design-tools/</code>.
   </p>
   <ul aria-label="Design-tool files">
     {files.map((file) => (

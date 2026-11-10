@@ -6,7 +6,7 @@ import {
   DataGridHeader,
   type DataGridProps,
   DataGridRow,
-} from "@raster/react";
+} from "@rasterdesign/react";
 import { useMemo, useState } from "react";
 import { formatFrancs, PROJECTS, type Project } from "./project-data";
 

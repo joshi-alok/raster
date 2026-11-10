@@ -1,4 +1,4 @@
-import { Sparkline, Stack, Stat, Table } from "@raster/react";
+import { Sparkline, Stack, Stat, Table } from "@rasterdesign/react";
 
 const FIGURES = [
   { value: "14", label: "Projects running", change: "+3 on last quarter", trend: "up" as const, data: [9, 10, 10, 11, 12, 14] },

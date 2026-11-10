@@ -1,4 +1,4 @@
-import { Button, Stack } from "@raster/react";
+import { Button, Stack } from "@rasterdesign/react";
 
 export default function Disabled() {
   return (

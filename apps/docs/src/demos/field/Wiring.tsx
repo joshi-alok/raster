@@ -1,4 +1,4 @@
-import { TextField } from "@raster/react";
+import { TextField } from "@rasterdesign/react";
 
 export default function Wiring() {
   return (

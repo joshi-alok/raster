@@ -1,4 +1,4 @@
-import { DataGrid, DataGridBody, DataGridCell, DataGridColumn, DataGridHeader, DataGridRow } from "@raster/react";
+import { DataGrid, DataGridBody, DataGridCell, DataGridColumn, DataGridHeader, DataGridRow } from "@rasterdesign/react";
 
 const CLIENTS = ["Kunsthalle Basel", "Stadt Bern", "KKL Luzern", "ETH Bibliothek", "Lido Lugano", "Atelier Biel"];
 

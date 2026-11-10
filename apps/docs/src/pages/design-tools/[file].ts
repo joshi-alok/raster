@@ -1,4 +1,4 @@
-import { designToolFiles } from "@raster/tokens";
+import { designToolFiles } from "@rasterdesign/tokens";
 import type { APIRoute, GetStaticPaths } from "astro";
 
 /** The design-tool token files, at /design-tools/<name>.tokens.json, for download. */

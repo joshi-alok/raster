@@ -1,4 +1,4 @@
-import { Chip, TagGroup } from "@raster/react";
+import { Chip, TagGroup } from "@rasterdesign/react";
 
 export default function Disciplines() {
   return (

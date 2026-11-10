@@ -1,5 +1,5 @@
 import { isWeekend, parseDate } from "@internationalized/date";
-import { Calendar } from "@raster/react";
+import { Calendar } from "@rasterdesign/react";
 
 export default function DeliveryDay() {
   return (

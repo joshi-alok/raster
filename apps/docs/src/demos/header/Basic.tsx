@@ -1,4 +1,4 @@
-import { Button, Header, Link } from "@raster/react";
+import { Button, Header, Link } from "@rasterdesign/react";
 
 export default function Basic() {
   return (
