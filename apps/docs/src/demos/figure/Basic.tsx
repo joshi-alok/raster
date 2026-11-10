@@ -1,4 +1,4 @@
-import { Figure } from "@raster/react";
+import { Figure } from "@rasterdesign/react";
 
 export default function Basic() {
   return (

@@ -1,4 +1,4 @@
-import { Button, EmptyState, SearchField, Stack } from "@raster/react";
+import { Button, EmptyState, SearchField, Stack } from "@rasterdesign/react";
 import { useState } from "react";
 
 export const PROJECTS = [

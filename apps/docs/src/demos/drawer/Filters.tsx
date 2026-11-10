@@ -1,4 +1,4 @@
-import { Button, DialogTrigger, Drawer } from "@raster/react";
+import { Button, DialogTrigger, Drawer } from "@rasterdesign/react";
 
 export default function Filters() {
   return (

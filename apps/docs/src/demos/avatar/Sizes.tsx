@@ -1,4 +1,4 @@
-import { Avatar, Stack } from "@raster/react";
+import { Avatar, Stack } from "@rasterdesign/react";
 
 export default function Sizes() {
   return (

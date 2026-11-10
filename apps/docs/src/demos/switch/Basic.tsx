@@ -1,4 +1,4 @@
-import { Stack, Switch } from "@raster/react";
+import { Stack, Switch } from "@rasterdesign/react";
 
 export default function Basic() {
   return (

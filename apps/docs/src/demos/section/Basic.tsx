@@ -1,4 +1,4 @@
-import { Heading, Section, Text } from "@raster/react";
+import { Heading, Section, Text } from "@rasterdesign/react";
 
 export default function Basic() {
   return (

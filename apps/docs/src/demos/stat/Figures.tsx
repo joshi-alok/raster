@@ -1,4 +1,4 @@
-import { Stat } from "@raster/react";
+import { Stat } from "@rasterdesign/react";
 
 export default function Figures() {
   return (

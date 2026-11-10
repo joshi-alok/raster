@@ -1,4 +1,4 @@
-import { Col, Grid } from "@raster/react";
+import { Col, Grid } from "@rasterdesign/react";
 
 export default function Offsets() {
   return (

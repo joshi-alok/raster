@@ -1,5 +1,5 @@
 import { parseDate } from "@internationalized/date";
-import { DatePicker } from "@raster/react";
+import { DatePicker } from "@rasterdesign/react";
 
 export default function Delivery() {
   return (

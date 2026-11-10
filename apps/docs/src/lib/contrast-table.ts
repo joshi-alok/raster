@@ -1,4 +1,4 @@
-import { contrastPairs, contrastRatio } from "@raster/tokens";
+import { contrastPairs, contrastRatio } from "@rasterdesign/tokens";
 
 type ColourToken = { $value: string };
 type ModeTokens = Record<string, ColourToken>;

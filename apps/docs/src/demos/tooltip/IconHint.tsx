@@ -1,4 +1,4 @@
-import { IconButton, Tooltip, TooltipTrigger } from "@raster/react";
+import { IconButton, Tooltip, TooltipTrigger } from "@rasterdesign/react";
 import { Copy } from "lucide-react";
 
 export default function IconHint() {

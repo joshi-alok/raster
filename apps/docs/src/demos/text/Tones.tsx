@@ -1,4 +1,4 @@
-import { Stack, Text } from "@raster/react";
+import { Stack, Text } from "@rasterdesign/react";
 
 export default function Tones() {
   return (

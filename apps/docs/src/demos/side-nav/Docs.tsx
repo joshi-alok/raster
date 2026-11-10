@@ -1,4 +1,4 @@
-import { SideNav, SideNavGroup, SideNavLink } from "@raster/react";
+import { SideNav, SideNavGroup, SideNavLink } from "@rasterdesign/react";
 
 export default function Docs() {
   return (

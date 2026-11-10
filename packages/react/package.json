@@ -1,8 +1,9 @@
 {
-  "name": "@raster/react",
+  "name": "@rasterdesign/react",
   "version": "0.1.0",
   "private": false,
-  "description": "Raster's React components, built on React Aria and styled by @raster/css.",
+  "description": "Raster's React components, built on React Aria and styled by @rasterdesign/css.",
+  "homepage": "https://raster-docs.joshi-alok.workers.dev",
   "license": "MIT",
   "author": "Raster contributors",
   "repository": {
@@ -11,11 +12,20 @@
     "directory": "packages/react"
   },
   "bugs": "https://github.com/joshi-alok/raster/issues",
-  "keywords": ["design-system", "swiss", "css", "react", "design-tokens"],
+  "keywords": [
+    "design-system",
+    "swiss",
+    "css",
+    "react",
+    "design-tokens"
+  ],
   "publishConfig": {
     "access": "public"
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "sideEffects": false,
   "type": "module",
   "exports": {
@@ -30,7 +40,7 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@raster/css": "workspace:^",
+    "@rasterdesign/css": "workspace:^",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -42,7 +52,7 @@
   },
   "devDependencies": {
     "@internationalized/date": "3.12.4",
-    "@raster/css": "workspace:*",
+    "@rasterdesign/css": "workspace:*",
     "@testing-library/jest-dom": "6.10.0",
     "@testing-library/react": "16.3.3",
     "@testing-library/user-event": "14.6.8",

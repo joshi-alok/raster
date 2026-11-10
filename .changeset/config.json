@@ -2,10 +2,10 @@
   "$schema": "https://unpkg.com/@changesets/config@4.0.1/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": false,
-  "fixed": [["@raster/tokens", "@raster/css", "@raster/react"]],
+  "fixed": [["@rasterdesign/tokens", "@rasterdesign/css", "@rasterdesign/react"]],
   "linked": [],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@raster/docs", "@raster/studio"]
+  "ignore": ["@rasterdesign/docs", "@rasterdesign/studio"]
 }

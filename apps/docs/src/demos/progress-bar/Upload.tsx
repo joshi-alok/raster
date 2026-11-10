@@ -1,4 +1,4 @@
-import { ProgressBar, Stack } from "@raster/react";
+import { ProgressBar, Stack } from "@rasterdesign/react";
 
 export default function Upload() {
   return (

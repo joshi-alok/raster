@@ -1,4 +1,4 @@
-// Packs @raster/tokens, @raster/css and @raster/react as npm would publish them, installs the
+// Packs @rasterdesign/tokens, @rasterdesign/css and @rasterdesign/react as npm would publish them, installs the
 // tarballs into a fresh project, and uses them there as a consumer would. Then publint checks
 // every package's exports.
 import { execFileSync } from "node:child_process";
@@ -23,7 +23,7 @@ for (const name of PACKAGES) {
   run("pnpm", ["exec", "publint", "--strict", dir], root);
   const before = new Set(readdirSync(work));
   run("pnpm", ["pack", "--pack-destination", work], dir);
-  tarballs[`@raster/${name}`] = `file:${join(work, readdirSync(work).find((f) => !before.has(f)))}`;
+  tarballs[`@rasterdesign/${name}`] = `file:${join(work, readdirSync(work).find((f) => !before.has(f)))}`;
 }
 
 const app = join(work, "app");
@@ -38,7 +38,7 @@ write(
       type: "module",
       dependencies: { ...tarballs, react: "19.1.10", "react-dom": "19.1.10" },
       devDependencies: { typescript: "5.9.3", "@types/react": "19.3.0", "@types/react-dom": "19.3.0" },
-      // The packed css and react depend on @raster/* by version; before the first publish that
+      // The packed css and react depend on @rasterdesign/* by version; before the first publish that
       // version is not on the registry, so point every copy at the local tarballs.
       overrides: Object.fromEntries(Object.keys(tarballs).map((n) => [n, `$${n}`])),
     },
@@ -52,32 +52,32 @@ write(
 import { readFileSync } from "node:fs";
 import { createElement } from "react";
 import { renderToString } from "react-dom/server";
-import { Button } from "@raster/react";
-import { themes, tokensJson } from "@raster/tokens";
+import { Button } from "@rasterdesign/react";
+import { themes, tokensJson } from "@rasterdesign/tokens";
 
 const require = createRequire(import.meta.url);
 const fail = (message) => { console.error(message); process.exit(1); };
 
-if (themes.length !== 2) fail("@raster/tokens: expected two themes");
-if (!tokensJson().themes.alpine) fail("@raster/tokens: tokensJson has no alpine theme");
+if (themes.length !== 2) fail("@rasterdesign/tokens: expected two themes");
+if (!tokensJson().themes.alpine) fail("@rasterdesign/tokens: tokensJson has no alpine theme");
 const html = renderToString(createElement(Button, null, "Save"));
-if (!html.includes("sw-button")) fail("@raster/react: Button did not render, got " + html);
-if (!readFileSync(require.resolve("@raster/react"), "utf8").startsWith('"use client"')) fail('@raster/react: no "use client"');
+if (!html.includes("sw-button")) fail("@rasterdesign/react: Button did not render, got " + html);
+if (!readFileSync(require.resolve("@rasterdesign/react"), "utf8").startsWith('"use client"')) fail('@rasterdesign/react: no "use client"');
 for (const file of [
-  "@raster/css/raster.css",
-  "@raster/css/raster.min.css",
-  "@raster/css/motion.css",
-  "@raster/tokens/tokens.css",
-  "@raster/tokens/tokens.json",
-  "@raster/tokens/design-tools/raster-alpine-light.tokens.json",
+  "@rasterdesign/css/raster.css",
+  "@rasterdesign/css/raster.min.css",
+  "@rasterdesign/css/motion.css",
+  "@rasterdesign/tokens/tokens.css",
+  "@rasterdesign/tokens/tokens.json",
+  "@rasterdesign/tokens/design-tools/raster-alpine-light.tokens.json",
 ]) require.resolve(file);
 console.log("pack check: the packages import, render and resolve");
 `,
 );
 write(
   "consumer.tsx",
-  `import { Button, type ButtonProps } from "@raster/react";
-import { type Theme, themes } from "@raster/tokens";
+  `import { Button, type ButtonProps } from "@rasterdesign/react";
+import { type Theme, themes } from "@rasterdesign/tokens";
 
 const props: ButtonProps = { variant: "primary" };
 export const save = <Button {...props}>Save</Button>;

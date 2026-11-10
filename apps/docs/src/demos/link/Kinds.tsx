@@ -1,4 +1,4 @@
-import { Link, Stack, Text } from "@raster/react";
+import { Link, Stack, Text } from "@rasterdesign/react";
 
 export default function Kinds() {
   return (

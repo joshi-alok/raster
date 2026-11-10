@@ -1,4 +1,4 @@
-import { Button, EmptyState } from "@raster/react";
+import { Button, EmptyState } from "@rasterdesign/react";
 
 export default function FirstUse() {
   return (

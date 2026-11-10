@@ -1,5 +1,5 @@
 /*
- * Raster expressive motion tier — opt in by loading @raster/css/motion.css after raster.css.
+ * Raster expressive motion tier — opt in by loading @rasterdesign/css/motion.css after raster.css.
  * Progressive enhancement only; switched off by prefers-reduced-motion and [data-motion="reduce"].
  */
 

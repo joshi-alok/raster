@@ -1,4 +1,4 @@
-import { EmptyState, Link } from "@raster/react";
+import { EmptyState, Link } from "@rasterdesign/react";
 
 export default function NoResults() {
   return (

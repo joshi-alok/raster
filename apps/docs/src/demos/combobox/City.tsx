@@ -1,4 +1,4 @@
-import { ComboBox, ComboBoxItem } from "@raster/react";
+import { ComboBox, ComboBoxItem } from "@rasterdesign/react";
 
 const CITIES = ["Basel", "Bern", "Biel/Bienne", "Geneva", "Lausanne", "Lucerne", "Lugano", "St. Gallen", "Winterthur", "Zürich"];
 

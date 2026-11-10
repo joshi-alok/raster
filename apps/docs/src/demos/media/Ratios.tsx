@@ -1,4 +1,4 @@
-import { Media, Stack } from "@raster/react";
+import { Media, Stack } from "@rasterdesign/react";
 
 const RATIOS = ["1:1", "3:2", "21:9"] as const;
 

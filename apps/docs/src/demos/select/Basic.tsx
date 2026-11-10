@@ -1,4 +1,4 @@
-import { Select, SelectItem } from "@raster/react";
+import { Select, SelectItem } from "@rasterdesign/react";
 
 export default function Basic() {
   return (

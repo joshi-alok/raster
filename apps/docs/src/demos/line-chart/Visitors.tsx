@@ -1,4 +1,4 @@
-import { LineChart, type LineChartProps } from "@raster/react";
+import { LineChart, type LineChartProps } from "@rasterdesign/react";
 
 export const visitors = {
   caption: "Exhibition visitors, thousands",

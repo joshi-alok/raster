@@ -1,4 +1,4 @@
-import { Button, Callout, Eyebrow, Heading, Select, SelectItem, Stack, Tag, Text, ThemeRegion } from "@raster/react";
+import { Button, Callout, Eyebrow, Heading, Select, SelectItem, Stack, Tag, Text, ThemeRegion } from "@rasterdesign/react";
 
 const REGIONS = [
   { theme: "alpine", mode: "light", name: "Alpine light" },

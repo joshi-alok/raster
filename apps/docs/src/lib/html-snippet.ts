@@ -16,7 +16,7 @@ const ID_ATTRIBUTES =
   / (id|name|aria-labelledby|aria-describedby|aria-controls|aria-errormessage|aria-owns|aria-details|aria-activedescendant|for)="([^"]*)"/g;
 
 /**
- * Reduces server-rendered React markup to the @raster/css class contract:
+ * Reduces server-rendered React markup to the @rasterdesign/css class contract:
  * - React Aria's runtime attributes and collection placeholders are removed.
  * - Visually hidden wrappers use .sw-sr-only.
  * - tabindex is dropped on native controls.

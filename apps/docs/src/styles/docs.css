@@ -1,6 +1,6 @@
 /*
  * Docs-site styles. Unlayered, so they override Raster's cascade layers.
- * Tokens only: no raw colours (the rule stylelint enforces in @raster/css).
+ * Tokens only: no raw colours (the rule stylelint enforces in @rasterdesign/css).
  */
 
 /* Shell */

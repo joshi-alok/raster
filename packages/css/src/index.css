@@ -1,7 +1,7 @@
 @layer raster.reset, raster.tokens, raster.base, raster.layout, raster.components, raster.utilities;
 
 @import "./reset.css" layer(raster.reset);
-@import "@raster/tokens/tokens.css" layer(raster.tokens);
+@import "@rasterdesign/tokens/tokens.css" layer(raster.tokens);
 @import "./base.css" layer(raster.base);
 @import "./layout/container.css" layer(raster.layout);
 @import "./layout/grid.css" layer(raster.layout);

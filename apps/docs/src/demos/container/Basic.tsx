@@ -1,4 +1,4 @@
-import { Container, Text } from "@raster/react";
+import { Container, Text } from "@rasterdesign/react";
 
 export default function Basic() {
   return (

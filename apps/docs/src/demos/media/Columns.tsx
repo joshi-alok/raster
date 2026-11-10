@@ -1,4 +1,4 @@
-import { Media } from "@raster/react";
+import { Media } from "@rasterdesign/react";
 
 export default function Columns() {
   return (

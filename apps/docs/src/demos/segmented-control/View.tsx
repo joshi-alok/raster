@@ -1,4 +1,4 @@
-import { Segment, SegmentedControl } from "@raster/react";
+import { Segment, SegmentedControl } from "@rasterdesign/react";
 
 export default function View() {
   return (

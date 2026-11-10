@@ -1,4 +1,4 @@
-import { IconButton, Stack } from "@raster/react";
+import { IconButton, Stack } from "@rasterdesign/react";
 import { Plus, Settings, X } from "lucide-react";
 
 export default function Basic() {

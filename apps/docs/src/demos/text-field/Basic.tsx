@@ -1,4 +1,4 @@
-import { Stack, TextField } from "@raster/react";
+import { Stack, TextField } from "@rasterdesign/react";
 
 export default function Basic() {
   return (

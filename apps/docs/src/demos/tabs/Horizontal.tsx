@@ -1,4 +1,4 @@
-import { Tab, TabList, TabPanel, Tabs, Text } from "@raster/react";
+import { Tab, TabList, TabPanel, Tabs, Text } from "@rasterdesign/react";
 
 export default function Horizontal() {
   return (

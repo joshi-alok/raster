@@ -6,7 +6,7 @@ test("Get started shows how to install, theme, and use both routes", async ({ pa
   for (const name of ["Install", "Fonts", "Theme and mode", "HTML and CSS", "React", "Design tools"]) {
     await expect(page.getByRole("heading", { level: 2, name })).toBeVisible();
   }
-  await expect(page.getByRole("region", { name: "Install with npm" })).toContainText("npm install @raster/css");
+  await expect(page.getByRole("region", { name: "Install with npm" })).toContainText("npm install @rasterdesign/css");
 });
 
 test("each design-tool file downloads as DTCG JSON", async ({ page, request }) => {

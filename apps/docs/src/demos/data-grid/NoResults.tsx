@@ -1,4 +1,4 @@
-import { Button, DataGrid, DataGridBody, DataGridColumn, DataGridHeader, EmptyState } from "@raster/react";
+import { Button, DataGrid, DataGridBody, DataGridColumn, DataGridHeader, EmptyState } from "@rasterdesign/react";
 
 export default function NoResults() {
   return (

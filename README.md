@@ -4,9 +4,9 @@ A design system in the Swiss International Style: a strict grid, plain type, and
 
 | Package | What it is |
 |---|---|
-| [`@raster/css`](packages/css) | The stylesheet. Components as classes; works without JavaScript. |
-| [`@raster/react`](packages/react) | React components on React Aria, styled by `@raster/css`. |
-| [`@raster/tokens`](packages/tokens) | Tokens as CSS, JSON and design-tool files, plus the theme checks. |
+| [`@rasterdesign/css`](packages/css) | The stylesheet. Components as classes; works without JavaScript. |
+| [`@rasterdesign/react`](packages/react) | React components on React Aria, styled by `@rasterdesign/css`. |
+| [`@rasterdesign/tokens`](packages/tokens) | Tokens as CSS, JSON and design-tool files, plus the theme checks. |
 
 Documentation: the docs site (see `apps/docs`), with a Get started page.
 

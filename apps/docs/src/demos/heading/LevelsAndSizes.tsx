@@ -1,4 +1,4 @@
-import { Heading, Stack } from "@raster/react";
+import { Heading, Stack } from "@rasterdesign/react";
 
 export default function LevelsAndSizes() {
   return (

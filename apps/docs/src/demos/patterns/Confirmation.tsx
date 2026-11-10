@@ -1,4 +1,4 @@
-import { Button, createToastQueue, ToastRegion } from "@raster/react";
+import { Button, createToastQueue, ToastRegion } from "@rasterdesign/react";
 
 // One queue for this demo; an app creates one near its root.
 const queue = createToastQueue();

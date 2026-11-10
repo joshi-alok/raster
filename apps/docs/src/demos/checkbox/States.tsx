@@ -1,4 +1,4 @@
-import { Checkbox, Stack } from "@raster/react";
+import { Checkbox, Stack } from "@rasterdesign/react";
 
 export default function States() {
   return (

@@ -1,4 +1,4 @@
-import { Eyebrow, Heading, Stack } from "@raster/react";
+import { Eyebrow, Heading, Stack } from "@rasterdesign/react";
 
 export default function Basic() {
   return (

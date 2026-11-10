@@ -1,4 +1,4 @@
-import { Callout, Stack, Tab, TabList, TabPanel, Tabs, Text } from "@raster/react";
+import { Callout, Stack, Tab, TabList, TabPanel, Tabs, Text } from "@rasterdesign/react";
 
 const WEEKS = {
   "this-week": ["Proofs approved for the annual report", "Wayfinding signs sent to the fabricator", "New brief: type specimen"],

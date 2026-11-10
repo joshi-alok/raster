@@ -1,4 +1,4 @@
-import { DescriptionItem, DescriptionList } from "@raster/react";
+import { DescriptionItem, DescriptionList } from "@rasterdesign/react";
 
 export default function ProjectFacts() {
   return (
