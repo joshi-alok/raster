@@ -427,15 +427,16 @@ Decided with the user: a public GitHub repository (`joshi-alok/raster`), Cloudfl
   - It skips versions already on npm and carries on past a failing package, then exits 1.
   - It tags every version on npm that has no git tag, so a re-run repairs a partial publish.
   - The release workflow runs only after CI succeeds on a push to main.
-  - The first publish is manual: Task 9 of the plan, after the merge.
+  - The first publish was manual. npm requires two-factor authentication to publish, so it failed with 403 until 2FA was on; publish.mjs's inherited stdio let npm's browser confirmation through. 0.1.0 of all three packages was published on 2026-11-10 and installs and server-renders in a fresh project.
+- **The npm scope.** `@raster` on npm belongs to someone else (the scope exists with no public packages), so the packages publish as `@rasterdesign/tokens`, `@rasterdesign/css` and `@rasterdesign/react`. The rename touched 134 files outside the plans; earlier plans keep the old name as history. Each package's `homepage` is the docs site.
 - **Linux baselines.** The 1,443 macOS baselines were replaced by 1,443 Linux ones, with the same names. `pnpm baselines` takes about 12 minutes on this machine (Intel i7, Docker Desktop), and a full `pnpm e2e` 10–14 minutes, docs and studio together. Every parity screenshot still matches at 0 pixels on Linux; no tolerance changed. Full-page template screenshots also carry `maxDiffPixels: 100`.
 - **The Docker runner.** Playwright's 1.64.1 image ships Node 26, which no longer bundles corepack. `scripts/e2e-docker.sh` installs corepack once into a cached volume and enables only pnpm. Every workspace package's `node_modules` is a named volume, so Linux binaries never reach the host's tree. CI's container jobs instead put the repository's Node 22 first with `setup-node`.
 - **CI.** One `check` job (build, lint, typecheck, unit tests, pack check), docs e2e in 4 shards, and studio e2e, all inside the pinned Playwright image.
   - The pack check fails if `ci.yml`'s image tag and `@playwright/test` differ.
   - Runs on main are never cancelled, so a deploy is not cut off between docs and studio.
-  - Typical run time: not yet measured (Task 9).
+  - Typical run time: about 4 minutes on GitHub's runners (check 1.5m, docs shards 2.7–3.8m in parallel, then a 20s deploy). The e2e passed there on the first run, with no runner-only timeouts.
 - **Load flakes.** In the Plan 9 verify run, the four axe checks on the long manifesto template hit the 30s test timeout. They take about 6s each alone, and passed 12 of 12 when re-run. CI retries a failed test once.
-- **Hosting.** Two Workers with static assets, `raster-docs` and `raster-studio`; both configs pass `wrangler deploy --dry-run` (Wrangler 4.158.0). Pull requests from this repository get `pr-<n>` preview versions and a comment with links once the `WORKERS_SUBDOMAIN` variable is set. Not yet deployed (Task 9).
+- **Hosting.** Two Workers with static assets, `raster-docs` and `raster-studio`; both configs pass `wrangler deploy --dry-run` (Wrangler 4.158.0). Pull requests from this repository get `pr-<n>` preview versions and a comment with links once the `WORKERS_SUBDOMAIN` variable is set. Deployed on 2026-11-10: https://raster-docs.joshi-alok.workers.dev and https://raster-studio.joshi-alok.workers.dev. The 404 page answers unknown paths with status 404.
 - **Copy rendering.** Astro's HTML compression drops a line break between text and an element that starts the next source line ("JavaScript.<code>"). Six such joins were fixed, four of them older than Plan 9, and a test now reads every built page for them.
 - **Known gaps:**
   - no Figma component library;
